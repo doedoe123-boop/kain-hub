@@ -1,0 +1,46 @@
+FROM php:8.4-fpm
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    libicu-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    libonig-dev \
+    curl \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install \
+        pdo \
+        pdo_pgsql \
+        pgsql \
+        zip \
+        bcmath \
+        intl \
+        gd \
+        mbstring \
+        opcache \
+        exif \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Create system user to run Composer and Artisan
+RUN groupadd -g 1000 www && \
+    useradd -u 1000 -ms /bin/bash -g www www
+
+# Set working directory
+WORKDIR /var/www
+
+# Copy existing application directory permissions
+COPY --chown=www:www ./src /var/www
+
+USER www
+
+EXPOSE 9000
+CMD ["php-fpm"]

@@ -1,0 +1,4 @@
+# Ignore files that contain sensitive information such as database credentials and API keys
+
+.env
+.idea/*

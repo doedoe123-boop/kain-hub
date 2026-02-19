@@ -1,0 +1,8 @@
+.git
+.github
+*.md
+node_modules
+src/node_modules
+src/vendor
+src/storage/logs/*.log
+src/.env
