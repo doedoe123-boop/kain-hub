@@ -5,9 +5,12 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\StoreResource\Pages;
 use App\Mail\StoreApproved;
 use App\Models\Store;
+use App\PhilippineIdType;
 use App\StoreStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -61,6 +64,99 @@ class StoreResource extends Resource
                             ->required()
                             ->disabled(),
                     ]),
+                Forms\Components\Section::make('Verification Documents')
+                    ->schema([
+                        Forms\Components\TextInput::make('id_type')
+                            ->label('ID Type')
+                            ->formatStateUsing(fn (?string $state): string => PhilippineIdType::tryFrom($state ?? '')?->label() ?? ($state ?? '—'))
+                            ->disabled(),
+                        Forms\Components\TextInput::make('id_number')
+                            ->label('ID Number')
+                            ->disabled(),
+                        Forms\Components\Placeholder::make('business_permit_link')
+                            ->label('Business Permit')
+                            ->content(function (Store $record): string {
+                                if (! $record->business_permit) {
+                                    return 'No document uploaded';
+                                }
+
+                                return $record->business_permit;
+                            }),
+                    ])->columns(2)
+                    ->collapsible(),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Store Details')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name'),
+                        Infolists\Components\TextEntry::make('slug'),
+                        Infolists\Components\TextEntry::make('description')
+                            ->columnSpanFull(),
+                        Infolists\Components\TextEntry::make('status')
+                            ->badge()
+                            ->color(fn (StoreStatus $state): string => match ($state) {
+                                StoreStatus::Pending => 'warning',
+                                StoreStatus::Approved => 'success',
+                                StoreStatus::Suspended => 'danger',
+                            }),
+                        Infolists\Components\TextEntry::make('commission_rate')
+                            ->suffix('%'),
+                    ])->columns(2),
+                Infolists\Components\Section::make('Owner')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('owner.name')
+                            ->label('Name'),
+                        Infolists\Components\TextEntry::make('owner.email')
+                            ->label('Email'),
+                        Infolists\Components\TextEntry::make('owner.phone')
+                            ->label('Phone')
+                            ->default('—'),
+                    ])->columns(3),
+                Infolists\Components\Section::make('Address')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('address.line_one')
+                            ->label('Street'),
+                        Infolists\Components\TextEntry::make('address.city')
+                            ->label('City'),
+                        Infolists\Components\TextEntry::make('address.postcode')
+                            ->label('Postcode'),
+                    ])->columns(3),
+                Infolists\Components\Section::make('Verification Documents')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('id_type')
+                            ->label('ID Type')
+                            ->formatStateUsing(fn (?string $state): string => PhilippineIdType::tryFrom($state ?? '')?->label() ?? '—'),
+                        Infolists\Components\TextEntry::make('id_number')
+                            ->label('ID Number')
+                            ->default('—'),
+                        Infolists\Components\TextEntry::make('business_permit')
+                            ->label('Business Permit')
+                            ->formatStateUsing(function (?string $state): string {
+                                if (! $state) {
+                                    return 'No document uploaded';
+                                }
+
+                                return basename($state);
+                            })
+                            ->url(fn (Store $record): ?string => $record->business_permit
+                                ? route('admin.stores.document', ['store' => $record, 'field' => 'business_permit'])
+                                : null)
+                            ->openUrlInNewTab()
+                            ->color('primary'),
+                    ])->columns(3),
+                Infolists\Components\Section::make('Timestamps')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->dateTime(),
+                        Infolists\Components\TextEntry::make('updated_at')
+                            ->dateTime(),
+                    ])->columns(2)
+                    ->collapsed(),
             ]);
     }
 

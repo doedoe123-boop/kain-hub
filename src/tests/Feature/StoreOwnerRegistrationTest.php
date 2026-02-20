@@ -112,7 +112,7 @@ it('validates unique email', function () {
         ->set('city', 'City')
         ->set('postcode', '1000')
         ->set('idType', 'national_id')
-        ->set('idNumber', '123456')
+        ->set('idNumber', '1234-5678-9012-3456')
         ->set('businessPermit', $file)
         ->call('register')
         ->assertHasErrors('email');
@@ -135,8 +135,8 @@ it('validates unique slug', function () {
         ->set('addressLine', '123 St')
         ->set('city', 'City')
         ->set('postcode', '1000')
-        ->set('idType', 'national_id')
-        ->set('idNumber', '123456')
+        ->set('idType', 'sss')
+        ->set('idNumber', '01-2345678-9')
         ->set('businessPermit', $file)
         ->call('register')
         ->assertHasErrors('slug');
@@ -174,6 +174,119 @@ it('validates business permit max file size', function () {
         ->set('businessPermit', $file)
         ->call('register')
         ->assertHasErrors('businessPermit');
+});
+
+it('rejects invalid id type', function () {
+    $file = UploadedFile::fake()->create('permit.pdf', 1024, 'application/pdf');
+
+    Livewire::test(StoreOwnerRegistration::class)
+        ->set('name', 'Test User')
+        ->set('email', 'test@example.com')
+        ->set('phone', '09171234567')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('storeName', 'My Store')
+        ->set('slug', 'my-store')
+        ->set('description', 'A great store')
+        ->set('addressLine', '123 St')
+        ->set('city', 'City')
+        ->set('postcode', '1000')
+        ->set('idType', 'invalid_type')
+        ->set('idNumber', '123456')
+        ->set('businessPermit', $file)
+        ->call('register')
+        ->assertHasErrors('idType');
+});
+
+it('validates SSS ID number format', function () {
+    $file = UploadedFile::fake()->create('permit.pdf', 1024, 'application/pdf');
+
+    // Invalid format
+    Livewire::test(StoreOwnerRegistration::class)
+        ->set('name', 'Test User')
+        ->set('email', 'test@example.com')
+        ->set('phone', '09171234567')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('storeName', 'My Store')
+        ->set('slug', 'my-store')
+        ->set('description', 'A great store')
+        ->set('addressLine', '123 St')
+        ->set('city', 'City')
+        ->set('postcode', '1000')
+        ->set('idType', 'sss')
+        ->set('idNumber', '12345')
+        ->set('businessPermit', $file)
+        ->call('register')
+        ->assertHasErrors('idNumber');
+});
+
+it('accepts valid SSS ID number format', function () {
+    $file = UploadedFile::fake()->create('permit.pdf', 1024, 'application/pdf');
+
+    Livewire::test(StoreOwnerRegistration::class)
+        ->set('name', 'Test User')
+        ->set('email', 'sss-test@example.com')
+        ->set('phone', '09171234567')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('storeName', 'SSS Test Store')
+        ->set('slug', 'sss-test-store')
+        ->set('description', 'A great store')
+        ->set('addressLine', '123 St')
+        ->set('city', 'City')
+        ->set('postcode', '1000')
+        ->set('idType', 'sss')
+        ->set('idNumber', '01-2345678-9')
+        ->set('businessPermit', $file)
+        ->call('register')
+        ->assertHasNoErrors('idNumber')
+        ->assertRedirect(route('register.store-owner.success'));
+});
+
+it('validates National ID format', function () {
+    $file = UploadedFile::fake()->create('permit.pdf', 1024, 'application/pdf');
+
+    Livewire::test(StoreOwnerRegistration::class)
+        ->set('name', 'Test User')
+        ->set('email', 'natid@example.com')
+        ->set('phone', '09171234567')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('storeName', 'NatID Store')
+        ->set('slug', 'natid-store')
+        ->set('description', 'A great store')
+        ->set('addressLine', '123 St')
+        ->set('city', 'City')
+        ->set('postcode', '1000')
+        ->set('idType', 'national_id')
+        ->set('idNumber', 'ABCD1234')
+        ->set('businessPermit', $file)
+        ->call('register')
+        ->assertHasErrors('idNumber');
+});
+
+it('validates Passport format', function () {
+    $file = UploadedFile::fake()->create('permit.pdf', 1024, 'application/pdf');
+
+    // Invalid: all digits
+    Livewire::test(StoreOwnerRegistration::class)
+        ->set('name', 'Test User')
+        ->set('email', 'passport@example.com')
+        ->set('phone', '09171234567')
+        ->set('password', 'password123')
+        ->set('password_confirmation', 'password123')
+        ->set('storeName', 'Passport Store')
+        ->set('slug', 'passport-store')
+        ->set('description', 'A great store')
+        ->set('addressLine', '123 St')
+        ->set('city', 'City')
+        ->set('postcode', '1000')
+        ->set('idType', 'passport')
+        ->set('idNumber', '12345678')
+        ->set('businessPermit', $file)
+        ->call('register')
+        ->assertHasErrors('idNumber');
 });
 
 // --- Success Page ---

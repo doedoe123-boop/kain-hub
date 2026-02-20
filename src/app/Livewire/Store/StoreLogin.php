@@ -20,6 +20,27 @@ class StoreLogin extends Component
     public bool $remember = false;
 
     /**
+     * Resolve the current store from the subdomain.
+     */
+    private function resolveCurrentStore(): ?Store
+    {
+        if (app()->bound('currentStore')) {
+            return app('currentStore');
+        }
+
+        $host = request()->getHost();
+        $domain = config('app.domain');
+
+        if (! str_ends_with($host, '.' . $domain)) {
+            return null;
+        }
+
+        $slug = str_replace('.' . $domain, '', $host);
+
+        return Store::where('slug', $slug)->first();
+    }
+
+    /**
      * Attempt to authenticate the store owner.
      */
     public function authenticate(): void
@@ -33,9 +54,14 @@ class StoreLogin extends Component
         }
 
         $user = Auth::user();
+        $store = $this->resolveCurrentStore();
 
-        /** @var Store $store */
-        $store = app('currentStore');
+        if (! $store) {
+            Auth::logout();
+            $this->addError('email', 'Unable to determine which store you are accessing.');
+
+            return;
+        }
 
         // Verify the authenticated user owns this store
         if (! $user->isStoreOwner() || $user->store?->id !== $store->id) {

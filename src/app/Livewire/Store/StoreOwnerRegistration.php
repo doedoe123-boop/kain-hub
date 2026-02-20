@@ -4,6 +4,7 @@ namespace App\Livewire\Store;
 
 use App\Models\Store;
 use App\Models\User;
+use App\PhilippineIdType;
 use App\UserRole;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
@@ -57,7 +58,7 @@ class StoreOwnerRegistration extends Component
 
     // --- KYC ---
 
-    #[Validate('required|string|max:100')]
+    #[Validate('required|string|in:passport,drivers_license,national_id,sss,philhealth,postal_id')]
     public string $idType = '';
 
     #[Validate('required|string|max:100')]
@@ -75,11 +76,30 @@ class StoreOwnerRegistration extends Component
     }
 
     /**
+     * Get the format hint for the currently selected ID type.
+     */
+    public function getIdFormatHintProperty(): string
+    {
+        $idType = PhilippineIdType::tryFrom($this->idType);
+
+        return $idType ? $idType->formatHint() : '';
+    }
+
+    /**
      * Register the store owner and create their store.
      */
     public function register(): void
     {
         $this->validate();
+
+        // Validate ID number format based on selected type
+        $idType = PhilippineIdType::tryFrom($this->idType);
+
+        if ($idType && ! preg_match($idType->pattern(), $this->idNumber)) {
+            $this->addError('idNumber', "Invalid format for {$idType->label()}. Expected: {$idType->formatHint()}");
+
+            return;
+        }
 
         // Store the uploaded business permit
         $permitPath = $this->businessPermit->store('business-permits', 'local');

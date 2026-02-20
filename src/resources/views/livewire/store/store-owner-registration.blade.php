@@ -119,15 +119,12 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label for="idType" class="block text-sm font-medium text-gray-700">ID Type</label>
-                        <select wire:model="idType" id="idType" required
+                        <select wire:model.live="idType" id="idType" required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border text-sm">
                             <option value="">Select ID type...</option>
-                            <option value="passport">Passport</option>
-                            <option value="drivers_license">Driver's License</option>
-                            <option value="national_id">National ID</option>
-                            <option value="sss">SSS ID</option>
-                            <option value="philhealth">PhilHealth ID</option>
-                            <option value="postal_id">Postal ID</option>
+                            @foreach(\App\PhilippineIdType::cases() as $type)
+                                <option value="{{ $type->value }}">{{ $type->label() }}</option>
+                            @endforeach
                         </select>
                         @error('idType') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
@@ -135,7 +132,10 @@
                         <label for="idNumber" class="block text-sm font-medium text-gray-700">ID Number</label>
                         <input wire:model="idNumber" type="text" id="idNumber" required
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border text-sm"
-                            placeholder="Enter your ID number">
+                            placeholder="{{ $this->idFormatHint ?: 'Select an ID type first' }}">
+                        @if($this->idFormatHint)
+                            <p class="mt-1 text-xs text-gray-500">Format: {{ $this->idFormatHint }}</p>
+                        @endif
                         @error('idNumber') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>

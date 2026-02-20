@@ -80,4 +80,21 @@ Route::middleware('auth')->group(function () {
             return view('store.dashboard');
         })->name('store.pending');
     });
+
+    // Admin-only: download store documents
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/stores/{store}/document/{field}', function (\App\Models\Store $store, string $field) {
+            if (! in_array($field, ['business_permit'])) {
+                abort(404);
+            }
+
+            $path = $store->{$field};
+
+            if (! $path || ! \Illuminate\Support\Facades\Storage::disk('local')->exists($path)) {
+                abort(404, 'Document not found.');
+            }
+
+            return \Illuminate\Support\Facades\Storage::disk('local')->download($path);
+        })->name('admin.stores.document');
+    });
 });
