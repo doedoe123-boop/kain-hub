@@ -45,20 +45,56 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Configure Spatie roles with Lunar permissions.
+     *
+     * Roles and permissions are created for the 'web' guard (used by our User model)
+     * AND the 'staff' guard (used by Lunar's Staff model internally).
      */
     private function seedRolesAndPermissions(): void
     {
-        $guard = 'web';
+        $webGuard = 'web';
+        $staffGuard = 'staff';
 
-        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => $guard]);
-        Role::firstOrCreate(['name' => 'staff', 'guard_name' => $guard]);
-        $storeOwnerRole = Role::firstOrCreate(['name' => 'store_owner', 'guard_name' => $guard]);
+        // Web guard roles (for User model — store owners, admins, staff)
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => $webGuard]);
+        $staffRole = Role::firstOrCreate(['name' => 'staff', 'guard_name' => $webGuard]);
+        $storeOwnerRole = Role::firstOrCreate(['name' => 'store_owner', 'guard_name' => $webGuard]);
 
-        $allPermissions = Permission::where('guard_name', $guard)->get();
-        $adminRole->syncPermissions($allPermissions);
+        $webPermissions = Permission::where('guard_name', $webGuard)->get();
+        $adminRole->syncPermissions($webPermissions);
+        $storeOwnerRole->syncPermissions($webPermissions);
 
-        $storeOwnerRole->syncPermissions($allPermissions);
+        // Staff get limited permissions (no settings, no staff management)
+        $staffPermissions = $webPermissions->filter(
+            fn (Permission $p) => in_array($p->name, self::STAFF_PERMISSIONS)
+        );
+        $staffRole->syncPermissions($staffPermissions);
+
+        // Lunar's internal staff guard (for Staff model compatibility)
+        $staffAdminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => $staffGuard]);
+        Role::firstOrCreate(['name' => 'staff', 'guard_name' => $staffGuard]);
+
+        foreach ($webPermissions as $perm) {
+            Permission::firstOrCreate([
+                'name' => $perm->name,
+                'guard_name' => $staffGuard,
+            ]);
+        }
+
+        $lunarStaffPermissions = Permission::where('guard_name', $staffGuard)->get();
+        $staffAdminRole->syncPermissions($lunarStaffPermissions);
     }
+
+    /**
+     * Permissions granted to store staff members.
+     *
+     * @var list<string>
+     */
+    private const STAFF_PERMISSIONS = [
+        'catalog:manage-products',
+        'catalog:manage-collections',
+        'sales:manage-orders',
+        'sales:manage-customers',
+    ];
 
     /**
      * Assign the store_owner Spatie role to all seeded store owners.

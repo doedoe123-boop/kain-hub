@@ -63,8 +63,18 @@ class StoreLogin extends Component
             return;
         }
 
-        // Verify the authenticated user owns this store
-        if (! $user->isStoreOwner() || $user->store?->id !== $store->id) {
+        // Verify the authenticated user has access to this store
+        $hasAccess = false;
+
+        if ($user->isStoreOwner() && $user->store?->id === $store->id) {
+            $hasAccess = true;
+        }
+
+        if ($user->isStaff() && $user->store_id === $store->id) {
+            $hasAccess = true;
+        }
+
+        if (! $hasAccess) {
             Auth::logout();
             session()->invalidate();
             session()->regenerateToken();

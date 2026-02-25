@@ -63,4 +63,14 @@ class UserFactory extends Factory
             'role' => UserRole::StoreOwner,
         ]);
     }
+
+    /**
+     * Indicate the user is a staff member.
+     */
+    public function staff(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => UserRole::Staff,
+        ]);
+    }
 }

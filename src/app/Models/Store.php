@@ -67,6 +67,14 @@ class Store extends Model
     }
 
     /**
+     * Return the staff members for this store.
+     */
+    public function staffMembers(): HasMany
+    {
+        return $this->hasMany(User::class, 'store_id');
+    }
+
+    /**
      * Return the orders relationship.
      */
     public function orders(): HasMany
