@@ -1,7 +1,7 @@
-<x-layouts.app :title="$store->name.' — KainHub Supplier'">
+<x-layouts.app :title="$store->name.' — NegosyoHub Supplier'">
 
     {{-- Breadcrumb --}}
-    <nav class="text-xs text-slate-400 mb-6 -mt-2">
+    <nav class="text-xs text-slate-400 mb-6 mt-4">
         <a href="{{ route('home') }}" class="hover:text-slate-600 transition-colors">Suppliers</a>
         <span class="mx-1.5">/</span>
         <span class="text-slate-600">{{ $store->name }}</span>
