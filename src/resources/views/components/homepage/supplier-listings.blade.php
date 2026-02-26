@@ -118,7 +118,7 @@
                         <p class="mt-2 text-sm font-medium text-slate-600">No suppliers listed yet</p>
                         <p class="mt-1 text-xs text-slate-400">Be the first to register your business on the platform.</p>
                         @guest
-                            <a href="{{ route('register.store-owner') }}" class="inline-flex items-center mt-3 px-4 py-1.5 text-xs font-semibold rounded-sm text-white bg-sky-600 hover:bg-sky-700 transition-colors">
+                            <a href="{{ route('register.sector') }}" class="inline-flex items-center mt-3 px-4 py-1.5 text-xs font-semibold rounded-sm text-white bg-sky-600 hover:bg-sky-700 transition-colors">
                                 Register as Supplier
                             </a>
                         @endguest

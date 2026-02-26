@@ -79,6 +79,6 @@
 
     <p class="mt-3 text-center text-sm text-gray-600">
         Want to open a store?
-        <a href="{{ route('register.store-owner') }}" class="text-indigo-600 hover:text-indigo-500 font-medium">Register as a Store Owner</a>
+        <a href="{{ route('register.sector') }}" class="text-indigo-600 hover:text-indigo-500 font-medium">Register as a Store Owner</a>
     </p>
 </div>

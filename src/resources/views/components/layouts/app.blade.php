@@ -25,10 +25,10 @@
                     <span class="text-slate-500">{{ auth()->user()->email }}</span>
                     @if (auth()->user()->isCustomer())
                         <span class="text-slate-700">|</span>
-                        <a href="{{ route('register.store-owner') }}" class="hover:text-white transition-colors">Become a Supplier</a>
+                        <a href="{{ route('register.sector') }}" class="hover:text-white transition-colors">Become a Supplier</a>
                     @endif
                 @else
-                    <a href="{{ route('register.store-owner') }}" class="hover:text-white transition-colors">Become a Supplier</a>
+                    <a href="{{ route('register.sector') }}" class="hover:text-white transition-colors">Become a Supplier</a>
                 @endauth
             </div>
         </div>
@@ -49,7 +49,7 @@
                     </a>
 
                     <div class="hidden md:flex items-center gap-0.5 text-xs">
-                        <a href="/" class="text-slate-300 hover:text-white hover:bg-slate-700 px-2.5 py-1 rounded-sm transition-colors font-medium">Industries</a>
+                        <a href="{{ route('sector.browse') }}" class="text-slate-300 hover:text-white hover:bg-slate-700 px-2.5 py-1 rounded-sm transition-colors font-medium">Industries</a>
                         <a href="/" class="text-slate-300 hover:text-white hover:bg-slate-700 px-2.5 py-1 rounded-sm transition-colors font-medium">Suppliers</a>
                         <a href="#" class="text-slate-300 hover:text-white hover:bg-slate-700 px-2.5 py-1 rounded-sm transition-colors font-medium">Gov-Compliant</a>
                         <a href="#" class="text-slate-300 hover:text-white hover:bg-slate-700 px-2.5 py-1 rounded-sm transition-colors font-medium">Bulk Deals</a>
@@ -94,7 +94,7 @@
                             </form>
                         </div>
                     @else
-                        <a href="{{ route('register.store-owner') }}"
+                        <a href="{{ route('register.sector') }}"
                             class="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-sm text-white bg-sky-600 hover:bg-sky-700 transition-colors">
                             Register as Supplier
                         </a>
@@ -130,7 +130,7 @@
                     <h3 class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2.5">Platform</h3>
                     <ul class="space-y-1 text-[11px] text-slate-400">
                         <li><a href="/" class="hover:text-white transition-colors">Browse Suppliers</a></li>
-                        <li><a href="{{ route('register.store-owner') }}" class="hover:text-white transition-colors">Register as Supplier</a></li>
+                        <li><a href="{{ route('register.sector') }}" class="hover:text-white transition-colors">Register as Supplier</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">RFQ Board</a></li>
                         <li><a href="#" class="hover:text-white transition-colors">Market Insights</a></li>
                     </ul>

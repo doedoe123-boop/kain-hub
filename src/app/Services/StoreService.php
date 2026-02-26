@@ -29,6 +29,7 @@ class StoreService
             'description' => $data['description'] ?? null,
             'logo' => $data['logo'] ?? null,
             'address' => $data['address'] ?? null,
+            'sector' => $data['sector'] ?? null,
             'commission_rate' => $data['commission_rate'] ?? 15.00,
             'status' => StoreStatus::Pending,
         ]);

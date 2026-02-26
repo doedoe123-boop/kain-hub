@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\IndustrySector;
 use App\StoreStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,8 +20,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?string $id_type
  * @property ?string $id_number
  * @property ?string $business_permit
+ * @property ?array $compliance_documents
  * @property float $commission_rate
  * @property StoreStatus $status
+ * @property ?IndustrySector $sector
  * @property ?\Illuminate\Support\Carbon $suspended_at
  * @property ?string $suspension_reason
  * @property ?\Illuminate\Support\Carbon $created_at
@@ -44,8 +47,10 @@ class Store extends Model
         'id_type',
         'id_number',
         'business_permit',
+        'compliance_documents',
         'commission_rate',
         'status',
+        'sector',
         'suspended_at',
         'suspension_reason',
     ];
@@ -57,8 +62,10 @@ class Store extends Model
     {
         return [
             'address' => 'array',
+            'compliance_documents' => 'array',
             'commission_rate' => 'decimal:2',
             'status' => StoreStatus::class,
+            'sector' => IndustrySector::class,
             'suspended_at' => 'datetime',
         ];
     }

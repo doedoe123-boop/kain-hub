@@ -3,6 +3,12 @@
     <div class="text-center mb-8">
         <h2 class="text-2xl font-bold text-gray-900">Register Your Store</h2>
         <p class="mt-2 text-sm text-gray-500">Complete the steps below to submit your store application.</p>
+        @if ($this->sectorEnum)
+            <div class="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200">
+                <span class="text-xs font-medium text-indigo-700">{{ $this->sectorEnum->label() }}</span>
+                <a href="{{ route('register.sector') }}" class="text-xs text-indigo-500 hover:text-indigo-700 underline">Change</a>
+            </div>
+        @endif
     </div>
 
     {{-- Step Progress Indicator --}}
@@ -14,7 +20,7 @@
                     <button
                         wire:click="goToStep({{ $num }})"
                         @class([
-                            'w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200 border-2',
+                            'w-9 h-9 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-200 border-2',
                             'bg-indigo-600 border-indigo-600 text-white' => $step >= $num,
                             'bg-white border-gray-300 text-gray-400' => $step < $num,
                             'cursor-pointer hover:border-indigo-400' => $num < $step,
@@ -23,7 +29,7 @@
                         @if($num > $step) disabled @endif
                     >
                         @if ($step > $num)
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                             </svg>
                         @else
@@ -32,21 +38,21 @@
                     </button>
                     {{-- Step label --}}
                     <span @class([
-                        'mt-2 text-xs font-medium',
+                        'mt-2 text-[10px] font-medium',
                         'text-indigo-600' => $step >= $num,
                         'text-gray-400' => $step < $num,
                     ])>{{ $label }}</span>
 
                     {{-- Connector line --}}
                     @if ($num < count($this->stepLabels))
-                        <div class="absolute top-5 left-[calc(50%+24px)] right-[calc(-50%+24px)] h-0.5 {{ $step > $num ? 'bg-indigo-600' : 'bg-gray-200' }} transition-colors duration-200"></div>
+                        <div class="absolute top-[18px] left-[calc(50%+22px)] right-[calc(-50%+22px)] h-0.5 {{ $step > $num ? 'bg-indigo-600' : 'bg-gray-200' }} transition-colors duration-200"></div>
                     @endif
                 </div>
             @endforeach
         </div>
     </div>
 
-    <form wire:submit="{{ $step === 4 ? 'register' : 'nextStep' }}">
+    <form wire:submit="{{ $step === 5 ? 'register' : 'nextStep' }}">
         {{-- Step 1: Account Information --}}
         @if ($step === 1)
             <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 shadow-sm">
@@ -116,7 +122,7 @@
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Store Information</h3>
-                        <p class="text-sm text-gray-500">Tell us about your restaurant or food business.</p>
+                        <p class="text-sm text-gray-500">Tell us about your business.</p>
                     </div>
                 </div>
 
@@ -145,7 +151,7 @@
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Store Description</label>
                         <textarea wire:model="description" id="description" rows="4"
                             class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm px-4 py-2.5"
-                            placeholder="Tell customers what makes your restaurant special..."></textarea>
+                            placeholder="Tell customers what makes your business special..."></textarea>
                         @error('description') <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -196,18 +202,18 @@
             </div>
         @endif
 
-        {{-- Step 4: Verification Documents --}}
+        {{-- Step 4: Identity Verification --}}
         @if ($step === 4)
             <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 shadow-sm">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center">
                         <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
                         </svg>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Verification Documents</h3>
-                        <p class="text-sm text-gray-500">Upload your ID and business permit for verification.</p>
+                        <h3 class="text-lg font-semibold text-gray-900">Identity Verification</h3>
+                        <p class="text-sm text-gray-500">Provide a valid government-issued ID for verification.</p>
                     </div>
                 </div>
 
@@ -235,40 +241,99 @@
                             @error('idNumber') <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p> @enderror
                         </div>
                     </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- Step 5: Sector Compliance Documents --}}
+        @if ($step === 5)
+            <div class="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 shadow-sm">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                        </svg>
+                    </div>
                     <div>
-                        <label for="businessPermit" class="block text-sm font-medium text-gray-700 mb-1">Business Permit / DTI Certificate</label>
-                        <div class="mt-1 flex justify-center rounded-lg border-2 border-dashed border-gray-300 px-6 py-8 hover:border-indigo-400 transition-colors">
-                            <div class="text-center">
-                                <svg class="mx-auto h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                                </svg>
-                                <div class="mt-3 flex text-sm text-gray-600">
-                                    <label for="businessPermit" class="relative cursor-pointer rounded-md font-semibold text-indigo-600 hover:text-indigo-500">
-                                        <span>Upload a file</span>
-                                        <input wire:model="businessPermit" type="file" id="businessPermit" accept=".pdf,.jpg,.jpeg,.png" class="sr-only">
+                        <h3 class="text-lg font-semibold text-gray-900">Compliance Documents</h3>
+                        <p class="text-sm text-gray-500">
+                            Upload the required documents for the <span class="font-semibold text-indigo-600">{{ $this->sectorEnum?->label() }}</span> sector.
+                        </p>
+                    </div>
+                </div>
+
+                {{-- Info Banner --}}
+                <div class="mb-6 rounded-lg bg-amber-50 border border-amber-200 p-3">
+                    <div class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                        </svg>
+                        <div>
+                            <p class="text-xs text-amber-800 font-medium">Documents marked with <span class="text-red-600">*</span> are required.</p>
+                            <p class="text-xs text-amber-700 mt-0.5">Accepted formats: PDF, JPG, JPEG, PNG (max 5MB each).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    @foreach ($this->sectorDocuments as $doc)
+                        <div class="rounded-lg border {{ $doc['required'] ? 'border-gray-200' : 'border-dashed border-gray-200' }} p-4">
+                            <div class="flex items-start justify-between gap-3 mb-2">
+                                <div>
+                                    <label for="doc_{{ $doc['key'] }}" class="text-sm font-medium text-gray-700">
+                                        {{ $doc['label'] }}
+                                        @if ($doc['required'])
+                                            <span class="text-red-500">*</span>
+                                        @else
+                                            <span class="text-xs text-gray-400 font-normal">(Optional)</span>
+                                        @endif
                                     </label>
-                                    <p class="pl-1">or drag and drop</p>
+                                    <p class="text-xs text-gray-500 mt-0.5">{{ $doc['description'] }}</p>
                                 </div>
-                                <p class="mt-1 text-xs text-gray-500">PDF, JPG, or PNG up to 5MB</p>
-                                @if ($businessPermit)
-                                    <p class="mt-2 text-sm text-green-600 font-medium">
-                                        <svg class="inline w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                @if (isset($complianceFiles[$doc['key']]) && $complianceFiles[$doc['key']])
+                                    <span class="inline-flex items-center gap-1 text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full flex-shrink-0">
+                                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                         </svg>
-                                        File selected
-                                    </p>
+                                        Uploaded
+                                    </span>
                                 @endif
-                                <div wire:loading wire:target="businessPermit" class="mt-2 text-sm text-indigo-600">
-                                    <svg class="inline w-4 h-4 mr-1 animate-spin" fill="none" viewBox="0 0 24 24">
+                            </div>
+                            <div class="mt-2">
+                                <label for="doc_{{ $doc['key'] }}" class="flex items-center justify-center w-full rounded-lg border-2 border-dashed border-gray-300 px-4 py-4 cursor-pointer hover:border-indigo-400 transition-colors">
+                                    <div class="flex items-center gap-3 text-sm">
+                                        <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                                        </svg>
+                                        <span class="text-gray-600">
+                                            @if (isset($complianceFiles[$doc['key']]) && $complianceFiles[$doc['key']])
+                                                Change file
+                                            @else
+                                                Choose file to upload
+                                            @endif
+                                        </span>
+                                    </div>
+                                    <input
+                                        wire:model="complianceFiles.{{ $doc['key'] }}"
+                                        type="file"
+                                        id="doc_{{ $doc['key'] }}"
+                                        accept=".pdf,.jpg,.jpeg,.png"
+                                        class="sr-only"
+                                    >
+                                </label>
+                                <div wire:loading wire:target="complianceFiles.{{ $doc['key'] }}" class="mt-2 text-xs text-indigo-600">
+                                    <svg class="inline w-3 h-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24">
                                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                                     </svg>
                                     Uploading...
                                 </div>
                             </div>
+                            @error("complianceFiles.{$doc['key']}")
+                                <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
-                        @error('businessPermit') <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p> @enderror
-                    </div>
+                    @endforeach
                 </div>
             </div>
         @endif
@@ -288,7 +353,7 @@
             </div>
 
             <div>
-                @if ($step < 4)
+                @if ($step < 5)
                     <button type="submit"
                         class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 shadow-sm transition-colors duration-150">
                         Continue

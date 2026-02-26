@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\StoreResource\Pages;
+use App\IndustrySector;
 use App\Mail\StoreApproved;
 use App\Mail\StoreReinstated;
 use App\Mail\StoreSuspended;
@@ -51,6 +52,12 @@ class StoreResource extends Resource
                                 fn (StoreStatus $status) => [$status->value => ucfirst($status->value)]
                             ))
                             ->required(),
+                        Forms\Components\Select::make('sector')
+                            ->label('Industry Sector')
+                            ->options(collect(IndustrySector::cases())->mapWithKeys(
+                                fn (IndustrySector $sector) => [$sector->value => $sector->label()]
+                            ))
+                            ->searchable(),
                         Forms\Components\TextInput::make('commission_rate')
                             ->numeric()
                             ->suffix('%')
@@ -108,6 +115,21 @@ class StoreResource extends Resource
                                 StoreStatus::Approved => 'success',
                                 StoreStatus::Suspended => 'danger',
                             }),
+                        Infolists\Components\TextEntry::make('sector')
+                            ->label('Industry Sector')
+                            ->badge()
+                            ->formatStateUsing(fn (?IndustrySector $state): string => $state?->label() ?? '—')
+                            ->color(fn (?IndustrySector $state): string => match ($state) {
+                                IndustrySector::Construction => 'warning',
+                                IndustrySector::Technology => 'info',
+                                IndustrySector::FoodAndBeverage => 'warning',
+                                IndustrySector::Healthcare => 'danger',
+                                IndustrySector::Chemicals => 'gray',
+                                IndustrySector::Logistics => 'info',
+                                IndustrySector::RealEstate => 'success',
+                                IndustrySector::Agriculture => 'success',
+                                null => 'gray',
+                            }),
                         Infolists\Components\TextEntry::make('commission_rate')
                             ->suffix('%'),
                     ])->columns(2),
@@ -153,6 +175,36 @@ class StoreResource extends Resource
                             ->openUrlInNewTab()
                             ->color('primary'),
                     ])->columns(3),
+                Infolists\Components\Section::make('Compliance Documents')
+                    ->schema(function (Store $record): array {
+                        $docs = $record->compliance_documents ?? [];
+
+                        if (empty($docs)) {
+                            return [
+                                Infolists\Components\TextEntry::make('no_compliance_docs')
+                                    ->label('')
+                                    ->default('No compliance documents uploaded.')
+                                    ->columnSpanFull(),
+                            ];
+                        }
+
+                        $entries = [];
+
+                        foreach ($docs as $key => $doc) {
+                            $entries[] = Infolists\Components\TextEntry::make("compliance_documents.{$key}.label")
+                                ->label($doc['label'] ?? $key)
+                                ->default(basename($doc['path'] ?? ''))
+                                ->badge()
+                                ->color($doc['required'] ?? false ? 'success' : 'gray')
+                                ->icon('heroicon-o-document-check');
+                        }
+
+                        return $entries;
+                    })
+                    ->columns(3)
+                    ->icon('heroicon-o-shield-check')
+                    ->iconColor('info')
+                    ->visible(fn (Store $record): bool => ! empty($record->compliance_documents)),
                 Infolists\Components\Section::make('Suspension Details')
                     ->schema([
                         Infolists\Components\TextEntry::make('suspension_reason')
@@ -200,6 +252,22 @@ class StoreResource extends Resource
                         StoreStatus::Suspended => 'danger',
                     })
                     ->sortable(),
+                Tables\Columns\TextColumn::make('sector')
+                    ->label('Sector')
+                    ->badge()
+                    ->formatStateUsing(fn (?IndustrySector $state): string => $state?->label() ?? '—')
+                    ->color(fn (?IndustrySector $state): string => match ($state) {
+                        IndustrySector::Construction => 'warning',
+                        IndustrySector::Technology => 'info',
+                        IndustrySector::FoodAndBeverage => 'warning',
+                        IndustrySector::Healthcare => 'danger',
+                        IndustrySector::Chemicals => 'gray',
+                        IndustrySector::Logistics => 'info',
+                        IndustrySector::RealEstate => 'success',
+                        IndustrySector::Agriculture => 'success',
+                        null => 'gray',
+                    })
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('commission_rate')
                     ->suffix('%')
                     ->sortable(),
@@ -212,6 +280,11 @@ class StoreResource extends Resource
                 Tables\Filters\SelectFilter::make('status')
                     ->options(collect(StoreStatus::cases())->mapWithKeys(
                         fn (StoreStatus $status) => [$status->value => ucfirst($status->value)]
+                    )),
+                Tables\Filters\SelectFilter::make('sector')
+                    ->label('Industry Sector')
+                    ->options(collect(IndustrySector::cases())->mapWithKeys(
+                        fn (IndustrySector $sector) => [$sector->value => $sector->label()]
                     )),
             ])
             ->actions([
@@ -295,7 +368,12 @@ class StoreResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->groups([
+                Tables\Grouping\Group::make('sector')
+                    ->label('Industry Sector')
+                    ->getTitleFromRecordUsing(fn (Store $record): string => $record->sector?->label() ?? 'Unclassified'),
+            ]);
     }
 
     public static function getRelations(): array

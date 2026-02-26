@@ -18,7 +18,7 @@
                 NegosyoHub
             </a>
         </div>
-        <div class="w-full max-w-3xl">
+        <div class="w-full {{ $maxWidth ?? 'max-w-3xl' }}">
             {{ $slot }}
         </div>
     </div>

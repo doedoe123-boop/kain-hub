@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Store;
 
+use App\IndustrySector;
 use App\Models\Store;
 use App\Models\User;
 use App\PhilippineIdType;
@@ -20,14 +21,19 @@ class StoreOwnerRegistration extends Component
     use WithFileUploads;
 
     /**
-     * Current step of the multi-step form (1-4).
+     * The selected industry sector (from route parameter).
+     */
+    public string $sector = '';
+
+    /**
+     * Current step of the multi-step form (1-5).
      */
     public int $step = 1;
 
     /**
      * Total number of steps.
      */
-    public const TOTAL_STEPS = 4;
+    public const TOTAL_STEPS = 5;
 
     // --- Step 1: Account Info ---
 
@@ -67,7 +73,7 @@ class StoreOwnerRegistration extends Component
     #[Validate('required|string|max:20')]
     public string $postcode = '';
 
-    // --- Step 4: KYC / Verification ---
+    // --- Step 4: Identity Verification ---
 
     #[Validate('required|string|in:passport,drivers_license,national_id,sss,philhealth,postal_id')]
     public string $idType = '';
@@ -75,8 +81,57 @@ class StoreOwnerRegistration extends Component
     #[Validate('required|string|max:100')]
     public string $idNumber = '';
 
-    #[Validate('required|file|mimes:pdf,jpg,jpeg,png|max:5120')]
-    public $businessPermit = null;
+    // --- Step 5: Sector Compliance Documents ---
+
+    /** @var array<string, \Livewire\Features\SupportFileUploads\TemporaryUploadedFile|null> */
+    public array $complianceFiles = [];
+
+    /**
+     * Mount the component and accept sector from route parameter.
+     */
+    public function mount(string $sector): void
+    {
+        if (IndustrySector::tryFrom($sector)) {
+            $this->sector = $sector;
+            $this->initComplianceFiles();
+        } else {
+            $this->redirect(route('register.sector'));
+        }
+    }
+
+    /**
+     * Initialize compliance file slots based on sector requirements.
+     */
+    private function initComplianceFiles(): void
+    {
+        $sectorEnum = IndustrySector::tryFrom($this->sector);
+
+        if (! $sectorEnum) {
+            return;
+        }
+
+        foreach ($sectorEnum->requiredDocuments() as $doc) {
+            $this->complianceFiles[$doc['key']] = null;
+        }
+    }
+
+    /**
+     * Get the resolved IndustrySector enum instance.
+     */
+    public function getSectorEnumProperty(): ?IndustrySector
+    {
+        return IndustrySector::tryFrom($this->sector);
+    }
+
+    /**
+     * Get the required documents for the current sector.
+     *
+     * @return array<int, array{key: string, label: string, description: string, required: bool, mimes: string}>
+     */
+    public function getSectorDocumentsProperty(): array
+    {
+        return $this->sectorEnum?->requiredDocuments() ?? [];
+    }
 
     /**
      * Validation rules for each step.
@@ -89,8 +144,25 @@ class StoreOwnerRegistration extends Component
             1 => ['name', 'email', 'phone', 'password'],
             2 => ['storeName', 'slug', 'description'],
             3 => ['addressLine', 'city', 'postcode'],
-            4 => ['idType', 'idNumber', 'businessPermit'],
+            4 => ['idType', 'idNumber'],
+            5 => $this->getComplianceFieldNames(),
         ];
+    }
+
+    /**
+     * Get the field names for compliance documents for validation.
+     *
+     * @return list<string>
+     */
+    private function getComplianceFieldNames(): array
+    {
+        $fields = [];
+
+        foreach ($this->sectorDocuments as $doc) {
+            $fields[] = "complianceFiles.{$doc['key']}";
+        }
+
+        return $fields;
     }
 
     /**
@@ -104,8 +176,26 @@ class StoreOwnerRegistration extends Component
             1 => 'Account',
             2 => 'Store',
             3 => 'Address',
-            4 => 'Verification',
+            4 => 'Identity',
+            5 => 'Compliance',
         ];
+    }
+
+    /**
+     * Dynamic validation rules for compliance documents.
+     *
+     * @return array<string, string>
+     */
+    public function getComplianceRulesProperty(): array
+    {
+        $rules = [];
+
+        foreach ($this->sectorDocuments as $doc) {
+            $required = $doc['required'] ? 'required' : 'nullable';
+            $rules["complianceFiles.{$doc['key']}"] = "{$required}|file|mimes:{$doc['mimes']}|max:5120";
+        }
+
+        return $rules;
     }
 
     /**
@@ -140,10 +230,14 @@ class StoreOwnerRegistration extends Component
      */
     private function validateCurrentStep(): void
     {
-        $fields = $this->stepFields()[$this->step] ?? [];
-        $this->validateOnly(implode(',', $fields));
+        if ($this->step === 5) {
+            $this->validate($this->complianceRules);
 
-        // Re-validate all fields for this step
+            return;
+        }
+
+        $fields = $this->stepFields()[$this->step] ?? [];
+
         foreach ($fields as $field) {
             $this->validateOnly($field);
         }
@@ -172,7 +266,11 @@ class StoreOwnerRegistration extends Component
      */
     public function register(): void
     {
-        $this->validate();
+        // Validate steps 1-4 (attributes) + step 5 (compliance docs)
+        $this->validate(array_merge(
+            $this->rules(),
+            $this->complianceRules,
+        ));
 
         // Validate ID number format based on selected type
         $idType = PhilippineIdType::tryFrom($this->idType);
@@ -183,8 +281,20 @@ class StoreOwnerRegistration extends Component
             return;
         }
 
-        // Store the uploaded business permit
-        $permitPath = $this->businessPermit->store('business-permits', 'local');
+        // Store compliance documents
+        $compliancePaths = [];
+
+        foreach ($this->sectorDocuments as $doc) {
+            $file = $this->complianceFiles[$doc['key']] ?? null;
+
+            if ($file) {
+                $compliancePaths[$doc['key']] = [
+                    'label' => $doc['label'],
+                    'path' => $file->store("compliance/{$this->sector}", 'local'),
+                    'required' => $doc['required'],
+                ];
+            }
+        }
 
         // Create the user
         $user = User::create([
@@ -201,6 +311,7 @@ class StoreOwnerRegistration extends Component
             'name' => $this->storeName,
             'slug' => $this->slug,
             'description' => $this->description,
+            'sector' => $this->sector,
             'address' => [
                 'line_one' => $this->addressLine,
                 'city' => $this->city,
@@ -208,7 +319,7 @@ class StoreOwnerRegistration extends Component
             ],
             'id_type' => $this->idType,
             'id_number' => $this->idNumber,
-            'business_permit' => $permitPath,
+            'compliance_documents' => $compliancePaths,
         ]);
 
         $user->assignRole('store_owner');
@@ -218,6 +329,29 @@ class StoreOwnerRegistration extends Component
         session()->flash('success', 'Your store application has been submitted! We will review your documents and notify you via email within 3–5 business days.');
 
         $this->redirect(route('register.store-owner.success'));
+    }
+
+    /**
+     * Override rules to include compliance documents.
+     *
+     * @return array<string, string>
+     */
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'phone' => 'required|string|max:20',
+            'password' => 'required|string|min:8|confirmed',
+            'storeName' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:stores,slug',
+            'description' => 'required|string|max:1000',
+            'addressLine' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'postcode' => 'required|string|max:20',
+            'idType' => 'required|string|in:passport,drivers_license,national_id,sss,philhealth,postal_id',
+            'idNumber' => 'required|string|max:100',
+        ];
     }
 
     public function render(): View

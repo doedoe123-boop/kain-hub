@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\SupplierProfileController;
+use App\Livewire\Auth\Register;
+use App\Livewire\SectorBrowse;
+use App\Livewire\Store\SectorSelection;
 use App\Livewire\Store\StoreOwnerRegistration;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,10 +24,16 @@ Route::get('/', function () {
 // Public supplier profile (approved stores only)
 Route::get('/suppliers/{slug}', [SupplierProfileController::class, 'show'])->name('suppliers.show');
 
-// Store owner registration (KYC with file uploads — Livewire)
+// Public sector/industry browsing page
+Route::get('/sector', SectorBrowse::class)->name('sector.browse');
+
+// Guest auth & registration routes
 Route::middleware('guest')->group(function () {
-    Route::get('/register/store-owner', StoreOwnerRegistration::class)->name('register.store-owner');
+    Route::get('/login', fn () => abort(404))->name('login');
+    Route::get('/register', Register::class)->name('register');
+    Route::get('/register/sector', SectorSelection::class)->name('register.sector');
     Route::get('/register/store-owner/success', fn () => view('store.registration-success'))->name('register.store-owner.success');
+    Route::get('/register/store-owner/{sector}', StoreOwnerRegistration::class)->name('register.store-owner');
 });
 
 // Authenticated routes

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\IndustrySector;
 use App\StoreStatus;
 use App\UserRole;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -26,6 +27,7 @@ class StoreFactory extends Factory
             'description' => fake()->sentence(),
             'commission_rate' => 15.00,
             'status' => StoreStatus::Approved,
+            'sector' => fake()->randomElement(IndustrySector::cases()),
             'address' => [
                 'line_one' => fake()->streetAddress(),
                 'city' => fake()->city(),
@@ -53,6 +55,16 @@ class StoreFactory extends Factory
             'status' => StoreStatus::Suspended,
             'suspended_at' => now(),
             'suspension_reason' => 'Terms violation',
+        ]);
+    }
+
+    /**
+     * Set a specific industry sector for the store.
+     */
+    public function sector(IndustrySector $sector): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'sector' => $sector,
         ]);
     }
 }
