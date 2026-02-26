@@ -8,6 +8,7 @@ use App\PhilippineIdType;
 use App\UserRole;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -18,7 +19,17 @@ class StoreOwnerRegistration extends Component
 {
     use WithFileUploads;
 
-    // --- Account Info ---
+    /**
+     * Current step of the multi-step form (1-4).
+     */
+    public int $step = 1;
+
+    /**
+     * Total number of steps.
+     */
+    public const TOTAL_STEPS = 4;
+
+    // --- Step 1: Account Info ---
 
     #[Validate('required|string|max:255')]
     public string $name = '';
@@ -34,7 +45,7 @@ class StoreOwnerRegistration extends Component
 
     public string $password_confirmation = '';
 
-    // --- Store Info ---
+    // --- Step 2: Store Info ---
 
     #[Validate('required|string|max:255')]
     public string $storeName = '';
@@ -45,7 +56,7 @@ class StoreOwnerRegistration extends Component
     #[Validate('required|string|max:1000')]
     public string $description = '';
 
-    // --- Address ---
+    // --- Step 3: Store Address ---
 
     #[Validate('required|string|max:255')]
     public string $addressLine = '';
@@ -56,7 +67,7 @@ class StoreOwnerRegistration extends Component
     #[Validate('required|string|max:20')]
     public string $postcode = '';
 
-    // --- KYC ---
+    // --- Step 4: KYC / Verification ---
 
     #[Validate('required|string|in:passport,drivers_license,national_id,sss,philhealth,postal_id')]
     public string $idType = '';
@@ -66,6 +77,77 @@ class StoreOwnerRegistration extends Component
 
     #[Validate('required|file|mimes:pdf,jpg,jpeg,png|max:5120')]
     public $businessPermit = null;
+
+    /**
+     * Validation rules for each step.
+     *
+     * @return array<int, list<string>>
+     */
+    private function stepFields(): array
+    {
+        return [
+            1 => ['name', 'email', 'phone', 'password'],
+            2 => ['storeName', 'slug', 'description'],
+            3 => ['addressLine', 'city', 'postcode'],
+            4 => ['idType', 'idNumber', 'businessPermit'],
+        ];
+    }
+
+    /**
+     * Step labels for the progress indicator.
+     *
+     * @return array<int, string>
+     */
+    public function getStepLabelsProperty(): array
+    {
+        return [
+            1 => 'Account',
+            2 => 'Store',
+            3 => 'Address',
+            4 => 'Verification',
+        ];
+    }
+
+    /**
+     * Advance to the next step after validating current fields.
+     */
+    public function nextStep(): void
+    {
+        $this->validateCurrentStep();
+        $this->step = min($this->step + 1, self::TOTAL_STEPS);
+    }
+
+    /**
+     * Go back to the previous step.
+     */
+    public function previousStep(): void
+    {
+        $this->step = max($this->step - 1, 1);
+    }
+
+    /**
+     * Navigate to a specific step (only if completed or current).
+     */
+    public function goToStep(int $step): void
+    {
+        if ($step < $this->step) {
+            $this->step = $step;
+        }
+    }
+
+    /**
+     * Validate only the fields belonging to the current step.
+     */
+    private function validateCurrentStep(): void
+    {
+        $fields = $this->stepFields()[$this->step] ?? [];
+        $this->validateOnly(implode(',', $fields));
+
+        // Re-validate all fields for this step
+        foreach ($fields as $field) {
+            $this->validateOnly($field);
+        }
+    }
 
     /**
      * Auto-generate a slug when the store name changes.
@@ -138,7 +220,7 @@ class StoreOwnerRegistration extends Component
         $this->redirect(route('register.store-owner.success'));
     }
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.store.store-owner-registration');
     }

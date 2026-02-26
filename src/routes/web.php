@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SupplierProfileController;
 use App\Livewire\Store\StoreOwnerRegistration;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,9 @@ require __DIR__.'/store.php';
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+// Public supplier profile (approved stores only)
+Route::get('/suppliers/{slug}', [SupplierProfileController::class, 'show'])->name('suppliers.show');
 
 // Store owner registration (KYC with file uploads — Livewire)
 Route::middleware('guest')->group(function () {

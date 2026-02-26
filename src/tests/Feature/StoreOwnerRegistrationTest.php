@@ -20,7 +20,7 @@ beforeEach(function () {
 it('shows the store owner registration page to guests', function () {
     $this->get(route('register.store-owner'))
         ->assertStatus(200)
-        ->assertSee('Register as a Store Owner');
+        ->assertSee('Register Your Store');
 });
 
 it('redirects authenticated users away from registration', function () {
@@ -300,15 +300,15 @@ it('shows the registration success page', function () {
 
 // --- Navigation Links ---
 
-it('shows Open a Store link for customers', function () {
+it('shows Register as Supplier link for customers', function () {
     $customer = User::factory()->create(['role' => UserRole::Customer]);
 
     $this->actingAs($customer)
         ->get(route('home'))
-        ->assertSee('Open a Store');
+        ->assertSee('Become a Supplier');
 });
 
-it('does not show Open a Store link for store owners', function () {
+it('does not show Become a Supplier link for store owners', function () {
     $owner = User::factory()->storeOwner()->create();
     Store::factory()->for($owner, 'owner')->create([
         'status' => StoreStatus::Approved,
@@ -316,6 +316,6 @@ it('does not show Open a Store link for store owners', function () {
 
     $this->actingAs($owner)
         ->get(route('home'))
-        ->assertDontSee('Open a Store')
-        ->assertSee('Store Dashboard');
+        ->assertDontSee('Become a Supplier')
+        ->assertSee('Dashboard');
 });
