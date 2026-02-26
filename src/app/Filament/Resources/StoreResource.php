@@ -3,14 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\StoreResource\Pages;
+use App\Mail\StoreReinstated;
+use App\Mail\StoreSuspended;
 use App\Models\Store;
+use App\Services\StoreService;
 use App\StoreStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class StoreResource extends Resource
 {
@@ -121,9 +126,63 @@ class StoreResource extends Resource
                     ->label('Suspend')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
-                    ->requiresConfirmation()
                     ->visible(fn (Store $record): bool => $record->status !== StoreStatus::Suspended)
-                    ->action(fn (Store $record) => $record->update(['status' => StoreStatus::Suspended])),
+                    ->form([
+                        Forms\Components\Select::make('reason_category')
+                            ->label('Reason Category')
+                            ->options([
+                                'Terms Violation' => 'Terms Violation',
+                                'Fraud / Misrepresentation' => 'Fraud / Misrepresentation',
+                                'Documentation Issue' => 'Documentation Issue',
+                                'Inactive / Unresponsive' => 'Inactive / Unresponsive',
+                                'Customer Complaints' => 'Customer Complaints',
+                                'Other' => 'Other',
+                            ])
+                            ->required(),
+                        Forms\Components\Textarea::make('reason_details')
+                            ->label('Additional Details')
+                            ->placeholder('Provide details about the suspension reason...')
+                            ->maxLength(1000),
+                    ])
+                    ->modalHeading('Suspend Store')
+                    ->modalDescription('This will immediately suspend the store and notify the owner via email.')
+                    ->modalSubmitActionLabel('Suspend Store')
+                    ->action(function (Store $record, array $data): void {
+                        $reason = $data['reason_category'];
+                        if (! empty($data['reason_details'])) {
+                            $reason .= ': ' . $data['reason_details'];
+                        }
+
+                        app(StoreService::class)->suspend($record, $reason);
+
+                        Mail::to($record->owner->email)->send(new StoreSuspended($record->refresh(), $reason));
+
+                        Notification::make()
+                            ->title('Store Suspended')
+                            ->body("Store '{$record->name}' has been suspended and the owner has been notified.")
+                            ->danger()
+                            ->send();
+                    }),
+                Tables\Actions\Action::make('reinstate')
+                    ->label('Reinstate')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Reinstate Store')
+                    ->modalDescription('This will reactivate the store and notify the owner via email. The store will become visible to customers again.')
+                    ->modalSubmitActionLabel('Reinstate Store')
+                    ->visible(fn (Store $record): bool => $record->isSuspended())
+                    ->action(function (Store $record): void {
+                        app(StoreService::class)->reinstate($record);
+
+                        Mail::to($record->owner->email)->send(new StoreReinstated($record->refresh()));
+
+                        Notification::make()
+                            ->title('Store Reinstated')
+                            ->body("Store '{$record->name}' has been reinstated and the owner has been notified.")
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

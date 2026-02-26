@@ -45,11 +45,29 @@ class StoreService
     }
 
     /**
-     * Suspend an active store.
+     * Suspend an active store with a reason.
      */
-    public function suspend(Store $store): Store
+    public function suspend(Store $store, string $reason): Store
     {
-        $store->update(['status' => StoreStatus::Suspended]);
+        $store->update([
+            'status' => StoreStatus::Suspended,
+            'suspended_at' => now(),
+            'suspension_reason' => $reason,
+        ]);
+
+        return $store->refresh();
+    }
+
+    /**
+     * Reinstate a suspended store.
+     */
+    public function reinstate(Store $store): Store
+    {
+        $store->update([
+            'status' => StoreStatus::Approved,
+            'suspended_at' => null,
+            'suspension_reason' => null,
+        ]);
 
         return $store->refresh();
     }

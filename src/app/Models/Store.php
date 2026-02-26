@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property ?string $business_permit
  * @property float $commission_rate
  * @property StoreStatus $status
+ * @property ?\Illuminate\Support\Carbon $suspended_at
+ * @property ?string $suspension_reason
  * @property ?\Illuminate\Support\Carbon $created_at
  * @property ?\Illuminate\Support\Carbon $updated_at
  *
@@ -44,6 +46,8 @@ class Store extends Model
         'business_permit',
         'commission_rate',
         'status',
+        'suspended_at',
+        'suspension_reason',
     ];
 
     /**
@@ -55,6 +59,7 @@ class Store extends Model
             'address' => 'array',
             'commission_rate' => 'decimal:2',
             'status' => StoreStatus::class,
+            'suspended_at' => 'datetime',
         ];
     }
 
@@ -96,6 +101,14 @@ class Store extends Model
     public function isApproved(): bool
     {
         return $this->status === StoreStatus::Approved;
+    }
+
+    /**
+     * Determine if the store is suspended.
+     */
+    public function isSuspended(): bool
+    {
+        return $this->status === StoreStatus::Suspended;
     }
 
     /**

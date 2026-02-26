@@ -51,6 +51,8 @@ class StoreFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'status' => StoreStatus::Suspended,
+            'suspended_at' => now(),
+            'suspension_reason' => 'Terms violation',
         ]);
     }
 }
