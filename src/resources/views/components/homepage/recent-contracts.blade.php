@@ -1,45 +1,134 @@
-{{-- Recently Awarded Contracts — marketplace legitimacy --}}
-<div class="-mx-4 sm:-mx-6 lg:-mx-8 bg-white border-b border-slate-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <h2 class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-3">Recently Awarded Contracts</h2>
-        <div class="overflow-x-auto">
-            <table class="w-full text-xs">
-                <thead>
-                    <tr class="border-b border-slate-200">
-                        <th class="text-left py-2 pr-4 font-semibold text-slate-500 uppercase text-[10px] tracking-wider">Category</th>
-                        <th class="text-left py-2 pr-4 font-semibold text-slate-500 uppercase text-[10px] tracking-wider">Awarded To</th>
-                        <th class="text-left py-2 pr-4 font-semibold text-slate-500 uppercase text-[10px] tracking-wider hidden sm:table-cell">Region</th>
-                        <th class="text-right py-2 font-semibold text-slate-500 uppercase text-[10px] tracking-wider">Value Range</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
+{{-- Recently Awarded Contracts — Live Activity Feed --}}
+<div class="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800/60" id="recent-contracts">
+    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-14">
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+
+            {{-- Left: Header + ticker --}}
+            <div class="lg:col-span-3">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="flex items-center gap-2">
+                        <span class="relative flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                        </span>
+                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Recent Sales Activity</h2>
+                    </div>
+                </div>
+
+                {{-- Activity feed --}}
+                <div class="space-y-0 rounded-2xl border border-slate-100 dark:border-slate-700/40 overflow-hidden bg-white dark:bg-slate-800/30">
                     @php
                         $contracts = [
-                            ['category' => 'Office IT Equipment', 'supplier' => 'TechSource Manila', 'region' => 'NCR', 'value' => '₱250K–500K', 'verified' => true],
-                            ['category' => 'Construction Materials', 'supplier' => 'BuildRight Corp', 'region' => 'Central Luzon', 'value' => '₱1.2M–2.5M', 'verified' => true],
-                            ['category' => 'PPE & Safety Gear', 'supplier' => 'SafeGuard PH', 'region' => 'CALABARZON', 'value' => '₱80K–150K', 'verified' => false],
-                            ['category' => 'Food & Bev Wholesale', 'supplier' => 'FreshHub Trading', 'region' => 'Central Visayas', 'value' => '₱500K–1M', 'verified' => true],
-                            ['category' => 'Janitorial Supplies', 'supplier' => 'CleanPro Inc', 'region' => 'NCR', 'value' => '₱45K–90K', 'verified' => true],
+                            ['category' => 'Office IT Equipment', 'supplier' => 'TechSource Manila', 'region' => 'NCR', 'value' => '₱12,500', 'verified' => true, 'time' => '2 min ago', 'new' => true],
+                            ['category' => 'Construction Materials', 'supplier' => 'BuildRight Corp', 'region' => 'Central Luzon', 'value' => '₱34,800', 'verified' => true, 'time' => '8 min ago', 'new' => true],
+                            ['category' => 'PPE & Safety Gear', 'supplier' => 'SafeGuard PH', 'region' => 'CALABARZON', 'value' => '₱5,200', 'verified' => false, 'time' => '15 min ago', 'new' => true],
+                            ['category' => 'Food & Bev Wholesale', 'supplier' => 'FreshHub Trading', 'region' => 'Central Visayas', 'value' => '₱8,900', 'verified' => true, 'time' => '32 min ago', 'new' => false],
+                            ['category' => 'Janitorial Supplies', 'supplier' => 'CleanPro Inc', 'region' => 'NCR', 'value' => '₱2,350', 'verified' => true, 'time' => '1 hr ago', 'new' => false],
+                            ['category' => 'Industrial Chemicals', 'supplier' => 'ChemWorks PH', 'region' => 'CALABARZON', 'value' => '₱15,600', 'verified' => true, 'time' => '2 hr ago', 'new' => false],
                         ];
                     @endphp
-                    @foreach ($contracts as $c)
-                        <tr class="hover:bg-slate-50 transition-colors">
-                            <td class="py-2.5 pr-4 text-slate-700 font-medium">{{ $c['category'] }}</td>
-                            <td class="py-2.5 pr-4">
-                                <div class="flex items-center gap-1">
-                                    <span class="text-slate-700">{{ $c['supplier'] }}</span>
+                    @foreach ($contracts as $idx => $c)
+                        <div class="feed-item flex items-center gap-4 px-5 py-4 {{ !$loop->last ? 'border-b border-slate-50 dark:border-slate-700/30' : '' }}">
+                            {{-- Pulsing green dot for new --}}
+                            <div class="shrink-0 w-5 flex justify-center">
+                                @if ($c['new'])
+                                    <span class="relative flex h-2 w-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                    </span>
+                                @else
+                                    <span class="h-1.5 w-1.5 rounded-full bg-slate-200 dark:bg-slate-700"></span>
+                                @endif
+                            </div>
+
+                            {{-- Category icon --}}
+                            <div class="shrink-0 h-10 w-10 rounded-xl bg-slate-50 dark:bg-slate-700/50 flex items-center justify-center">
+                                <svg class="w-4.5 h-4.5 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" /></svg>
+                            </div>
+
+                            {{-- Content --}}
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">{{ $c['category'] }}</span>
+                                    <span class="text-xs text-slate-400 dark:text-slate-600">→</span>
+                                    <span class="text-sm text-slate-600 dark:text-slate-400 truncate">{{ $c['supplier'] }}</span>
                                     @if ($c['verified'])
-                                        <svg class="w-3 h-3 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.403 12.652a3 3 0 000-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.546-4.46a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
+                                        <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.403 12.652a3 3 0 000-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.546-4.46a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
                                     @endif
                                 </div>
-                            </td>
-                            <td class="py-2.5 pr-4 text-slate-500 hidden sm:table-cell">{{ $c['region'] }}</td>
-                            <td class="py-2.5 text-right font-semibold text-slate-700 tabular-nums">{{ $c['value'] }}</td>
-                        </tr>
+                                <div class="flex items-center gap-3 mt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                                    <span>{{ $c['region'] }}</span>
+                                    <span class="text-slate-200 dark:text-slate-700">·</span>
+                                    <span>{{ $c['time'] }}</span>
+                                </div>
+                            </div>
+
+                            {{-- Value --}}
+                            <div class="shrink-0 text-right">
+                                <span class="text-sm font-extrabold text-slate-900 dark:text-white tabular-nums">{{ $c['value'] }}</span>
+                            </div>
+                        </div>
                     @endforeach
-                </tbody>
-            </table>
+                </div>
+                <p class="mt-4 text-xs text-slate-400 dark:text-slate-600 italic">Sample data. Actual sales will be populated as transactions are processed.</p>
+            </div>
+
+            {{-- Right: Newly verified + CTA --}}
+            <div class="lg:col-span-2 space-y-6">
+                {{-- Newly Verified --}}
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Newly Verified</h3>
+                        <a href="{{ route('stores.index') }}" class="text-xs text-sky-600 dark:text-sky-400 hover:text-sky-700 font-semibold transition-colors inline-flex items-center gap-1">
+                            View all
+                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                        </a>
+                    </div>
+                    <div class="space-y-3">
+                        @forelse (\App\Models\Store::where('status', 'approved')->latest()->take(3)->get() as $store)
+                            <a href="{{ route('suppliers.show', $store->slug) }}" class="flex items-center gap-3.5 p-3.5 bg-white dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/40 rounded-xl hover:border-sky-200 dark:hover:border-sky-700 transition-all duration-300 card-hover group">
+                                <div class="shrink-0 h-11 w-11 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-700 dark:to-slate-700/50 border border-slate-200/60 dark:border-slate-600/60 flex items-center justify-center group-hover:border-sky-200 dark:group-hover:border-sky-700 transition-colors">
+                                    <span class="text-xs font-extrabold text-slate-300 dark:text-slate-500 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors">{{ strtoupper(substr($store->name, 0, 2)) }}</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 truncate transition-colors">{{ $store->name }}</h4>
+                                        @if ($store->business_permit)
+                                            <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.403 12.652a3 3 0 000-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.546-4.46a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
+                                        @endif
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-0.5 text-xs text-slate-400 dark:text-slate-500">
+                                        @if ($store->address)
+                                            <span>{{ $store->address['city'] ?? 'Philippines' }}</span>
+                                            <span class="text-slate-200 dark:text-slate-700">·</span>
+                                        @endif
+                                        <span>Since {{ $store->created_at->format('M Y') }}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        @empty
+                            <div class="text-center py-8 border border-dashed border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-400 dark:text-slate-500">
+                                No verified suppliers to display yet.
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+
+                {{-- RFQ CTA --}}
+                <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-600 to-sky-800 dark:from-sky-700 dark:to-sky-900 p-6 shadow-xl shadow-sky-600/10">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-12 translate-x-12"></div>
+                    <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-10 -translate-x-10"></div>
+                    <div class="relative z-10">
+                        <p class="text-[10px] font-bold text-sky-200 uppercase tracking-[0.15em] mb-2">Need Something?</p>
+                        <h3 class="text-base font-extrabold text-white tracking-tight mb-2">Browse verified stores and find the best deals</h3>
+                        <p class="text-sm text-sky-200/80 leading-relaxed mb-4">Discover trusted sellers with competitive prices and fast delivery across the Philippines.</p>
+                        <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-sky-700 bg-white hover:bg-sky-50 rounded-xl shadow-lg transition-all duration-200 hover:-translate-y-0.5">
+                            Browse Stores
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <p class="mt-3 text-[10px] text-slate-400 italic">Sample data. Actual contract data will be populated as transactions are processed.</p>
     </div>
 </div>

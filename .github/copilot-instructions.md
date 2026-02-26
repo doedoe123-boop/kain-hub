@@ -1,7 +1,7 @@
-# 🍔 Multi-Restaurant Marketplace (Hobby Project)
+# 🍔 Multi-Sector Marketplace (Hobby Project)
 
-Welcome to the **Multi-Restaurant Marketplace**, a hobby project inspired by apps like Grab and Foodpanda.  
-This system allows restaurants or store owners to register, manage their products, and receive orders, while customers can browse stores and place orders seamlessly.
+Welcome to the **Multi-Sector Marketplace**, a hobby project inspired by apps like Grab and Foodpanda.  
+This system allows sectors or store owners to register, manage their products, and receive orders, while customers can browse stores and place orders seamlessly.
 
 ---
 
@@ -9,7 +9,7 @@ This system allows restaurants or store owners to register, manage their product
 
 The goal of this system is to build a **full-stack e-commerce marketplace** that demonstrates:
 
-- Multi-store (multi-tenant) architecture
+- Multi-sector (multi-tenant) architecture
 - Role-based access (Admin, Store Owner, Customer)
 - Order and commission handling
 - Dashboard for both store owners and platform admin
@@ -20,32 +20,32 @@ This is a **hobby / learning project**, designed to experiment with Laravel, Vue
 
 ## 🛠 Tech Stack
 
-| Layer             | Technology / Framework                   |
-|------------------|-----------------------------------------|
-| Backend           | Laravel 11                               |
-| E-Commerce Engine | Lunar PHP                                |
-| Frontend          | Vue 3 + Inertia.js + Tailwind CSS       |
-| Database          | PostgreSQL                               |
-| Payments          | Stripe / PayMongo                        |
-| Hosting / Dev     | Local Docker / VPS / Cloud Hosting       |
+| Layer             | Technology / Framework             |
+| ----------------- | ---------------------------------- |
+| Backend           | Laravel 11                         |
+| E-Commerce Engine | Lunar PHP                          |
+| Frontend          | Vue 3 + Inertia.js + Tailwind CSS  |
+| Database          | PostgreSQL                         |
+| Payments          | Stripe / PayMongo                  |
+| Hosting / Dev     | Local Docker / VPS / Cloud Hosting |
 
 ---
 
 ## 👥 User Roles
 
 - **Admin**
-  - Approves and manages stores
+  - Approves and manages sectors
   - Views all orders and revenue
   - Sets platform commission rates
 
-- **Store Owner**
-  - Registers their store
+- **Sector Owner**
+  - Registers their sector
   - Adds and manages products
   - Views orders and revenue dashboard
 
 - **Customer**
-  - Browses stores
-  - Adds items to cart (one store at a time)
+  - Browses sectors
+  - Adds items to cart (one sector at a time)
   - Places orders
 
 ---
@@ -61,6 +61,7 @@ Key tables:
 - `payouts` – records of payouts to stores
 
 **Notes:**
+
 - All tables use `store_id` for multi-store filtering
 - `JSONB` columns are used for dynamic attributes and order items
 - PostgreSQL transactions handle order placement and commission calculation safely
@@ -69,11 +70,11 @@ Key tables:
 
 ## 🚀 Features
 
-- Multi-store marketplace (one platform, multiple restaurants)
+- Multi-sector marketplace (one platform, multiple sectors)
 - Dynamic product management with Lunar PHP
 - Role-based dashboards
 - Commission & payout tracking
-- Cart system restricted per store
+- Cart system restricted per sector
 - Checkout and payment integration
 
 ---

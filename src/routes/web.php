@@ -21,6 +21,21 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+// Browse stores (all verified stores)
+Route::get('/stores', function () {
+    return view('stores.index');
+})->name('stores.index');
+
+// Deals & Offers page
+Route::get('/deals', function () {
+    return view('deals.index');
+})->name('deals.index');
+
+// Market Insights page
+Route::get('/insights', function () {
+    return view('insights.index');
+})->name('insights.index');
+
 // Public supplier profile (approved stores only)
 Route::get('/suppliers/{slug}', [SupplierProfileController::class, 'show'])->name('suppliers.show');
 
