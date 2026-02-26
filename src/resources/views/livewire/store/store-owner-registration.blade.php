@@ -164,6 +164,6 @@
 
     <p class="mt-6 text-center text-sm text-gray-600">
         Already have a store?
-        <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-500 font-medium">Sign in</a>
+        <span class="text-gray-500">Sign in via your store's subdomain.</span>
     </p>
 </div>

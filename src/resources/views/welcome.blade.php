@@ -5,8 +5,7 @@
 
         @guest
             <div class="space-x-4">
-                <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-500 font-medium">Sign in</a>
-                <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition">Get Started</a>
+                <a href="{{ route('register.store-owner') }}" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition">Open a Store</a>
             </div>
         @endguest
 

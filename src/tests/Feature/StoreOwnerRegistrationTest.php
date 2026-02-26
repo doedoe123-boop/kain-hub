@@ -319,8 +319,3 @@ it('does not show Open a Store link for store owners', function () {
         ->assertDontSee('Open a Store')
         ->assertSee('Store Dashboard');
 });
-
-it('shows store owner registration link on customer register page', function () {
-    $this->get(route('register'))
-        ->assertSee('Register as a Store Owner');
-});

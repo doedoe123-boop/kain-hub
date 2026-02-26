@@ -47,11 +47,11 @@ class ResolveStoreFromSubdomain
         $host = $request->getHost();
         $domain = config('app.domain');
 
-        if (! str_ends_with($host, '.' . $domain)) {
+        if (! str_ends_with($host, '.'.$domain)) {
             return null;
         }
 
-        $subdomain = str_replace('.' . $domain, '', $host);
+        $subdomain = str_replace('.'.$domain, '', $host);
 
         if ($subdomain === '' || $subdomain === $domain) {
             return null;

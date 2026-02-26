@@ -6,8 +6,8 @@ use App\Http\Responses\LunarLogoutResponse;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Admin\Filament\Resources\StaffResource;
-use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Admin\LunarPanelManager;
+use Lunar\Admin\Support\Facades\LunarPanel;
 
 class AppServiceProvider extends ServiceProvider
 {

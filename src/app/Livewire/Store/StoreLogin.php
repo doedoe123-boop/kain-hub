@@ -31,11 +31,11 @@ class StoreLogin extends Component
         $host = request()->getHost();
         $domain = config('app.domain');
 
-        if (! str_ends_with($host, '.' . $domain)) {
+        if (! str_ends_with($host, '.'.$domain)) {
             return null;
         }
 
-        $slug = str_replace('.' . $domain, '', $host);
+        $slug = str_replace('.'.$domain, '', $host);
 
         return Store::where('slug', $slug)->first();
     }

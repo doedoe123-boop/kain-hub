@@ -26,9 +26,9 @@ class LunarLogoutResponse implements LogoutResponse
         $appDomain = config('app.domain', 'localhost');
 
         // If on a store subdomain, redirect to that subdomain's login
-        if ($host !== $appDomain && str_ends_with($host, '.' . $appDomain)) {
+        if ($host !== $appDomain && str_ends_with($host, '.'.$appDomain)) {
             return redirect()->to(
-                $request->getSchemeAndHttpHost() . '/login'
+                $request->getSchemeAndHttpHost().'/login'
             );
         }
 

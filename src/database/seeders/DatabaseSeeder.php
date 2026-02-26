@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             StoreSeeder::class,
             PayoutSeeder::class,
+            LunarCatalogSeeder::class,
         ]);
 
         $this->assignStoreOwnerRoles();

@@ -107,12 +107,12 @@ class Store extends Model
         $domain = config('app.domain');
         $port = parse_url(config('app.url'), PHP_URL_PORT);
 
-        $url = $scheme . '://' . $this->slug . '.' . $domain;
+        $url = $scheme.'://'.$this->slug.'.'.$domain;
 
         if ($port) {
-            $url .= ':' . $port;
+            $url .= ':'.$port;
         }
 
-        return $url . '/login';
+        return $url.'/login';
     }
 }

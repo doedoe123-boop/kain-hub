@@ -5,7 +5,6 @@ namespace App\Filament\Resources\StoreStaffResource\Pages;
 use App\Filament\Resources\StoreStaffResource;
 use App\UserRole;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class CreateStoreStaff extends CreateRecord

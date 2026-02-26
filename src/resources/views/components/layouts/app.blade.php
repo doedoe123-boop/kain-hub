@@ -44,8 +44,7 @@
                             <button type="submit" class="text-sm text-red-600 hover:text-red-800">Logout</button>
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="text-sm text-gray-600 hover:text-gray-900">Login</a>
-                        <a href="{{ route('register') }}" class="text-sm bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Register</a>
+                        <a href="{{ route('register.store-owner') }}" class="text-sm bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Open a Store</a>
                     @endauth
                 </div>
             </div>
