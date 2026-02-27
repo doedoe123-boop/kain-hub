@@ -115,7 +115,8 @@ class LegalPageResource extends Resource
                             ->color('primary'),
                         Infolists\Components\TextEntry::make('content')
                             ->html()
-                            ->columnSpanFull(),
+                            ->columnSpanFull()
+                            ->extraAttributes(['class' => 'legal-content-admin']),
                     ])->columns(2),
                 Infolists\Components\Section::make('Publishing Details')
                     ->schema([
@@ -124,14 +125,14 @@ class LegalPageResource extends Resource
                             ->boolean(),
                         Infolists\Components\TextEntry::make('published_at')
                             ->dateTime()
-                            ->default('—'),
+                            ->placeholder('—'),
                         Infolists\Components\TextEntry::make('last_reviewed_at')
                             ->label('Last Reviewed')
                             ->dateTime()
-                            ->default('Never'),
+                            ->placeholder('Never'),
                         Infolists\Components\TextEntry::make('editor.name')
                             ->label('Last Edited By')
-                            ->default('—'),
+                            ->placeholder('—'),
                     ])->columns(4),
                 Infolists\Components\Section::make('Timestamps')
                     ->schema([

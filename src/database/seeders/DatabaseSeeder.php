@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             StoreSeeder::class,
             PayoutSeeder::class,
             LunarCatalogSeeder::class,
+            LegalPageSeeder::class,
         ]);
 
         $this->assignStoreOwnerRoles();

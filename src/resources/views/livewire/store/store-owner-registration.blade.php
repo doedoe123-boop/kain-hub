@@ -501,11 +501,27 @@
                 </div>
             </form>
 
-            {{-- Footer --}}
-            <p class="mt-6 text-center text-xs text-slate-400">
-                Already registered?
-                <span class="text-slate-500 dark:text-slate-400 font-medium">Sign in via your store's subdomain.</span>
-            </p>
+            {{-- Legal footer --}}
+            @php
+                $legalLinks = \App\Models\LegalPage::published()
+                    ->whereIn('type', ['terms', 'privacy', 'store_agreement'])
+                    ->orderByRaw("CASE type WHEN 'terms' THEN 1 WHEN 'privacy' THEN 2 ELSE 3 END")
+                    ->get(['title', 'slug']);
+            @endphp
+            @if ($legalLinks->isNotEmpty())
+                <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+                    <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+                        @foreach ($legalLinks as $lp)
+                            <a href="{{ route('legal.show', $lp->slug) }}"
+                               target="_blank"
+                               class="text-xs text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                                {{ $lp->title }}
+                            </a>
+                        @endforeach
+                    </div>
+                    <p class="mt-3 text-center text-[11px] text-slate-400">© {{ date('Y') }} NegosyoHub. By registering you agree to our Terms &amp; Conditions and Privacy Policy.</p>
+                </div>
+            @endif
         </div>
     </main>
 </div>

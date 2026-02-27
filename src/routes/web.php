@@ -42,6 +42,13 @@ Route::get('/suppliers/{slug}', [SupplierProfileController::class, 'show'])->nam
 // Public sector/industry browsing page
 Route::get('/sector', SectorBrowse::class)->name('sector.browse');
 
+// Public legal pages (Terms, Privacy Policy, etc.)
+Route::get('/legal/{slug}', function (string $slug) {
+    $page = \App\Models\LegalPage::published()->where('slug', $slug)->firstOrFail();
+
+    return view('legal.show', compact('page'));
+})->name('legal.show');
+
 // Guest auth & registration routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', fn () => abort(404))->name('login');

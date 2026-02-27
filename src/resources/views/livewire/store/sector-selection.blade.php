@@ -139,15 +139,26 @@
             @endforeach
         </div>
 
-        {{-- Footer links --}}
-        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-slate-400">
-            <span>Already registered?
-                <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-500 font-medium transition-colors">Sign in</a>
-            </span>
-            <span class="hidden sm:block text-slate-300 dark:text-slate-700">·</span>
-            <span>Customer account?
-                <a href="{{ route('register') }}" class="text-indigo-600 hover:text-indigo-500 font-medium transition-colors">Create one</a>
-            </span>
-        </div>
+        {{-- Legal footer --}}
+        @php
+            $legalLinks = \App\Models\LegalPage::published()
+                ->whereIn('type', ['terms', 'privacy', 'store_agreement'])
+                ->orderByRaw("CASE type WHEN 'terms' THEN 1 WHEN 'privacy' THEN 2 ELSE 3 END")
+                ->get(['title', 'slug']);
+        @endphp
+        @if ($legalLinks->isNotEmpty())
+            <div class="mt-auto pt-8 border-t border-slate-200 dark:border-slate-800">
+                <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+                    @foreach ($legalLinks as $lp)
+                        <a href="{{ route('legal.show', $lp->slug) }}"
+                           target="_blank"
+                           class="text-xs text-slate-400 hover:text-indigo-600 transition-colors">
+                            {{ $lp->title }}
+                        </a>
+                    @endforeach
+                </div>
+                <p class="mt-3 text-center text-[11px] text-slate-400">© {{ date('Y') }} NegosyoHub. By registering you agree to our Terms &amp; Conditions and Privacy Policy.</p>
+            </div>
+        @endif
     </main>
 </div>
