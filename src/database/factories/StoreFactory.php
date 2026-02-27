@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use App\IndustrySector;
+use App\Models\User;
 use App\StoreStatus;
 use App\UserRole;
 use Illuminate\Database\Eloquent\Factories\Factory;

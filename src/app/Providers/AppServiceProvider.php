@@ -3,7 +3,11 @@
 namespace App\Providers;
 
 use App\Http\Responses\LunarLogoutResponse;
+use App\Listeners\RecordLoginHistory;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse;
+use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Admin\Filament\Resources\StaffResource;
 use Lunar\Admin\LunarPanelManager;
@@ -35,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->app->bind(LogoutResponse::class, LunarLogoutResponse::class);
+
+        // Record all login attempts (success + failure) for security audit
+        Event::listen(Login::class, [RecordLoginHistory::class, 'handleLogin']);
+        Event::listen(Failed::class, [RecordLoginHistory::class, 'handleFailed']);
     }
 
     /**

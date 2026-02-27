@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
  * @property int $id
@@ -36,6 +39,17 @@ class Store extends Model
     /** @use HasFactory<\Database\Factories\StoreFactory> */
     use HasFactory;
 
+    use LogsActivity;
+    use SoftDeletes;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'status', 'sector', 'commission_rate', 'suspended_at', 'suspension_reason'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
+
     /** @var list<string> */
     protected $fillable = [
         'user_id',
@@ -62,7 +76,9 @@ class Store extends Model
     {
         return [
             'address' => 'array',
-            'compliance_documents' => 'array',
+            'id_number' => 'encrypted',
+            'business_permit' => 'encrypted',
+            'compliance_documents' => 'encrypted:array',
             'commission_rate' => 'decimal:2',
             'status' => StoreStatus::class,
             'sector' => IndustrySector::class,

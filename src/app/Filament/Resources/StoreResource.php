@@ -178,7 +178,7 @@ class StoreResource extends Resource
                     ->action(function (Store $record, array $data): void {
                         $reason = $data['reason_category'];
                         if (! empty($data['reason_details'])) {
-                            $reason .= ': ' . $data['reason_details'];
+                            $reason .= ': '.$data['reason_details'];
                         }
 
                         app(StoreService::class)->suspend($record, $reason);

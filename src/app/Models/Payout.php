@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $id
@@ -21,6 +22,8 @@ class Payout extends Model
 {
     /** @use HasFactory<\Database\Factories\PayoutFactory> */
     use HasFactory;
+
+    use SoftDeletes;
 
     /** @var list<string> */
     protected $fillable = [

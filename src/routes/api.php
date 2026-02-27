@@ -15,11 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Guest auth routes
-Route::post('/register/customer', [AuthController::class, 'register'])->name('api.auth.register.customer');
-Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
+// Guest auth routes (tighter throttle to prevent brute-force)
+Route::middleware('throttle:10,1')->group(function () {
+    Route::post('/register/customer', [AuthController::class, 'register'])->name('api.auth.register.customer');
+    Route::post('/login', [AuthController::class, 'login'])->name('api.auth.login');
+});
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Auth
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.auth.logout');
     Route::get('/user', [AuthController::class, 'user'])->name('api.auth.user');

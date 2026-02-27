@@ -6,6 +6,7 @@ use App\IndustrySector;
 use App\Models\Store;
 use App\Models\User;
 use App\PhilippineIdType;
+use App\Rules\ValidateUploadContent;
 use App\UserRole;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
@@ -192,7 +193,13 @@ class StoreOwnerRegistration extends Component
 
         foreach ($this->sectorDocuments as $doc) {
             $required = $doc['required'] ? 'required' : 'nullable';
-            $rules["complianceFiles.{$doc['key']}"] = "{$required}|file|mimes:{$doc['mimes']}|max:5120";
+            $rules["complianceFiles.{$doc['key']}"] = [
+                $required,
+                'file',
+                "mimes:{$doc['mimes']}",
+                'max:5120',
+                new ValidateUploadContent,
+            ];
         }
 
         return $rules;

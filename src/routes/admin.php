@@ -1,24 +1,26 @@
 <?php
 
+use App\Http\Controllers\Admin\StoreDocumentController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 // =========================================================
 // Admin-only routes
 // =========================================================
 Route::middleware(['web', 'auth', 'role:admin'])->group(function () {
-    // Download store KYC documents
-    Route::get('/admin/stores/{store}/document/{field}', function (\App\Models\Store $store, string $field) {
-        if (! in_array($field, ['business_permit'])) {
-            abort(404);
-        }
+    // Document signed URL generator
+    Route::get('/admin/stores/{store}/document/{field}', [StoreDocumentController::class, 'show'])
+        ->name('admin.stores.document');
 
-        $path = $store->{$field};
+    // Document download (signed)
+    Route::get('/admin/stores/{store}/document/{field}/download', [StoreDocumentController::class, 'download'])
+        ->name('admin.stores.document.download')
+        ->middleware('signed');
 
-        if (! $path || ! Storage::disk('local')->exists($path)) {
-            abort(404, 'Document not found.');
-        }
+    // Document inline preview (for admin panel display)
+    Route::get('/admin/stores/{store}/document/{field}/preview', [StoreDocumentController::class, 'preview'])
+        ->name('admin.stores.document.preview');
 
-        return Storage::disk('local')->download($path);
-    })->name('admin.stores.document');
+    // Compliance document inline preview
+    Route::get('/admin/stores/{store}/compliance/{key}/preview', [StoreDocumentController::class, 'compliancePreview'])
+        ->name('admin.stores.compliance.preview');
 });

@@ -35,7 +35,7 @@ class SectorBrowse extends Component
         $sectors = [];
         foreach (IndustrySector::cases() as $sector) {
             if ($this->search && ! str_contains(
-                strtolower($sector->label() . ' ' . $sector->description()),
+                strtolower($sector->label().' '.$sector->description()),
                 strtolower($this->search)
             )) {
                 continue;

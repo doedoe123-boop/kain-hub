@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
 
+        // HTTPS enforcement (only active in production)
+        $middleware->prepend(\App\Http\Middleware\ForceHttps::class);
+
         // Customer auth is on the API/SPA — redirect unauthenticated
         // web visitors to the home page instead of a login route.
         $middleware->redirectGuestsTo('/');
@@ -26,6 +29,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureUserHasRole::class,
             'store.subdomain' => \App\Http\Middleware\ResolveStoreFromSubdomain::class,
+            'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -113,6 +113,7 @@ class StoreResource extends Resource
                             ->color(fn (StoreStatus $state): string => match ($state) {
                                 StoreStatus::Pending => 'warning',
                                 StoreStatus::Approved => 'success',
+                                StoreStatus::Rejected => 'danger',
                                 StoreStatus::Suspended => 'danger',
                             }),
                         Infolists\Components\TextEntry::make('sector')
@@ -160,21 +161,25 @@ class StoreResource extends Resource
                         Infolists\Components\TextEntry::make('id_number')
                             ->label('ID Number')
                             ->default('—'),
-                        Infolists\Components\TextEntry::make('business_permit')
+                        Infolists\Components\ViewEntry::make('business_permit_preview')
                             ->label('Business Permit')
-                            ->formatStateUsing(function (?string $state): string {
-                                if (! $state) {
-                                    return 'No document uploaded';
-                                }
-
-                                return basename($state);
-                            })
-                            ->url(fn (Store $record): ?string => $record->business_permit
-                                ? route('admin.stores.document', ['store' => $record, 'field' => 'business_permit'])
-                                : null)
-                            ->openUrlInNewTab()
-                            ->color('primary'),
-                    ])->columns(3),
+                            ->view('filament.infolists.document-preview')
+                            ->viewData(fn (Store $record): array => [
+                                'url' => $record->business_permit
+                                    ? route('admin.stores.document.preview', ['store' => $record, 'field' => 'business_permit'])
+                                    : null,
+                                'downloadUrl' => $record->business_permit
+                                    ? route('admin.stores.document', ['store' => $record, 'field' => 'business_permit'])
+                                    : null,
+                                'type' => $record->business_permit
+                                    ? strtolower(pathinfo($record->business_permit, PATHINFO_EXTENSION))
+                                    : null,
+                                'label' => $record->business_permit
+                                    ? basename($record->business_permit)
+                                    : 'No document uploaded',
+                            ])
+                            ->columnSpanFull(),
+                    ])->columns(2),
                 Infolists\Components\Section::make('Compliance Documents')
                     ->schema(function (Store $record): array {
                         $docs = $record->compliance_documents ?? [];
@@ -191,17 +196,23 @@ class StoreResource extends Resource
                         $entries = [];
 
                         foreach ($docs as $key => $doc) {
-                            $entries[] = Infolists\Components\TextEntry::make("compliance_documents.{$key}.label")
+                            $ext = strtolower(pathinfo($doc['path'] ?? '', PATHINFO_EXTENSION));
+
+                            $entries[] = Infolists\Components\ViewEntry::make("compliance_doc_{$key}")
                                 ->label($doc['label'] ?? $key)
-                                ->default(basename($doc['path'] ?? ''))
-                                ->badge()
-                                ->color($doc['required'] ?? false ? 'success' : 'gray')
-                                ->icon('heroicon-o-document-check');
+                                ->view('filament.infolists.document-preview')
+                                ->viewData([
+                                    'url' => route('admin.stores.compliance.preview', ['store' => $record, 'key' => $key]),
+                                    'downloadUrl' => route('admin.stores.compliance.preview', ['store' => $record, 'key' => $key]),
+                                    'type' => $ext,
+                                    'label' => basename($doc['path'] ?? ''),
+                                    'required' => $doc['required'] ?? false,
+                                ]);
                         }
 
                         return $entries;
                     })
-                    ->columns(3)
+                    ->columns(2)
                     ->icon('heroicon-o-shield-check')
                     ->iconColor('info')
                     ->visible(fn (Store $record): bool => ! empty($record->compliance_documents)),
@@ -249,6 +260,7 @@ class StoreResource extends Resource
                     ->color(fn (StoreStatus $state): string => match ($state) {
                         StoreStatus::Pending => 'warning',
                         StoreStatus::Approved => 'success',
+                        StoreStatus::Rejected => 'danger',
                         StoreStatus::Suspended => 'danger',
                     })
                     ->sortable(),
@@ -329,7 +341,7 @@ class StoreResource extends Resource
                     ->action(function (Store $record, array $data): void {
                         $reason = $data['reason_category'];
                         if (! empty($data['reason_details'])) {
-                            $reason .= ': ' . $data['reason_details'];
+                            $reason .= ': '.$data['reason_details'];
                         }
 
                         app(StoreService::class)->suspend($record, $reason);
