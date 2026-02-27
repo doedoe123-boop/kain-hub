@@ -1,81 +1,153 @@
-<div>
-    {{-- Header --}}
-    <div class="text-center mb-10">
-        <h2 class="text-2xl font-bold text-gray-900">Choose Your Industry</h2>
-        <p class="mt-2 text-sm text-gray-500 max-w-lg mx-auto">
-            Select the sector that best describes your business. This helps us tailor the registration process and features to your needs.
-        </p>
-    </div>
+<div class="flex min-h-screen w-full">
+    {{-- ===== Left Panel ===== --}}
+    <aside class="hidden lg:flex flex-col w-72 xl:w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white px-8 py-10 flex-shrink-0">
+        {{-- Logo --}}
+        <a href="/" class="inline-flex items-center gap-3 mb-12 group">
+            <div class="h-10 w-10 rounded-xl bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <x-heroicon-o-building-storefront class="w-5 h-5 text-white" />
+            </div>
+            <span class="text-lg font-bold text-white">NegosyoHub</span>
+        </a>
 
-    @error('sector')
-        <div class="mb-6 rounded-lg bg-red-50 border border-red-200 p-4 text-center">
-            <p class="text-sm text-red-600">{{ $message }}</p>
+        <div class="flex-1">
+            <h1 class="text-2xl font-bold text-white leading-tight">Become a Supplier</h1>
+            <p class="mt-3 text-sm text-slate-400 leading-relaxed">Join hundreds of verified Filipino businesses on the marketplace.</p>
+
+            {{-- Process steps preview --}}
+            <div class="mt-10 space-y-5">
+                @foreach ([
+                    ['icon' => 'heroicon-s-squares-2x2', 'label' => 'Choose Your Industry', 'desc' => 'Select your business sector'],
+                    ['icon' => 'heroicon-s-user', 'label' => 'Account Setup', 'desc' => 'Personal & login details'],
+                    ['icon' => 'heroicon-s-building-storefront', 'label' => 'Store Details', 'desc' => 'Business name & description'],
+                    ['icon' => 'heroicon-s-identification', 'label' => 'Verify Identity', 'desc' => 'Government-issued ID'],
+                    ['icon' => 'heroicon-s-shield-check', 'label' => 'Compliance Docs', 'desc' => 'Required permits & licenses'],
+                ] as $i => $item)
+                    <div class="flex items-center gap-3.5">
+                        <div class="flex-shrink-0 h-8 w-8 rounded-full {{ $i === 0 ? 'bg-indigo-500 shadow-lg shadow-indigo-500/30' : 'bg-slate-700' }} flex items-center justify-center">
+                            @if($i === 0)
+                                <x-dynamic-component :component="$item['icon']" class="w-4 h-4 text-white" />
+                            @else
+                                <span class="text-xs font-bold text-slate-400">{{ $i + 1 }}</span>
+                            @endif
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold {{ $i === 0 ? 'text-white' : 'text-slate-400' }}">{{ $item['label'] }}</p>
+                            <p class="text-[11px] text-slate-500">{{ $item['desc'] }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
-    @enderror
 
-    {{-- Sector Grid --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        @foreach ($sectors as $sector)
-            <button
-                wire:click="selectSector('{{ $sector->value }}')"
-                wire:loading.attr="disabled"
-                class="group relative flex flex-col items-center p-6 bg-white rounded-xl border-2 border-gray-200 shadow-sm hover:border-indigo-500 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 cursor-pointer"
-            >
-                {{-- Icon --}}
-                <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-{{ $sector->color() }}-50 group-hover:bg-{{ $sector->color() }}-100 transition-colors duration-200">
-                    @switch($sector)
-                        @case(App\IndustrySector::Construction)
-                            <x-heroicon-o-wrench-screwdriver class="w-7 h-7 text-{{ $sector->color() }}-600" />
-                            @break
-                        @case(App\IndustrySector::Technology)
-                            <x-heroicon-o-cpu-chip class="w-7 h-7 text-{{ $sector->color() }}-600" />
-                            @break
-                        @case(App\IndustrySector::FoodAndBeverage)
-                            <x-heroicon-o-cake class="w-7 h-7 text-{{ $sector->color() }}-600" />
-                            @break
-                        @case(App\IndustrySector::Healthcare)
-                            <x-heroicon-o-heart class="w-7 h-7 text-{{ $sector->color() }}-600" />
-                            @break
-                        @case(App\IndustrySector::Chemicals)
-                            <x-heroicon-o-beaker class="w-7 h-7 text-{{ $sector->color() }}-600" />
-                            @break
-                        @case(App\IndustrySector::Logistics)
-                            <x-heroicon-o-truck class="w-7 h-7 text-{{ $sector->color() }}-600" />
-                            @break
-                        @case(App\IndustrySector::RealEstate)
-                            <x-heroicon-o-home-modern class="w-7 h-7 text-{{ $sector->color() }}-600" />
-                            @break
-                        @case(App\IndustrySector::Agriculture)
-                            <x-heroicon-o-sun class="w-7 h-7 text-{{ $sector->color() }}-600" />
-                            @break
-                    @endswitch
+        <div class="mt-auto pt-8 border-t border-slate-700/50 space-y-2">
+            <div class="flex items-center gap-2 text-slate-400">
+                <x-heroicon-s-lock-closed class="w-4 h-4 text-emerald-400" />
+                <p class="text-xs">AES-256-CBC encrypted storage</p>
+            </div>
+            <div class="flex items-center gap-2 text-slate-400">
+                <x-heroicon-s-clock class="w-4 h-4 text-indigo-400" />
+                <p class="text-xs">Review within 3–5 business days</p>
+            </div>
+        </div>
+    </aside>
+
+    {{-- ===== Right Panel ===== --}}
+    <main class="flex-1 bg-slate-50 dark:bg-slate-900 px-5 sm:px-10 xl:px-16 py-10 flex flex-col">
+        {{-- Mobile logo --}}
+        <div class="lg:hidden flex items-center justify-between mb-8">
+            <a href="/" class="inline-flex items-center gap-2.5">
+                <div class="h-9 w-9 rounded-xl bg-indigo-500 flex items-center justify-center">
+                    <x-heroicon-o-building-storefront class="w-4 h-4 text-white" />
                 </div>
+                <span class="font-bold text-slate-800 dark:text-white">NegosyoHub</span>
+            </a>
+        </div>
 
-                {{-- Label --}}
-                <h3 class="text-sm font-semibold text-gray-900 text-center group-hover:text-indigo-600 transition-colors">
-                    {{ $sector->label() }}
-                </h3>
+        {{-- Header --}}
+        <div class="mb-8">
+            <p class="text-xs font-semibold text-indigo-500 uppercase tracking-widest mb-1">Step 1 of 5</p>
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Choose Your Industry</h2>
+            <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
+                Select the sector that best describes your business. This helps tailor the registration to your needs.
+            </p>
+        </div>
 
-                {{-- Description --}}
-                <p class="mt-1.5 text-xs text-gray-500 text-center leading-relaxed">
-                    {{ $sector->description() }}
-                </p>
+        @error('sector')
+            <div class="mb-6 flex items-center gap-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4">
+                <x-heroicon-s-exclamation-circle class="w-5 h-5 text-red-500 flex-shrink-0" />
+                <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+            </div>
+        @enderror
 
-                {{-- Hover indicator --}}
-                <div class="absolute inset-x-0 bottom-0 h-0.5 bg-indigo-500 rounded-b-xl scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
-            </button>
-        @endforeach
-    </div>
+        {{-- Sector Grid --}}
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 flex-1">
+            @foreach ($sectors as $sector)
+                <button
+                    wire:click="selectSector('{{ $sector->value }}')"
+                    wire:loading.attr="disabled"
+                    wire:loading.class="opacity-60 cursor-wait"
+                    class="group relative flex flex-col items-center justify-center p-5 sm:p-6 bg-white dark:bg-slate-800/80 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 cursor-pointer text-center"
+                >
+                    {{-- Icon bubble --}}
+                    <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/40 transition-colors duration-200 shadow-sm">
+                        @switch($sector)
+                            @case(App\IndustrySector::Construction)
+                                <x-heroicon-o-wrench-screwdriver class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                                @break
+                            @case(App\IndustrySector::Technology)
+                                <x-heroicon-o-cpu-chip class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                                @break
+                            @case(App\IndustrySector::FoodAndBeverage)
+                                <x-heroicon-o-cake class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                                @break
+                            @case(App\IndustrySector::Healthcare)
+                                <x-heroicon-o-heart class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                                @break
+                            @case(App\IndustrySector::Chemicals)
+                                <x-heroicon-o-beaker class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                                @break
+                            @case(App\IndustrySector::Logistics)
+                                <x-heroicon-o-truck class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                                @break
+                            @case(App\IndustrySector::RealEstate)
+                                <x-heroicon-o-home-modern class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                                @break
+                            @case(App\IndustrySector::Agriculture)
+                                <x-heroicon-o-sun class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                                @break
+                        @endswitch
+                    </div>
 
-    {{-- Footer --}}
-    <div class="mt-10 text-center space-y-3">
-        <p class="text-sm text-gray-500">
-            Already have an account?
-            <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-500 font-medium">Sign in</a>
-        </p>
-        <p class="text-sm text-gray-500">
-            Want to register as a customer?
-            <a href="{{ route('register') }}" class="text-indigo-600 hover:text-indigo-500 font-medium">Create account</a>
-        </p>
-    </div>
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-tight">
+                        {{ $sector->label() }}
+                    </h3>
+                    <p class="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500 leading-relaxed hidden sm:block">
+                        {{ $sector->description() }}
+                    </p>
+
+                    {{-- Selection indicator --}}
+                    <div class="absolute inset-x-0 bottom-0 h-0.5 bg-indigo-500 rounded-b-2xl scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left"></div>
+
+                    {{-- Loading overlay --}}
+                    <div wire:loading wire:target="selectSector('{{ $sector->value }}')" class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-800/80 rounded-2xl">
+                        <svg class="w-5 h-5 animate-spin text-indigo-500" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                    </div>
+                </button>
+            @endforeach
+        </div>
+
+        {{-- Footer links --}}
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-slate-400">
+            <span>Already registered?
+                <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-500 font-medium transition-colors">Sign in</a>
+            </span>
+            <span class="hidden sm:block text-slate-300 dark:text-slate-700">·</span>
+            <span>Customer account?
+                <a href="{{ route('register') }}" class="text-indigo-600 hover:text-indigo-500 font-medium transition-colors">Create one</a>
+            </span>
+        </div>
+    </main>
 </div>

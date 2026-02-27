@@ -1,39 +1,100 @@
-name: PHP Composer
+name: Laravel CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
 
 jobs:
-  build:
-
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: kain_hub_test
+          POSTGRES_USER: kain_hub
+          POSTGRES_PASSWORD: secret
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: src
+
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: pdo, pdo_pgsql, redis, bcmath, gd, exif, pcntl, zip
+          coverage: none
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: src/vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('src/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
+      - name: Copy environment file
+        run: cp .env.example .env.testing
 
-    # - name: Run test suite
-    #   run: composer run-script test
+      - name: Configure test environment
+        run: |
+          echo "APP_ENV=testing" >> .env.testing
+          echo "APP_KEY=" >> .env.testing
+          echo "DB_CONNECTION=pgsql" >> .env.testing
+          echo "DB_HOST=127.0.0.1" >> .env.testing
+          echo "DB_PORT=5432" >> .env.testing
+          echo "DB_DATABASE=kain_hub_test" >> .env.testing
+          echo "DB_USERNAME=kain_hub" >> .env.testing
+          echo "DB_PASSWORD=secret" >> .env.testing
+          echo "CACHE_DRIVER=redis" >> .env.testing
+          echo "REDIS_HOST=127.0.0.1" >> .env.testing
+          echo "REDIS_PORT=6379" >> .env.testing
+
+      - name: Generate application key
+        run: php artisan key:generate --env=testing
+
+      - name: Run database migrations
+        run: php artisan migrate --env=testing --force
+
+      - name: Install Node dependencies & build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Run Pint (code style check)
+        run: ./vendor/bin/pint --test
+
+      - name: Run test suite
+        run: php artisan test --compact

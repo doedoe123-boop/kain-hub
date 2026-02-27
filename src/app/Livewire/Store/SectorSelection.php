@@ -7,7 +7,7 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-#[Layout('components.layouts.guest', ['maxWidth' => 'max-w-5xl'])]
+#[Layout('components.layouts.guest-fullwidth')]
 class SectorSelection extends Component
 {
     /**

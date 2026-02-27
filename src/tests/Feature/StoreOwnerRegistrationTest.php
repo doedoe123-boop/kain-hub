@@ -77,7 +77,7 @@ it('filters sectors by search query', function () {
 it('shows the store owner registration page to guests', function () {
     $this->get(route('register.store-owner', ['sector' => 'food_and_beverage']))
         ->assertStatus(200)
-        ->assertSee('Register Your Store');
+        ->assertSee('Become a Supplier');
 });
 
 it('redirects authenticated users away from registration', function () {
@@ -141,8 +141,8 @@ it('creates a user and store with compliance documents on registration', functio
         ->set('name', 'Juan Dela Cruz')
         ->set('email', 'juan@example.com')
         ->set('phone', '09171234567')
-        ->set('password', 'password123')
-        ->set('password_confirmation', 'password123')
+        ->set('password', 'Str0ng#Pass9')
+        ->set('password_confirmation', 'Str0ng#Pass9')
         ->set('storeName', 'Juan Kitchen')
         ->set('slug', 'juan-kitchen')
         ->set('description', 'Best Filipino food in town')
@@ -203,8 +203,8 @@ it('validates required compliance documents', function () {
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->set('phone', '09171234567')
-        ->set('password', 'password123')
-        ->set('password_confirmation', 'password123')
+        ->set('password', 'Str0ng#Pass9')
+        ->set('password_confirmation', 'Str0ng#Pass9')
         ->set('storeName', 'My Store')
         ->set('slug', 'my-store')
         ->set('description', 'A great store')
@@ -234,8 +234,8 @@ it('does not require optional compliance documents', function () {
         ->set('name', 'Test User')
         ->set('email', 'optional@example.com')
         ->set('phone', '09171234567')
-        ->set('password', 'password123')
-        ->set('password_confirmation', 'password123')
+        ->set('password', 'Str0ng#Pass9')
+        ->set('password_confirmation', 'Str0ng#Pass9')
         ->set('storeName', 'Optional Store')
         ->set('slug', 'optional-store')
         ->set('description', 'A great store')
@@ -262,8 +262,8 @@ it('validates unique email', function () {
         ->set('name', 'Test User')
         ->set('email', 'taken@example.com')
         ->set('phone', '09171234567')
-        ->set('password', 'password123')
-        ->set('password_confirmation', 'password123')
+        ->set('password', 'Str0ng#Pass9')
+        ->set('password_confirmation', 'Str0ng#Pass9')
         ->set('storeName', 'My Store')
         ->set('slug', 'my-store')
         ->set('description', 'A great store')
@@ -283,8 +283,8 @@ it('validates unique slug', function () {
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->set('phone', '09171234567')
-        ->set('password', 'password123')
-        ->set('password_confirmation', 'password123')
+        ->set('password', 'Str0ng#Pass9')
+        ->set('password_confirmation', 'Str0ng#Pass9')
         ->set('storeName', 'My Store')
         ->set('slug', 'taken-slug')
         ->set('description', 'A great store')
@@ -299,7 +299,7 @@ it('validates unique slug', function () {
 
 it('validates password confirmation', function () {
     Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
-        ->set('password', 'password123')
+        ->set('password', 'Str0ng#Pass9')
         ->set('password_confirmation', 'different')
         ->call('register')
         ->assertHasErrors('password');
@@ -313,13 +313,37 @@ it('validates password minimum length', function () {
         ->assertHasErrors('password');
 });
 
+it('rejects password without uppercase letters', function () {
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+        ->set('password', 'str0ng#pass9')
+        ->set('password_confirmation', 'str0ng#pass9')
+        ->call('register')
+        ->assertHasErrors('password');
+});
+
+it('rejects password without symbols', function () {
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+        ->set('password', 'Str0ngPass9')
+        ->set('password_confirmation', 'Str0ngPass9')
+        ->call('register')
+        ->assertHasErrors('password');
+});
+
+it('rejects password without numbers', function () {
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+        ->set('password', 'Strong#Pass')
+        ->set('password_confirmation', 'Strong#Pass')
+        ->call('register')
+        ->assertHasErrors('password');
+});
+
 it('rejects invalid id type', function () {
     Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->set('phone', '09171234567')
-        ->set('password', 'password123')
-        ->set('password_confirmation', 'password123')
+        ->set('password', 'Str0ng#Pass9')
+        ->set('password_confirmation', 'Str0ng#Pass9')
         ->set('storeName', 'My Store')
         ->set('slug', 'my-store')
         ->set('description', 'A great store')
@@ -343,8 +367,8 @@ it('validates SSS ID number format', function () {
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->set('phone', '09171234567')
-        ->set('password', 'password123')
-        ->set('password_confirmation', 'password123')
+        ->set('password', 'Str0ng#Pass9')
+        ->set('password_confirmation', 'Str0ng#Pass9')
         ->set('storeName', 'My Store')
         ->set('slug', 'my-store')
         ->set('description', 'A great store')
@@ -373,8 +397,8 @@ it('accepts valid SSS ID number format', function () {
         ->set('name', 'Test User')
         ->set('email', 'sss-test@example.com')
         ->set('phone', '09171234567')
-        ->set('password', 'password123')
-        ->set('password_confirmation', 'password123')
+        ->set('password', 'Str0ng#Pass9')
+        ->set('password_confirmation', 'Str0ng#Pass9')
         ->set('storeName', 'SSS Test Store')
         ->set('slug', 'sss-test-store')
         ->set('description', 'A great store')

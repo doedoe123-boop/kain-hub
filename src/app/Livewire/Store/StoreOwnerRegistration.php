@@ -10,13 +10,14 @@ use App\Rules\ValidateUploadContent;
 use App\UserRole;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-#[Layout('components.layouts.guest')]
+#[Layout('components.layouts.guest-fullwidth')]
 class StoreOwnerRegistration extends Component
 {
     use WithFileUploads;
@@ -47,7 +48,6 @@ class StoreOwnerRegistration extends Component
     #[Validate('required|string|max:20')]
     public string $phone = '';
 
-    #[Validate('required|string|min:8|confirmed')]
     public string $password = '';
 
     public string $password_confirmation = '';
@@ -211,6 +211,13 @@ class StoreOwnerRegistration extends Component
     public function nextStep(): void
     {
         $this->validateCurrentStep();
+
+        // validateOnly() throws on failure, but addError() (used for the
+        // ID format check) does not — so we must check the bag explicitly.
+        if ($this->getErrorBag()->isNotEmpty()) {
+            return;
+        }
+
         $this->step = min($this->step + 1, self::TOTAL_STEPS);
     }
 
@@ -248,6 +255,11 @@ class StoreOwnerRegistration extends Component
         foreach ($fields as $field) {
             $this->validateOnly($field);
         }
+
+        // Step 4: also validate the ID number format pattern
+        if ($this->step === 4) {
+            $this->validateIdNumberFormat();
+        }
     }
 
     /**
@@ -269,6 +281,40 @@ class StoreOwnerRegistration extends Component
     }
 
     /**
+     * Validate the ID number against the selected ID type's regex pattern.
+     * Returns false and adds an error if invalid, true if valid or no type selected.
+     */
+    private function validateIdNumberFormat(): bool
+    {
+        $idType = PhilippineIdType::tryFrom($this->idType);
+
+        if ($idType && $this->idNumber && ! preg_match($idType->pattern(), $this->idNumber)) {
+            $this->addError('idNumber', "Invalid format for {$idType->label()}. Expected: {$idType->formatHint()}");
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Real-time validation when idNumber changes.
+     */
+    public function updatedIdNumber(): void
+    {
+        $this->validateOnly('idNumber');
+        $this->validateIdNumberFormat();
+    }
+
+    /**
+     * Clear idNumber error when idType changes so stale messages don't show.
+     */
+    public function updatedIdType(): void
+    {
+        $this->resetErrorBag('idNumber');
+    }
+
+    /**
      * Register the store owner and create their store.
      */
     public function register(): void
@@ -280,11 +326,7 @@ class StoreOwnerRegistration extends Component
         ));
 
         // Validate ID number format based on selected type
-        $idType = PhilippineIdType::tryFrom($this->idType);
-
-        if ($idType && ! preg_match($idType->pattern(), $this->idNumber)) {
-            $this->addError('idNumber', "Invalid format for {$idType->label()}. Expected: {$idType->formatHint()}");
-
+        if (! $this->validateIdNumberFormat()) {
             return;
         }
 
@@ -333,6 +375,9 @@ class StoreOwnerRegistration extends Component
 
         event(new Registered($user));
 
+        // Clear browser localStorage for this form
+        $this->dispatch('registration-complete');
+
         session()->flash('success', 'Your store application has been submitted! We will review your documents and notify you via email within 3–5 business days.');
 
         $this->redirect(route('register.store-owner.success'));
@@ -349,7 +394,17 @@ class StoreOwnerRegistration extends Component
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'phone' => 'required|string|max:20',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'confirmed',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised(),
+            ],
             'storeName' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:stores,slug',
             'description' => 'required|string|max:1000',

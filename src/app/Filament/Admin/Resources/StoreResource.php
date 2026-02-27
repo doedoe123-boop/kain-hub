@@ -312,7 +312,44 @@ class StoreResource extends Resource
                         $record->update(['status' => StoreStatus::Approved]);
                         $record->generateLoginToken();
 
-                        Mail::to($record->owner->email)->send(new StoreApproved($record));
+                        $ownerEmail = $record->owner->email;
+
+                        \Illuminate\Support\Facades\Log::info('Store approval started', [
+                            'store_id' => $record->id,
+                            'store_name' => $record->name,
+                            'owner_email' => $ownerEmail,
+                        ]);
+
+                        try {
+                            Mail::to($ownerEmail)->send(new StoreApproved($record));
+
+                            \Illuminate\Support\Facades\Log::info('Store approval email sent successfully', [
+                                'store_id' => $record->id,
+                                'owner_email' => $ownerEmail,
+                            ]);
+                        } catch (\Throwable $e) {
+                            \Illuminate\Support\Facades\Log::error('Store approval email failed', [
+                                'store_id' => $record->id,
+                                'owner_email' => $ownerEmail,
+                                'error' => $e->getMessage(),
+                                'trace' => $e->getTraceAsString(),
+                            ]);
+
+                            Notification::make()
+                                ->title('Store approved but email failed')
+                                ->body("Error: {$e->getMessage()}")
+                                ->danger()
+                                ->persistent()
+                                ->send();
+
+                            return;
+                        }
+
+                        Notification::make()
+                            ->title('Store approved')
+                            ->body("Approval email sent to {$ownerEmail}")
+                            ->success()
+                            ->send();
                     }),
                 Tables\Actions\Action::make('suspend')
                     ->label('Suspend')
