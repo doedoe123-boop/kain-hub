@@ -20,16 +20,7 @@ This project follows **[PSR-12: Extended Coding Style](https://www.php-fig.org/p
 
 ### Enforcement
 
-```bash
-# Check and fix code style
-vendor/bin/pint
-
-# Check only changed files
-vendor/bin/pint --dirty
-
-# Dry run (no changes)
-vendor/bin/pint --test
-```
+Run `docker compose exec app ./vendor/bin/pint` before committing. Use `--dirty` to check only changed files or `--test` for a dry run.
 
 ---
 
@@ -50,32 +41,6 @@ Each class should have **one reason to change**.
 | **Policies**      | Authorization rules per model.                                                   |
 | **Enums**         | Named constants with behavior (e.g., `UserRole`, `StoreStatus`, `OrderStatus`).  |
 
-**Bad:**
-
-```php
-class OrderController extends Controller
-{
-    public function store(Request $request)
-    {
-        // Validates, creates order, calculates commission, sends email — too much
-    }
-}
-```
-
-**Good:**
-
-```php
-class OrderController extends Controller
-{
-    public function store(StoreOrderRequest $request, OrderService $service): JsonResponse
-    {
-        $order = $service->placeOrder($request->validated());
-
-        return new OrderResource($order);
-    }
-}
-```
-
 ### O — Open/Closed Principle
 
 Classes should be **open for extension, closed for modification**.
@@ -83,26 +48,6 @@ Classes should be **open for extension, closed for modification**.
 - Use PHP enums with methods instead of switch statements scattered across the codebase.
 - Use Laravel's pipeline pattern and middleware for extensible request handling.
 - Prefer strategy/policy patterns over conditionals.
-
-```php
-// Enum with behavior — extend by adding cases, not modifying consumers
-enum OrderStatus: string
-{
-    case Pending = 'pending';
-    case Confirmed = 'confirmed';
-    case Delivered = 'delivered';
-    case Cancelled = 'cancelled';
-
-    public function canTransitionTo(self $next): bool
-    {
-        return match ($this) {
-            self::Pending => in_array($next, [self::Confirmed, self::Cancelled]),
-            self::Confirmed => in_array($next, [self::Delivered, self::Cancelled]),
-            default => false,
-        };
-    }
-}
-```
 
 ### L — Liskov Substitution Principle
 
@@ -127,19 +72,6 @@ Depend on abstractions, not concretions.
 - Inject services via constructor or method injection.
 - Use Laravel's service container for binding.
 - Never instantiate services directly in controllers.
-
-```php
-// Good — injected via container
-public function __construct(
-    private readonly CommissionService $commissionService,
-) {}
-
-// Bad — tightly coupled
-public function store()
-{
-    $service = new CommissionService();
-}
-```
 
 ---
 
@@ -193,7 +125,7 @@ public function store()
 
 Before submitting code, verify:
 
-- [ ] Follows PSR-12 (run `vendor/bin/pint --dirty`)
+- [ ] Follows PSR-12 (run Pint with `--dirty`)
 - [ ] No business logic in controllers
 - [ ] Form Request used for validation
 - [ ] Store-scoped queries filter by `store_id`
