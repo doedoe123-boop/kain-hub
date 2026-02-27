@@ -20,6 +20,23 @@ class StoreLogin extends Component
     public bool $remember = false;
 
     /**
+     * The login token from the URL.
+     */
+    public string $token = '';
+
+    public function mount(string $token = ''): void
+    {
+        $this->token = $token;
+
+        // Validate the token matches the current store
+        $store = $this->resolveCurrentStore();
+
+        if (! $store || $store->login_token !== $this->token) {
+            abort(404);
+        }
+    }
+
+    /**
      * Resolve the current store from the subdomain.
      */
     private function resolveCurrentStore(): ?Store
@@ -86,7 +103,7 @@ class StoreLogin extends Component
 
         session()->regenerate();
 
-        $this->redirect('/lunar');
+        $this->redirect('/store/dashboard/tk_'.config('app.store_path_token'));
     }
 
     public function render(): \Illuminate\View\View

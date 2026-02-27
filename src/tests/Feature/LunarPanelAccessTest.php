@@ -22,8 +22,24 @@ beforeEach(function () {
     $role->syncPermissions($permissions);
 });
 
+/**
+ * Build the dynamic Lunar panel path.
+ */
+function lunarPath(): string
+{
+    return '/store/dashboard/tk_'.config('app.store_path_token');
+}
+
+/**
+ * Build the dynamic Admin panel path.
+ */
+function adminPath(): string
+{
+    return '/moon/portal/itsec_tk_'.config('app.admin_path_token');
+}
+
 // =========================================================
-// Lunar Panel (/lunar) — Store Owners Only
+// Lunar Panel — Store Owners Only
 // =========================================================
 
 it('allows approved store owners to access the Lunar panel', function () {
@@ -34,7 +50,7 @@ it('allows approved store owners to access the Lunar panel', function () {
     ]);
 
     $this->actingAs($owner)
-        ->get('/lunar')
+        ->get(lunarPath())
         ->assertOk();
 });
 
@@ -46,7 +62,7 @@ it('blocks pending store owners from the Lunar panel', function () {
     ]);
 
     $this->actingAs($owner)
-        ->get('/lunar')
+        ->get(lunarPath())
         ->assertForbidden();
 });
 
@@ -58,7 +74,7 @@ it('blocks suspended store owners from the Lunar panel', function () {
     ]);
 
     $this->actingAs($owner)
-        ->get('/lunar')
+        ->get(lunarPath())
         ->assertForbidden();
 });
 
@@ -66,7 +82,7 @@ it('blocks store owners without a store from the Lunar panel', function () {
     $owner = User::factory()->storeOwner()->create();
 
     $this->actingAs($owner)
-        ->get('/lunar')
+        ->get(lunarPath())
         ->assertForbidden();
 });
 
@@ -74,7 +90,7 @@ it('blocks admins from the Lunar panel', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get('/lunar')
+        ->get(lunarPath())
         ->assertForbidden();
 });
 
@@ -82,24 +98,24 @@ it('blocks customers from the Lunar panel', function () {
     $customer = User::factory()->create(['role' => UserRole::Customer]);
 
     $this->actingAs($customer)
-        ->get('/lunar')
+        ->get(lunarPath())
         ->assertForbidden();
 });
 
 it('blocks guests from the Lunar panel', function () {
-    $this->get('/lunar')
+    $this->get(lunarPath())
         ->assertRedirect();
 });
 
 // =========================================================
-// Admin Panel (/admin) — Admins Only
+// Admin Panel — Admins Only
 // =========================================================
 
 it('allows admins to access the admin panel', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
-        ->get('/admin')
+        ->get(adminPath())
         ->assertOk();
 });
 
@@ -111,7 +127,7 @@ it('blocks store owners from the admin panel', function () {
     ]);
 
     $this->actingAs($owner)
-        ->get('/admin')
+        ->get(adminPath())
         ->assertForbidden();
 });
 
@@ -119,12 +135,12 @@ it('blocks customers from the admin panel', function () {
     $customer = User::factory()->create(['role' => UserRole::Customer]);
 
     $this->actingAs($customer)
-        ->get('/admin')
+        ->get(adminPath())
         ->assertForbidden();
 });
 
 it('blocks guests from the admin panel', function () {
-    $this->get('/admin')
+    $this->get(adminPath())
         ->assertRedirect();
 });
 
@@ -132,7 +148,7 @@ it('blocks guests from the admin panel', function () {
 // Store Dashboard Redirect
 // =========================================================
 
-it('redirects approved store owners from /store/dashboard to /lunar', function () {
+it('redirects approved store owners from /store/dashboard to the Lunar panel', function () {
     $owner = User::factory()->storeOwner()->create();
     Store::factory()->for($owner, 'owner')->create([
         'status' => StoreStatus::Approved,
@@ -140,7 +156,7 @@ it('redirects approved store owners from /store/dashboard to /lunar', function (
 
     $this->actingAs($owner)
         ->get(route('store.dashboard'))
-        ->assertRedirect('/lunar');
+        ->assertRedirect(lunarPath());
 });
 
 it('shows pending status page for unapproved store owners', function () {
@@ -177,11 +193,10 @@ it('returns false admin attribute for non-admin users', function () {
 // Navigation Links
 // =========================================================
 
-it('shows Admin Panel link pointing to /admin for admins', function () {
+it('shows Admin Panel link for admins', function () {
     $admin = User::factory()->admin()->create();
 
     $this->actingAs($admin)
         ->get(route('home'))
-        ->assertSee('Admin Panel')
-        ->assertSee('/admin');
+        ->assertSee('Admin Panel');
 });

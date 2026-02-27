@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Encrypt existing plaintext sensitive fields in the stores table.
@@ -17,8 +19,10 @@ return new class extends Migration
     public function up(): void
     {
         // Step 1: Widen columns to TEXT so encrypted payloads fit
-        DB::statement('ALTER TABLE stores ALTER COLUMN id_number TYPE TEXT');
-        DB::statement('ALTER TABLE stores ALTER COLUMN business_permit TYPE TEXT');
+        Schema::table('stores', function (Blueprint $table) {
+            $table->text('id_number')->nullable()->change();
+            $table->text('business_permit')->nullable()->change();
+        });
 
         // Step 2: Encrypt existing plaintext values
         DB::table('stores')
@@ -101,8 +105,10 @@ return new class extends Migration
             });
 
         // Revert column types
-        DB::statement('ALTER TABLE stores ALTER COLUMN id_number TYPE VARCHAR(255)');
-        DB::statement('ALTER TABLE stores ALTER COLUMN business_permit TYPE VARCHAR(255)');
+        Schema::table('stores', function (Blueprint $table) {
+            $table->string('id_number', 255)->nullable()->change();
+            $table->string('business_permit', 255)->nullable()->change();
+        });
     }
 
     /**

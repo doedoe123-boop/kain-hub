@@ -7,6 +7,8 @@
         .header { text-align: center; padding: 20px 0; }
         .content { background: #f9fafb; border-radius: 8px; padding: 24px; margin: 20px 0; }
         .btn { display: inline-block; background: #4f46e5; color: #fff; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; margin-top: 16px; }
+        .warning { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 16px; margin-top: 16px; font-size: 13px; color: #92400e; }
+        .token-box { background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 6px; padding: 12px 16px; margin: 12px 0; word-break: break-all; font-family: monospace; font-size: 13px; color: #4338ca; }
         .footer { text-align: center; font-size: 12px; color: #9ca3af; margin-top: 32px; }
     </style>
 </head>
@@ -22,11 +24,16 @@
     <div class="content">
         <h3 style="margin-top: 0;">Getting Started</h3>
         <p>You can now log in to your store dashboard and start managing your products, orders, and settings.</p>
-        <p>Your store login page:</p>
+
+        <p><strong>Your unique store login link:</strong></p>
+        <div class="token-box">{{ $loginUrl }}</div>
+
         <p><a href="{{ $loginUrl }}" class="btn">Go to Your Store</a></p>
-        <p style="font-size: 14px; color: #6b7280; margin-top: 12px;">
-            Or copy this link: <a href="{{ $loginUrl }}">{{ $loginUrl }}</a>
-        </p>
+
+        <div class="warning">
+            <strong>🔒 Important — Keep this link private!</strong><br>
+            This login URL is unique to your store. Do not share it publicly. Only share it with your authorized staff members who need access to your store dashboard.
+        </div>
     </div>
 
     <p>If you have any questions or need help getting started, feel free to reach out to our support team.</p>

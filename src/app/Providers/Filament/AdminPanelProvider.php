@@ -23,7 +23,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->id('admin')
-            ->path('admin')
+            ->path('moon/portal/itsec_tk_'.config('app.admin_path_token'))
             ->brandName('Marketplace Admin')
             ->login()
             ->authGuard('web')

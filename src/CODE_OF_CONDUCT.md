@@ -110,7 +110,7 @@ Depend on abstractions, not concretions.
 - Write **feature tests** for all endpoints and flows.
 - Use **factories** with states for test data.
 - Tests must be independent — no shared state between tests.
-- Run `php artisan test --compact` before committing.
+- Run `docker compose exec app php artisan test --compact` before committing.
 
 ### Frontend
 
@@ -131,7 +131,7 @@ Before submitting code, verify:
 - [ ] Store-scoped queries filter by `store_id`
 - [ ] Relationships use eager loading where needed
 - [ ] Tests written for new functionality
-- [ ] All tests pass (`php artisan test --compact`)
+- [ ] All tests pass (`docker compose exec app php artisan test --compact`)
 - [ ] No `env()` calls outside config files
 - [ ] Named routes used for all links
 - [ ] PHPDoc blocks on public methods

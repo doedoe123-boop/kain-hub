@@ -447,15 +447,15 @@ it('returns 404 for login route', function () {
 
 // --- Navigation Links ---
 
-it('shows Register as Supplier link for customers', function () {
+it('shows Register as Seller link for customers', function () {
     $customer = User::factory()->create(['role' => UserRole::Customer]);
 
     $this->actingAs($customer)
         ->get(route('home'))
-        ->assertSee('Become a Supplier');
+        ->assertSee('Become a Seller');
 });
 
-it('does not show Become a Supplier link for store owners', function () {
+it('shows Dashboard link instead of top-bar seller CTA for store owners', function () {
     $owner = User::factory()->storeOwner()->create();
     Store::factory()->for($owner, 'owner')->create([
         'status' => StoreStatus::Approved,
@@ -463,6 +463,5 @@ it('does not show Become a Supplier link for store owners', function () {
 
     $this->actingAs($owner)
         ->get(route('home'))
-        ->assertDontSee('Become a Supplier')
         ->assertSee('Dashboard');
 });

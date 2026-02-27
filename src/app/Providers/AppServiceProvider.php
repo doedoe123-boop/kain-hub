@@ -25,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
 
         LunarPanel::panel(fn ($panel) => $panel
             ->authGuard('web')
+            ->path('store/dashboard/tk_'.config('app.store_path_token'))
             ->login(null)
             ->discoverResources(
                 in: app_path('Filament/Resources'),

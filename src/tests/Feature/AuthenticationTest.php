@@ -45,6 +45,6 @@ it('blocks non-admin from accessing lunar panel', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->get('/lunar')
+        ->get('/store/dashboard/tk_'.config('app.store_path_token'))
         ->assertStatus(403);
 });

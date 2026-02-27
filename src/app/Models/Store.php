@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -17,6 +18,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property int $user_id
  * @property string $name
  * @property string $slug
+ * @property ?string $login_token
  * @property ?string $description
  * @property ?string $logo
  * @property ?array $address
@@ -55,6 +57,7 @@ class Store extends Model
         'user_id',
         'name',
         'slug',
+        'login_token',
         'description',
         'logo',
         'address',
@@ -136,6 +139,9 @@ class Store extends Model
 
     /**
      * Get the full login URL for this store's subdomain.
+     *
+     * Includes the unique login token in the path so each store
+     * has a non-guessable login URL.
      */
     public function loginUrl(): string
     {
@@ -149,6 +155,21 @@ class Store extends Model
             $url .= ':'.$port;
         }
 
-        return $url.'/login';
+        return $url.'/portal/'.$this->login_token.'/login';
+    }
+
+    /**
+     * Generate a unique login token for this store.
+     *
+     * Called during store approval so each store gets
+     * its own non-guessable access point.
+     */
+    public function generateLoginToken(): self
+    {
+        $this->update([
+            'login_token' => 'stk_'.Str::random(24),
+        ]);
+
+        return $this;
     }
 }

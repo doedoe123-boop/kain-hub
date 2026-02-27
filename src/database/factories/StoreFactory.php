@@ -7,6 +7,7 @@ use App\Models\User;
 use App\StoreStatus;
 use App\UserRole;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Store>
@@ -24,6 +25,7 @@ class StoreFactory extends Factory
             'user_id' => User::factory()->state(['role' => UserRole::StoreOwner]),
             'name' => fake()->company(),
             'slug' => fake()->unique()->slug(),
+            'login_token' => 'stk_'.Str::random(24),
             'description' => fake()->sentence(),
             'commission_rate' => 15.00,
             'status' => StoreStatus::Approved,
@@ -43,6 +45,7 @@ class StoreFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'status' => StoreStatus::Pending,
+            'login_token' => null,
         ]);
     }
 

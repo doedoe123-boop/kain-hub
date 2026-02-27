@@ -29,6 +29,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Panel Path Token
+    |--------------------------------------------------------------------------
+    |
+    | An obscure token used in the admin panel URL path to prevent discovery
+    | by automated scanners. Change this per environment via ADMIN_PATH_TOKEN.
+    |
+    */
+
+    'admin_path_token' => env('ADMIN_PATH_TOKEN', 'x9f3kw7m2v'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Store Owner Panel Path Token
+    |--------------------------------------------------------------------------
+    |
+    | An obscure token used in the store owner panel URL path to prevent
+    | discovery by automated scanners. Change via STORE_PATH_TOKEN.
+    |
+    */
+
+    'store_path_token' => env('STORE_PATH_TOKEN', 'r4h8jq5n1p'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

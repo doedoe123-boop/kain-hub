@@ -125,7 +125,7 @@ it('allows staff of approved stores to access the Lunar panel', function () {
     $staff = createStaffForStore($store);
 
     $this->actingAs($staff)
-        ->get('/lunar')
+        ->get('/store/dashboard/tk_'.config('app.store_path_token'))
         ->assertOk();
 });
 
@@ -137,7 +137,7 @@ it('blocks staff of pending stores from the Lunar panel', function () {
     $staff = createStaffForStore($store);
 
     $this->actingAs($staff)
-        ->get('/lunar')
+        ->get('/store/dashboard/tk_'.config('app.store_path_token'))
         ->assertForbidden();
 });
 
@@ -149,7 +149,7 @@ it('blocks staff of suspended stores from the Lunar panel', function () {
     $staff = createStaffForStore($store);
 
     $this->actingAs($staff)
-        ->get('/lunar')
+        ->get('/store/dashboard/tk_'.config('app.store_path_token'))
         ->assertForbidden();
 });
 
@@ -158,7 +158,7 @@ it('blocks staff without a store_id from the Lunar panel', function () {
     $staff->assignRole('staff');
 
     $this->actingAs($staff)
-        ->get('/lunar')
+        ->get('/store/dashboard/tk_'.config('app.store_path_token'))
         ->assertForbidden();
 });
 
@@ -173,7 +173,7 @@ it('allows staff to login via their store subdomain', function () {
     app()->instance('currentStore', $store);
 
     Livewire::withoutLazyLoading()
-        ->test(StoreLogin::class)
+        ->test(StoreLogin::class, ['token' => $store->login_token])
         ->set('email', $staff->email)
         ->set('password', 'password')
         ->call('authenticate');
@@ -196,7 +196,7 @@ it('rejects staff login on a different store subdomain', function () {
     app()->instance('currentStore', $store2);
 
     Livewire::withoutLazyLoading()
-        ->test(StoreLogin::class)
+        ->test(StoreLogin::class, ['token' => $store2->login_token])
         ->set('email', $staff->email)
         ->set('password', 'password')
         ->call('authenticate')
@@ -212,7 +212,7 @@ it('rejects staff login with wrong password', function () {
     app()->instance('currentStore', $store);
 
     Livewire::withoutLazyLoading()
-        ->test(StoreLogin::class)
+        ->test(StoreLogin::class, ['token' => $store->login_token])
         ->set('email', $staff->email)
         ->set('password', 'wrong-password')
         ->call('authenticate')

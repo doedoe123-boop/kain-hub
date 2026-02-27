@@ -310,6 +310,7 @@ class StoreResource extends Resource
                     ->visible(fn (Store $record): bool => $record->status !== StoreStatus::Approved)
                     ->action(function (Store $record): void {
                         $record->update(['status' => StoreStatus::Approved]);
+                        $record->generateLoginToken();
 
                         Mail::to($record->owner->email)->send(new StoreApproved($record));
                     }),

@@ -181,12 +181,12 @@
                         @auth
                             @if (auth()->user()->isAdmin())
                                 <span class="mx-1.5 h-5 w-px bg-slate-200 dark:bg-slate-700"></span>
-                                <a href="/admin" class="text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 px-3.5 py-2 rounded-xl transition-all duration-200 font-semibold">Admin</a>
+                                <a href="/moon/portal/itsec_tk_{{ config('app.admin_path_token') }}" class="text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 px-3.5 py-2 rounded-xl transition-all duration-200 font-semibold">Admin Panel</a>
                             @endif
                             @if (auth()->user()->isStoreOwner())
                                 @if (auth()->user()->store?->isApproved())
                                     <span class="mx-1.5 h-5 w-px bg-slate-200 dark:bg-slate-700"></span>
-                                    <a href="/lunar" class="text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10 px-3.5 py-2 rounded-xl transition-all duration-200 font-semibold">Dashboard</a>
+                                    <a href="/store/dashboard/tk_{{ config('app.store_path_token') }}" class="text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10 px-3.5 py-2 rounded-xl transition-all duration-200 font-semibold">Dashboard</a>
                                 @else
                                     <span class="mx-1.5 h-5 w-px bg-slate-200 dark:bg-slate-700"></span>
                                     <a href="{{ route('store.pending') }}" class="text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 px-3.5 py-2 rounded-xl transition-all duration-200 font-semibold inline-flex items-center gap-1.5">

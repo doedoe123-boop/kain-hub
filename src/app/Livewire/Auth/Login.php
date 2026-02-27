@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\UserRole;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
@@ -43,7 +44,7 @@ class Login extends Component
     private function dashboardRoute(): string
     {
         return match (Auth::user()->role) {
-            UserRole::Admin => '/admin',
+            UserRole::Admin => Filament::getPanel('admin')->getUrl(),
             UserRole::StoreOwner => route('store.dashboard'),
             default => '/',
         };

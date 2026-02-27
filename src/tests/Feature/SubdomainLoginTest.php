@@ -33,6 +33,14 @@ function storeUrl(string $slug, string $path = '/'): string
     return "http://{$slug}.{$domain}{$path}";
 }
 
+/**
+ * Build the token-based login path for a store.
+ */
+function storeLoginPath(Store $store): string
+{
+    return '/portal/'.$store->login_token.'/login';
+}
+
 // =========================================================
 // Subdomain Resolution
 // =========================================================
@@ -43,36 +51,48 @@ it('shows the store login page on a valid subdomain', function () {
         'status' => StoreStatus::Approved,
     ]);
 
-    $this->get(storeUrl('nelsons-kitchen', '/login'))
+    $this->get(storeUrl('nelsons-kitchen', storeLoginPath($store)))
         ->assertOk()
         ->assertSee('Store Owner Login')
         ->assertSee($store->name);
 });
 
 it('returns 404 for a non-existent store subdomain', function () {
-    $this->get(storeUrl('fake-store', '/login'))
+    $this->get(storeUrl('fake-store', '/portal/invalid_token/login'))
         ->assertNotFound();
 });
 
 it('returns 403 for a suspended store subdomain', function () {
-    Store::factory()->create([
+    $store = Store::factory()->create([
         'slug' => 'suspended-store',
         'status' => StoreStatus::Suspended,
+        'login_token' => 'stk_suspended_test_token_123',
     ]);
 
-    $this->get(storeUrl('suspended-store', '/login'))
+    $this->get(storeUrl('suspended-store', storeLoginPath($store)))
         ->assertForbidden();
 });
 
-it('allows pending store subdomain access to login page', function () {
+it('returns 404 for a pending store with no token', function () {
     Store::factory()->create([
         'slug' => 'pending-store',
         'status' => StoreStatus::Pending,
+        'login_token' => null,
     ]);
 
-    $this->get(storeUrl('pending-store', '/login'))
-        ->assertOk()
-        ->assertSee('Store Owner Login');
+    $this->get(storeUrl('pending-store', '/portal/anything/login'))
+        ->assertNotFound();
+});
+
+it('returns 404 for a wrong login token', function () {
+    Store::factory()->create([
+        'slug' => 'test-store',
+        'status' => StoreStatus::Approved,
+        'login_token' => 'stk_correct_token',
+    ]);
+
+    $this->get(storeUrl('test-store', '/portal/stk_wrong_token/login'))
+        ->assertNotFound();
 });
 
 // =========================================================
@@ -89,7 +109,7 @@ it('authenticates the store owner on their subdomain', function () {
     app()->instance('currentStore', $store);
 
     Livewire::withoutLazyLoading()
-        ->test(StoreLogin::class)
+        ->test(StoreLogin::class, ['token' => $store->login_token])
         ->set('email', $owner->email)
         ->set('password', 'password')
         ->call('authenticate');
@@ -107,7 +127,7 @@ it('rejects login with wrong credentials on subdomain', function () {
     app()->instance('currentStore', $store);
 
     Livewire::withoutLazyLoading()
-        ->test(StoreLogin::class)
+        ->test(StoreLogin::class, ['token' => $store->login_token])
         ->set('email', $owner->email)
         ->set('password', 'wrong-password')
         ->call('authenticate')
@@ -134,7 +154,7 @@ it('rejects a user who does not own the subdomain store', function () {
     app()->instance('currentStore', $otherStore);
 
     Livewire::withoutLazyLoading()
-        ->test(StoreLogin::class)
+        ->test(StoreLogin::class, ['token' => $otherStore->login_token])
         ->set('email', $owner->email)
         ->set('password', 'password')
         ->call('authenticate')
@@ -153,7 +173,7 @@ it('rejects a customer trying to login on a store subdomain', function () {
     app()->instance('currentStore', $store);
 
     Livewire::withoutLazyLoading()
-        ->test(StoreLogin::class)
+        ->test(StoreLogin::class, ['token' => $store->login_token])
         ->set('email', $customer->email)
         ->set('password', 'password')
         ->call('authenticate')
@@ -166,7 +186,7 @@ it('rejects a customer trying to login on a store subdomain', function () {
 // Subdomain Root Redirect
 // =========================================================
 
-it('redirects authenticated user from subdomain root to /lunar', function () {
+it('redirects authenticated user from subdomain root to Lunar panel', function () {
     $owner = User::factory()->storeOwner()->create();
     $owner->assignRole('store_owner');
     $store = Store::factory()->for($owner, 'owner')->create([
@@ -176,15 +196,15 @@ it('redirects authenticated user from subdomain root to /lunar', function () {
 
     $this->actingAs($owner)
         ->get(storeUrl('test-store', '/'))
-        ->assertRedirect('/lunar');
+        ->assertRedirect('/store/dashboard/tk_'.config('app.store_path_token'));
 });
 
-it('redirects guest from subdomain root to /login', function () {
-    Store::factory()->create([
+it('redirects guest from subdomain root to token login', function () {
+    $store = Store::factory()->create([
         'slug' => 'test-store',
         'status' => StoreStatus::Approved,
     ]);
 
     $this->get(storeUrl('test-store', '/'))
-        ->assertRedirect('/login');
+        ->assertRedirect('/portal/'.$store->login_token.'/login');
 });

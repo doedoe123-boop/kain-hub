@@ -37,10 +37,14 @@ class StoreService
 
     /**
      * Approve a pending store.
+     *
+     * Generates a unique login token so the owner
+     * receives a non-guessable login URL.
      */
     public function approve(Store $store): Store
     {
         $store->update(['status' => StoreStatus::Approved]);
+        $store->generateLoginToken();
 
         return $store->refresh();
     }
@@ -61,6 +65,9 @@ class StoreService
 
     /**
      * Reinstate a suspended store.
+     *
+     * Generates a fresh login token for security (old links
+     * from before suspension are invalidated).
      */
     public function reinstate(Store $store): Store
     {
@@ -69,6 +76,7 @@ class StoreService
             'suspended_at' => null,
             'suspension_reason' => null,
         ]);
+        $store->generateLoginToken();
 
         return $store->refresh();
     }

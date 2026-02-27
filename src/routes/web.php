@@ -66,7 +66,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:store_owner')->group(function () {
         Route::get('/store/dashboard', function () {
             if (auth()->user()->store?->isApproved()) {
-                return redirect('/lunar');
+                return redirect('/store/dashboard/tk_'.config('app.store_path_token'));
             }
 
             return view('store.dashboard');

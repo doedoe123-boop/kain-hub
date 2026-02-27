@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Store\StoreLogin;
+use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -10,18 +11,25 @@ use Illuminate\Support\Facades\Route;
 Route::domain('{storeSlug}.'.config('app.domain'))
     ->middleware(['web', 'store.subdomain'])
     ->group(function () {
-        // Store login page (guests only on this subdomain)
-        Route::get('/login', StoreLogin::class)
+        // Token-protected store login page (each store has a unique token)
+        Route::get('/portal/{token}/login', StoreLogin::class)
             ->middleware('guest')
             ->name('store.subdomain.login');
 
-        // Subdomain root redirects to Lunar panel
+        // Subdomain root redirects to login with token
         Route::get('/', function () {
             if (Auth::check()) {
-                return redirect('/lunar');
+                return redirect('/store/dashboard/tk_'.config('app.store_path_token'));
             }
 
-            return redirect('/login');
+            $store = app('currentStore');
+
+            if ($store && $store->login_token) {
+                return redirect('/portal/'.$store->login_token.'/login');
+            }
+
+            // Fallback if store has no token yet (pending stores)
+            return abort(404);
         })->name('store.subdomain.home');
 
         // Logout from subdomain
@@ -31,6 +39,12 @@ Route::domain('{storeSlug}.'.config('app.domain'))
             session()->invalidate();
             session()->regenerateToken();
 
-            return redirect('/login');
+            $store = app('currentStore');
+
+            if ($store && $store->login_token) {
+                return redirect('/portal/'.$store->login_token.'/login');
+            }
+
+            return redirect('/');
         })->middleware('auth')->name('store.subdomain.logout');
     });
