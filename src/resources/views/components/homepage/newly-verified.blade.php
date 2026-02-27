@@ -5,7 +5,7 @@
             <h2 class="text-lg font-bold text-slate-800 dark:text-white">Newly Verified Stores</h2>
             <a href="{{ route('stores.index') }}" class="text-sm text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 font-medium transition-colors duration-200 inline-flex items-center gap-1">
                 View all
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                <x-heroicon-o-arrow-right class="w-3.5 h-3.5" />
             </a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -19,7 +19,7 @@
                             <div class="flex items-center gap-2">
                                 <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 truncate transition-colors duration-200">{{ $store->name }}</h3>
                                 @if ($store->business_permit)
-                                    <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.403 12.652a3 3 0 000-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.546-4.46a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" /></svg>
+                                    <x-heroicon-s-check-badge class="w-4 h-4 text-emerald-500 shrink-0" />
                                 @endif
                             </div>
                             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400 line-clamp-1">{{ $store->description ?? 'Verified supplier' }}</p>

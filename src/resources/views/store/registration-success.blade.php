@@ -1,9 +1,7 @@
 <x-layouts.guest>
     <div class="max-w-lg mx-auto bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-8 sm:p-10 shadow-lg dark:shadow-none text-center animate-scale-in">
         <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 mb-6">
-            <svg class="h-8 w-8 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+            <x-heroicon-o-check-circle class="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
         </div>
 
         <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Application Submitted!</h2>
@@ -14,9 +12,7 @@
 
         <div class="bg-sky-50 dark:bg-sky-900/20 rounded-xl p-6 mb-8 text-left border border-sky-100 dark:border-sky-800">
             <h3 class="text-sm font-semibold text-sky-800 dark:text-sky-300 mb-3 flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                </svg>
+                <x-heroicon-o-information-circle class="w-4 h-4" />
                 What happens next?
             </h3>
             <ol class="text-sm text-sky-700 dark:text-sky-300 space-y-2.5 list-decimal list-inside leading-relaxed">
@@ -29,9 +25,7 @@
 
         <a href="{{ route('home') }}"
             class="inline-flex items-center px-5 py-2.5 text-sm font-semibold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-900/20 rounded-xl hover:bg-sky-100 dark:hover:bg-sky-900/40 border border-sky-200 dark:border-sky-700 transition-colors duration-200">
-            <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-            </svg>
+            <x-heroicon-o-arrow-left class="w-4 h-4 mr-2" />
             Back to homepage
         </a>
     </div>

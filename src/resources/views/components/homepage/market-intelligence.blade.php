@@ -16,7 +16,7 @@
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-5">
                         <div class="h-11 w-11 rounded-xl bg-amber-500/10 border border-amber-500/10 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375" /></svg>
+                            <x-heroicon-o-circle-stack class="w-5 h-5 text-amber-400" />
                         </div>
                         <div>
                             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">Steel (Rebar)</p>
@@ -25,7 +25,7 @@
                     <p class="text-2xl font-extrabold text-white tabular-nums tracking-tight">₱42,500<span class="text-xs text-slate-600 font-semibold ml-1">/ton</span></p>
                     <div class="mt-3 flex items-center gap-2 text-xs">
                         <span class="neon-green font-extrabold">+2.3%</span>
-                        <svg class="w-3.5 h-3.5 text-[#00ff88]" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" /></svg>
+                        <x-heroicon-o-arrow-trending-up class="w-3.5 h-3.5 text-[#00ff88]" />
                         <span class="text-slate-600 font-medium">vs last month</span>
                     </div>
                     {{-- Spark line --}}
@@ -43,7 +43,7 @@
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-5">
                         <div class="h-11 w-11 rounded-xl bg-slate-500/10 border border-slate-500/10 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 0h.008v.008h-.008V7.5z" /></svg>
+                            <x-heroicon-o-building-office-2 class="w-5 h-5 text-slate-400" />
                         </div>
                         <div>
                             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">Portland Cement</p>
@@ -52,7 +52,7 @@
                     <p class="text-2xl font-extrabold text-white tabular-nums tracking-tight">₱268<span class="text-xs text-slate-600 font-semibold ml-1">/bag</span></p>
                     <div class="mt-3 flex items-center gap-2 text-xs">
                         <span class="neon-red font-extrabold">-0.8%</span>
-                        <svg class="w-3.5 h-3.5 text-[#ff4466]" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" /></svg>
+                        <x-heroicon-o-arrow-trending-down class="w-3.5 h-3.5 text-[#ff4466]" />
                         <span class="text-slate-600 font-medium">vs last month</span>
                     </div>
                     <div class="mt-4 flex items-end gap-px h-8">
@@ -69,7 +69,7 @@
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-5">
                         <div class="h-11 w-11 rounded-xl bg-sky-500/10 border border-sky-500/10 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-sky-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" /></svg>
+                            <x-heroicon-o-globe-alt class="w-5 h-5 text-sky-400" />
                         </div>
                         <div>
                             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">Import vs Local</p>
@@ -94,7 +94,7 @@
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-5">
                         <div class="h-11 w-11 rounded-xl bg-violet-500/10 border border-violet-500/10 flex items-center justify-center">
-                            <svg class="w-5 h-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <x-heroicon-o-clock class="w-5 h-5 text-violet-400" />
                         </div>
                         <div>
                             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">Avg Lead Time</p>

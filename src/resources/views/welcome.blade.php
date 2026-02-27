@@ -1,31 +1,19 @@
 <x-layouts.app>
-    {{-- 1. Hero: Search-first marketplace hub --}}
+    {{-- 1. Hero — Clear positioning --}}
     <x-homepage.procurement-panel />
 
-    {{-- 2. Why NegosyoHub — 3-pillar value proposition --}}
-    <x-homepage.why-negosyohub />
-
-    {{-- 3. Trending Categories --}}
+    {{-- 2. Industry Sectors — The differentiator --}}
     <x-homepage.trending-categories />
 
-    {{-- 4. Featured Stores (max 6) --}}
-    <x-homepage.supplier-listings />
+    {{-- 3. Why Sell Here — Value proposition --}}
+    <x-homepage.why-negosyohub />
 
-    {{-- 5. Marketplace Verticals (Retail + Real Estate) --}}
-    <x-homepage.marketplace-verticals />
-
-    {{-- 6. How It Works — 3-step seller onboarding --}}
+    {{-- 4. How It Works — 3 simple steps --}}
     <x-homepage.how-it-works />
 
-    {{-- 7. Market Pulse: Recent Activity + Newly Verified --}}
-    <x-homepage.recent-contracts />
-
-    {{-- 8. Marketplace Insights (Financial Dashboard) --}}
-    <x-homepage.market-intelligence />
-
-    {{-- 9. Platform Trust & Compliance --}}
+    {{-- 5. Trust & Compliance --}}
     <x-homepage.compliance-strip />
 
-    {{-- 10. CTA: Join the Marketplace --}}
+    {{-- 6. Final CTA --}}
     <x-homepage.supplier-cta />
 </x-layouts.app>

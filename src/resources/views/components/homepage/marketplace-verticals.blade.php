@@ -24,7 +24,7 @@
                     </div>
                     <div class="flex items-center gap-4 mb-4">
                         <div class="h-14 w-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center">
-                            <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243" /></svg>
+                            <x-heroicon-o-building-storefront class="w-7 h-7 text-white" />
                         </div>
                         <div>
                             <h3 class="text-xl font-extrabold text-white tracking-tight">Retail & General Merchandise</h3>
@@ -39,7 +39,7 @@
                     </div>
                     <a href="{{ route('register.sector') }}" class="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-sky-700 bg-white hover:bg-sky-50 rounded-xl shadow-lg transition-all duration-200 hover:-translate-y-0.5 group">
                         Sell on NegosyoHub
-                        <svg class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                        <x-heroicon-o-arrow-right class="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     </a>
                 </div>
             </div>
@@ -51,13 +51,13 @@
                 <div class="relative z-10">
                     <div class="flex items-center gap-3 mb-5">
                         <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-500/15 text-violet-400 text-[10px] font-extrabold uppercase tracking-widest border border-violet-500/20">
-                            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            <x-heroicon-o-clock class="w-3 h-3" />
                             Coming Soon
                         </span>
                     </div>
                     <div class="flex items-center gap-4 mb-4">
                         <div class="h-14 w-14 rounded-2xl bg-violet-500/10 border border-violet-500/15 flex items-center justify-center">
-                            <svg class="w-7 h-7 text-violet-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 0h.008v.008h-.008V7.5z" /></svg>
+                            <x-heroicon-o-building-office-2 class="w-7 h-7 text-violet-400" />
                         </div>
                         <div>
                             <h3 class="text-xl font-extrabold text-white tracking-tight">Real Estate</h3>
@@ -71,7 +71,7 @@
                         @endforeach
                     </div>
                     <button class="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold text-violet-300 bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 rounded-xl transition-all duration-200 cursor-default">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+                        <x-heroicon-o-bell-alert class="w-4 h-4" />
                         Notify Me
                     </button>
                 </div>
