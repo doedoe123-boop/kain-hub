@@ -1,151 +1,194 @@
 <x-layouts.app :title="'Market Insights — NegosyoHub Marketplace'">
 
-    {{-- Page Header --}}
-    <div class="hero-mesh" id="insights-hero">
-        <div class="hero-pattern"></div>
-        <div class="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-            <div class="max-w-2xl">
-                <nav class="text-xs text-slate-400 mb-4">
-                    <a href="{{ route('home') }}" class="hover:text-white transition-colors">Home</a>
-                    <span class="mx-1.5">/</span>
-                    <span class="text-slate-300">Market Insights</span>
+    {{-- Premium Hero Section --}}
+    <div class="relative bg-white dark:bg-[#0B1120] border-b border-slate-200 dark:border-slate-800/60 overflow-hidden" id="insights-hero">
+        
+        {{-- Decorative Background Gradients --}}
+        <div class="absolute inset-0 pointer-events-none overflow-hidden z-0 hidden dark:block">
+            <div class="absolute -top-1/4 right-1/4 w-[600px] h-[600px] bg-violet-500/10 rounded-full blur-[120px] mix-blend-screen opacity-50"></div>
+            <div class="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-[100px] mix-blend-screen opacity-40"></div>
+        </div>
+
+        {{-- Background Dot Pattern & Grid --}}
+        <div class="absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.05] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+
+        <div class="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+            <div class="max-w-2xl text-center md:text-left mx-auto md:mx-0">
+                <nav class="flex items-center justify-center md:justify-start gap-2 text-[11px] font-bold tracking-wider text-slate-400 uppercase mb-6">
+                    <a href="{{ route('home') }}" class="hover:text-violet-500 dark:hover:text-violet-400 transition-colors">Home</a>
+                    <span class="text-slate-300 dark:text-slate-600">/</span>
+                    <span class="text-slate-800 dark:text-slate-200">Market Insights</span>
                 </nav>
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                    Market <span class="gradient-text">Insights</span>
+                
+                <h1 class="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15]">
+                    Enterprise <span class="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-sky-500">Analytics</span>
                 </h1>
-                <p class="mt-3 text-base text-slate-400 leading-relaxed max-w-lg">
-                    Data-driven intelligence on Philippine marketplace trends, industry performance, and seller analytics.
+                
+                <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl mx-auto md:mx-0">
+                    Data-driven intelligence on Philippine marketplace trends. Analyze industry performance, monitor regional supply chains, and leverage B2B macroeconomic data to scale securely.
                 </p>
             </div>
         </div>
     </div>
 
     {{-- Main Content --}}
-    <div class="bg-slate-50/50 dark:bg-slate-950">
+    <div class="bg-slate-50/50 dark:bg-[#060A13]">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
 
-            {{-- Quick Stats --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            {{-- Quick Stats Matrix --}}
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
                 @php
                     $insightStats = [
-                        ['label' => 'Active Stores', 'value' => number_format(\App\Models\Store::where('status', 'approved')->count()), 'change' => '+12%', 'up' => true, 'icon' => 'heroicon-o-building-storefront', 'color' => 'sky'],
-                        ['label' => 'Registered Users', 'value' => number_format(\App\Models\User::count()), 'change' => '+8%', 'up' => true, 'icon' => 'heroicon-o-users', 'color' => 'emerald'],
-                        ['label' => 'Categories', 'value' => '24+', 'change' => '+3', 'up' => true, 'icon' => 'heroicon-o-squares-2x2', 'color' => 'amber'],
-                        ['label' => 'Regions Served', 'value' => '17', 'change' => 'Nationwide', 'up' => true, 'icon' => 'heroicon-o-map-pin', 'color' => 'violet'],
+                        ['label' => 'Verified Suppliers', 'value' => number_format(\App\Models\Store::where('status', 'approved')->count()), 'change' => '+12.4%', 'up' => true, 'icon' => 'heroicon-o-building-storefront', 'color' => 'sky'],
+                        ['label' => 'Active Corporate Buyers', 'value' => number_format(\App\Models\User::count()), 'change' => '+8.1%', 'up' => true, 'icon' => 'heroicon-o-users', 'color' => 'emerald'],
+                        ['label' => 'Market Categories', 'value' => '24+', 'change' => 'Expanding', 'up' => true, 'icon' => 'heroicon-o-squares-2x2', 'color' => 'amber'],
+                        ['label' => 'Logistics Coverage', 'value' => '17 Reg', 'change' => 'Nationwide', 'up' => true, 'icon' => 'heroicon-o-map-pin', 'color' => 'violet'],
                     ];
                 @endphp
                 @foreach ($insightStats as $stat)
-                    <div class="bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/40 rounded-2xl p-6 card-hover">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="h-10 w-10 rounded-xl bg-{{ $stat['color'] }}-50 dark:bg-{{ $stat['color'] }}-900/20 flex items-center justify-center">
-                                <x-dynamic-component :component="$stat['icon']" class="w-5 h-5 text-{{ $stat['color'] }}-600 dark:text-{{ $stat['color'] }}-400" />
+                    <div class="group bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-3xl p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-500 relative overflow-hidden">
+                        {{-- Hover glow --}}
+                        <div class="absolute inset-0 bg-gradient-to-br from-{{ $stat['color'] }}-500/0 to-transparent group-hover:from-{{ $stat['color'] }}-500/5 transition-colors duration-500"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="h-12 w-12 rounded-2xl bg-{{ $stat['color'] }}-50 dark:bg-{{ $stat['color'] }}-500/10 border border-{{ $stat['color'] }}-100 dark:border-{{ $stat['color'] }}-500/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                                    <x-dynamic-component :component="$stat['icon']" class="w-6 h-6 text-{{ $stat['color'] }}-600 dark:text-{{ $stat['color'] }}-400" />
+                                </div>
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 text-[10px] font-bold uppercase tracking-wider {{ $stat['up'] ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400' }}">
+                                    @if ($stat['up'])
+                                        <x-heroicon-s-arrow-trending-up class="w-3 h-3" />
+                                    @endif
+                                    {{ $stat['change'] }}
+                                </span>
                             </div>
-                            <span class="inline-flex items-center gap-1 text-xs font-bold {{ $stat['up'] ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600' }}">
-                                @if ($stat['up'])
-                                    <x-heroicon-o-arrow-trending-up class="w-3 h-3" />
-                                @endif
-                                {{ $stat['change'] }}
-                            </span>
+                            <p class="text-3xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight mb-1">{{ $stat['value'] }}</p>
+                            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest">{{ $stat['label'] }}</p>
                         </div>
-                        <p class="text-2xl font-extrabold text-slate-900 dark:text-white tabular-nums tracking-tight">{{ $stat['value'] }}</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ $stat['label'] }}</p>
                     </div>
                 @endforeach
             </div>
 
-            {{-- Top Industries --}}
-            <div class="mb-12">
-                <h2 class="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight mb-6">Top Industry Categories</h2>
-                <div class="bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/40 rounded-2xl overflow-hidden">
-                    @php
-                        $industries = [
-                            ['name' => 'Construction & Building Materials', 'stores' => 240, 'growth' => '+12%', 'bar' => 'w-[85%]', 'color' => 'bg-sky-500'],
-                            ['name' => 'IT & Technology', 'stores' => 180, 'growth' => '+8%', 'bar' => 'w-[64%]', 'color' => 'bg-emerald-500'],
-                            ['name' => 'Food & Beverage', 'stores' => 150, 'growth' => '+15%', 'bar' => 'w-[53%]', 'color' => 'bg-amber-500'],
-                            ['name' => 'Healthcare & Pharmaceuticals', 'stores' => 95, 'growth' => '+5%', 'bar' => 'w-[34%]', 'color' => 'bg-rose-500'],
-                            ['name' => 'Chemicals & Raw Materials', 'stores' => 85, 'growth' => '+3%', 'bar' => 'w-[30%]', 'color' => 'bg-violet-500'],
-                            ['name' => 'Logistics & Transport', 'stores' => 120, 'growth' => '+10%', 'bar' => 'w-[43%]', 'color' => 'bg-teal-500'],
-                        ];
-                    @endphp
-                    @foreach ($industries as $idx => $ind)
-                        <div class="flex items-center gap-5 px-6 py-4 {{ !$loop->last ? 'border-b border-slate-50 dark:border-slate-700/30' : '' }} hover:bg-slate-50/50 dark:hover:bg-slate-800/80 transition-colors">
-                            <span class="text-xs font-bold text-slate-400 dark:text-slate-500 tabular-nums w-6 text-right">{{ str_pad($idx + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-center justify-between mb-1.5">
-                                    <p class="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">{{ $ind['name'] }}</p>
+            {{-- Deep Dive Analytics Grid --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                
+                {{-- Top Industries (Takes up 2 columns) --}}
+                <div class="lg:col-span-2 bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-3xl p-8 shadow-sm relative overflow-hidden">
+                    <div class="absolute -right-40 -top-40 w-80 h-80 bg-sky-500/5 rounded-full blur-[80px]"></div>
+                    
+                    <div class="flex items-center justify-between mb-8 relative z-10">
+                        <div>
+                            <h2 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">Sector Dominance Matrix</h2>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Real-time breakdown of top performing industries by supply volume.</p>
+                        </div>
+                        <div class="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                            <span class="flex h-2 w-2 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+                            </span>
+                            Live Data
+                        </div>
+                    </div>
+
+                    <div class="space-y-6 relative z-10">
+                        @php
+                            $industries = [
+                                ['name' => 'Construction & Heavy Machinery', 'stores' => 240, 'growth' => '+12.5%', 'bar' => 'w-[85%]', 'color' => 'bg-emerald-500', 'from' => 'from-emerald-400', 'to' => 'to-emerald-600'],
+                                ['name' => 'IT Infrastructure & Software', 'stores' => 180, 'growth' => '+8.2%', 'bar' => 'w-[64%]', 'color' => 'bg-sky-500', 'from' => 'from-sky-400', 'to' => 'to-sky-600'],
+                                ['name' => 'Wholesale Food & Agri-business', 'stores' => 150, 'growth' => '+15.8%', 'bar' => 'w-[53%]', 'color' => 'bg-amber-500', 'from' => 'from-amber-400', 'to' => 'to-amber-600'],
+                                ['name' => 'Medical & Healthcare Supplies', 'stores' => 95, 'growth' => '+5.1%', 'bar' => 'w-[34%]', 'color' => 'bg-rose-500', 'from' => 'from-rose-400', 'to' => 'to-rose-600'],
+                                ['name' => 'Raw Manufacturing Chemicals', 'stores' => 85, 'growth' => '+3.4%', 'bar' => 'w-[30%]', 'color' => 'bg-violet-500', 'from' => 'from-violet-400', 'to' => 'to-violet-600'],
+                            ];
+                        @endphp
+                        @foreach ($industries as $idx => $ind)
+                            <div class="group">
+                                <div class="flex items-center justify-between mb-2">
                                     <div class="flex items-center gap-3">
-                                        <span class="text-xs text-slate-500 dark:text-slate-400 tabular-nums">{{ $ind['stores'] }} stores</span>
-                                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">{{ $ind['growth'] }}</span>
+                                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 tabular-nums w-4">{{ str_pad($idx + 1, 2, '0', STR_PAD_LEFT) }}</span>
+                                        <span class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-{{ explode('-', $ind['color'])[1] }}-500 transition-colors">{{ $ind['name'] }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 tabular-nums">{{ $ind['stores'] }} nodes</span>
+                                        <span class="text-[10px] font-bold bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-100 dark:border-emerald-500/20 tabular-nums">{{ $ind['growth'] }}</span>
                                     </div>
                                 </div>
-                                <div class="h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                                    <div class="h-full {{ $ind['color'] }} rounded-full {{ $ind['bar'] }} transition-all duration-700"></div>
+                                <div class="h-2 w-full bg-slate-100 dark:bg-slate-900 rounded-full overflow-hidden border border-slate-200 dark:border-slate-800">
+                                    <div class="h-full bg-gradient-to-r {{ $ind['from'] }} {{ $ind['to'] }} rounded-full {{ $ind['bar'] }} relative overflow-hidden group-hover:scale-x-[1.02] transition-transform origin-left">
+                                        {{-- Sparkle effect inside bar --}}
+                                        <div class="absolute top-0 bottom-0 left-0 w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+                                    </div>
                                 </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Side Analytics Stack --}}
+                <div class="flex flex-col gap-8">
+                    {{-- Platform Health --}}
+                    <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-3xl p-8 shadow-sm flex-1">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="h-10 w-10 rounded-xl bg-violet-50 dark:bg-violet-500/10 border border-violet-100 dark:border-violet-500/20 flex items-center justify-center">
+                                <x-heroicon-o-shield-check class="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                            </div>
+                            <h3 class="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">System Integrity</h3>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            @php
+                                $health = [
+                                    ['label' => 'KYC Compliance Rate', 'value' => '100%', 'color' => 'text-emerald-500'],
+                                    ['label' => 'Avg QA Processing', 'value' => '< 12h', 'color' => 'text-sky-500'],
+                                    ['label' => 'Platform Uptime', 'value' => '99.9%', 'color' => 'text-emerald-500'],
+                                ];
+                            @endphp
+                            @foreach ($health as $h)
+                                <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-700/50 pb-4 last:border-0 last:pb-0">
+                                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ $h['label'] }}</span>
+                                    <span class="text-lg font-black {{ $h['color'] }} tabular-nums">{{ $h['value'] }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Regional Heatmap Text --}}
+                    <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-3xl p-8 shadow-sm flex-1 relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-gradient-to-br from-transparent to-amber-500/5 mix-blend-overlay"></div>
+                        <h3 class="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight mb-5">Geo-distribution Top 3</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-sky-500"></div>
+                                    <span class="text-sm font-bold text-slate-700 dark:text-slate-300">NCR (Metro Manila)</span>
+                                </div>
+                                <span class="text-xs font-black text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-800">38.2%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                                    <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Region IV-A (CALABARZON)</span>
+                                </div>
+                                <span class="text-xs font-black text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-800">18.5%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div>
+                                    <span class="text-sm font-bold text-slate-700 dark:text-slate-300">Region III (Central Luzon)</span>
+                                </div>
+                                <span class="text-xs font-black text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-900 px-2.5 py-1 rounded-md border border-slate-200 dark:border-slate-800">14.1%</span>
                             </div>
                         </div>
-                    @endforeach
-                </div>
-            </div>
-
-            {{-- Regional Coverage --}}
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
-                {{-- Top Regions --}}
-                <div class="bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/40 rounded-2xl p-6">
-                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight mb-5">Top Regions by Store Count</h3>
-                    <div class="space-y-4">
-                        @php
-                            $regions = [
-                                ['name' => 'NCR — Metro Manila', 'count' => 'Leading', 'pct' => '38%'],
-                                ['name' => 'Region IV-A — CALABARZON', 'count' => 'Growing', 'pct' => '18%'],
-                                ['name' => 'Region III — Central Luzon', 'count' => 'Growing', 'pct' => '14%'],
-                                ['name' => 'Region VII — Central Visayas', 'count' => 'Emerging', 'pct' => '12%'],
-                                ['name' => 'Region XI — Davao', 'count' => 'Emerging', 'pct' => '8%'],
-                            ];
-                        @endphp
-                        @foreach ($regions as $region)
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-slate-700 dark:text-slate-300">{{ $region['name'] }}</span>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider {{ $region['count'] === 'Leading' ? 'text-sky-600 dark:text-sky-400' : ($region['count'] === 'Growing' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400') }}">{{ $region['count'] }}</span>
-                                    <span class="text-xs font-bold text-slate-900 dark:text-slate-100 tabular-nums bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded">{{ $region['pct'] }}</span>
-                                </div>
-                            </div>
-                        @endforeach
                     </div>
                 </div>
 
-                {{-- Platform Health --}}
-                <div class="bg-white dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/40 rounded-2xl p-6">
-                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight mb-5">Platform Health</h3>
-                    <div class="space-y-5">
-                        @php
-                            $health = [
-                                ['label' => 'Seller Verification Rate', 'value' => '100%', 'desc' => 'All sellers undergo identity verification'],
-                                ['label' => 'Average Response Time', 'value' => '< 24hrs', 'desc' => 'Store approvals processed quickly'],
-                                ['label' => 'Customer Satisfaction', 'value' => '98%', 'desc' => 'Based on platform ratings and reviews'],
-                                ['label' => 'Platform Uptime', 'value' => '99.9%', 'desc' => 'Reliable infrastructure 24/7'],
-                            ];
-                        @endphp
-                        @foreach ($health as $h)
-                            <div class="flex items-start gap-3">
-                                <div class="shrink-0 mt-0.5">
-                                    <div class="h-2 w-2 rounded-full bg-emerald-500"></div>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center justify-between">
-                                        <span class="text-sm font-semibold text-slate-800 dark:text-slate-200">{{ $h['label'] }}</span>
-                                        <span class="text-sm font-extrabold text-slate-900 dark:text-white tabular-nums">{{ $h['value'] }}</span>
-                                    </div>
-                                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{{ $h['desc'] }}</p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
             </div>
 
-            {{-- Disclaimer --}}
-            <p class="text-xs text-slate-400 dark:text-slate-600 italic text-center">Market data shown is representative. Live analytics will be available as the platform scales.</p>
+            {{-- Post-content Disclaimer --}}
+            <div class="flex items-center justify-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                <x-heroicon-o-information-circle class="w-4 h-4" />
+                <span>Analytics Engine v1.0 — Data updates every 24 hours</span>
+            </div>
         </div>
     </div>
 

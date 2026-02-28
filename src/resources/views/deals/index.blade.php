@@ -1,78 +1,112 @@
 <x-layouts.app :title="'Deals & Offers — NegosyoHub Marketplace'">
 
-    {{-- Page Header --}}
-    <div class="hero-mesh" id="deals-hero">
-        <div class="hero-pattern"></div>
-        <div class="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-            <div class="max-w-2xl">
-                <nav class="text-xs text-slate-400 mb-4">
-                    <a href="{{ route('home') }}" class="hover:text-white transition-colors">Home</a>
-                    <span class="mx-1.5">/</span>
-                    <span class="text-slate-300">Deals & Offers</span>
+    {{-- Premium Hero Section --}}
+    <div class="relative bg-white dark:bg-[#0B1120] border-b border-slate-200 dark:border-slate-800/60 overflow-hidden" id="deals-hero">
+        
+        {{-- Decorative Background Gradients --}}
+        <div class="absolute inset-0 pointer-events-none overflow-hidden z-0 hidden dark:block">
+            <div class="absolute -top-1/4 left-1/4 w-[500px] h-[500px] bg-rose-500/10 rounded-full blur-[100px] mix-blend-screen opacity-50"></div>
+            <div class="absolute bottom-1/4 right-0 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-[120px] mix-blend-screen opacity-40"></div>
+        </div>
+
+        {{-- Background Dot Pattern --}}
+        <div class="absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.05] bg-[radial-gradient(#000_1px,transparent_1px)] dark:bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
+        <div class="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+            <div class="max-w-2xl text-center md:text-left mx-auto md:mx-0">
+                <nav class="flex items-center justify-center md:justify-start gap-2 text-[11px] font-bold tracking-wider text-slate-400 uppercase mb-6">
+                    <a href="{{ route('home') }}" class="hover:text-rose-500 dark:hover:text-rose-400 transition-colors">Home</a>
+                    <span class="text-slate-300 dark:text-slate-600">/</span>
+                    <span class="text-slate-800 dark:text-slate-200">Deals & Offers</span>
                 </nav>
-                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                    Deals & <span class="gradient-text">Special Offers</span>
+                
+                <h1 class="text-4xl sm:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-[1.15]">
+                    Exclusive <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-rose-500">Enterprise Deals</span>
                 </h1>
-                <p class="mt-3 text-base text-slate-400 leading-relaxed max-w-lg">
-                    Discover exclusive deals, limited-time offers, and special promotions from verified sellers on NegosyoHub.
+                
+                <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl mx-auto md:mx-0">
+                    Discover exclusive wholesale discounts, limited-time sector offers, and special procurement promotions from verified corporate sellers on NegosyoHub.
                 </p>
             </div>
         </div>
     </div>
 
     {{-- Main Content --}}
-    <div class="bg-slate-50/50 dark:bg-slate-950">
+    <div class="bg-slate-50/50 dark:bg-[#060A13]">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
 
-            {{-- Featured Deals Banner --}}
-            <div class="mb-12 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 p-8 lg:p-12 text-center text-white relative overflow-hidden">
-                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyem0wLTE4VjE0SDI0VjE2aDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
-                <div class="relative z-10">
-                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 text-sm font-bold mb-4">
-                        <x-heroicon-s-play-circle class="w-4 h-4 animate-pulse" />
-                        Coming Soon
+            {{-- Coming Soon Banner --}}
+            <div class="group relative mb-16 rounded-[2rem] overflow-hidden shadow-2xl hover:shadow-orange-500/20 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-br from-amber-500 via-orange-500 to-rose-600 z-0"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] opacity-[0.15] [background-size:24px_24px] z-0"></div>
+                {{-- Animated overlay --}}
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite] z-0 pointer-events-none"></div>
+
+                <div class="relative z-10 p-10 lg:p-14 text-center text-white">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/20 border border-white/20 text-sm font-bold mb-6 backdrop-blur-md shadow-sm">
+                        <span class="relative flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
+                        </span>
+                        Marketplace Feature Incoming
                     </span>
-                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Hot Deals Are Coming!</h2>
-                    <p class="mt-3 text-base text-white/80 max-w-lg mx-auto">Sellers will soon be able to post exclusive deals and time-limited offers. Stay tuned for amazing savings from verified stores.</p>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/80">Hot Wholesale Deals Are Coming!</h2>
+                    <p class="text-lg text-white/90 max-w-2xl mx-auto font-medium leading-relaxed">Verified suppliers will soon be able to post targeted volume discounts, flash sales, and clearance lots specifically designed for the B2B market.</p>
                 </div>
             </div>
 
             {{-- Deal Categories Preview --}}
-            <div class="mb-12">
-                <h2 class="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight mb-6">What to expect</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="mb-20">
+                <div class="flex items-center gap-4 mb-8">
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">What to expect</h2>
+                    <div class="h-px bg-slate-200 dark:bg-slate-800 flex-1 hidden sm:block"></div>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     @php
                         $dealTypes = [
-                            ['title' => 'Flash Sales', 'desc' => 'Limited-time deals with massive discounts. Act fast before they\'re gone!', 'icon' => 'heroicon-o-bolt', 'gradient' => 'from-amber-500 to-orange-500', 'bg' => 'bg-amber-50 dark:bg-amber-900/15'],
-                            ['title' => 'Bundle Deals', 'desc' => 'Buy more, save more. Curated product bundles from verified sellers.', 'icon' => 'heroicon-o-archive-box', 'gradient' => 'from-sky-500 to-blue-500', 'bg' => 'bg-sky-50 dark:bg-sky-900/15'],
-                            ['title' => 'Store Promos', 'desc' => 'Exclusive promotions from your favorite stores. Discounts, freebies, and more.', 'icon' => 'heroicon-o-tag', 'gradient' => 'from-emerald-500 to-teal-500', 'bg' => 'bg-emerald-50 dark:bg-emerald-900/15'],
-                            ['title' => 'Clearance', 'desc' => 'End-of-season clearance items at deeply discounted prices.', 'icon' => 'heroicon-o-banknotes', 'gradient' => 'from-rose-500 to-pink-500', 'bg' => 'bg-rose-50 dark:bg-rose-900/15'],
+                            ['title' => 'Flash Sales', 'desc' => 'High-velocity, time-bound discounts on bulk items. Perfect for rapid procurement.', 'icon' => 'heroicon-o-bolt', 'gradient' => 'from-amber-400 to-orange-500', 'hover' => 'group-hover:shadow-orange-500/20'],
+                            ['title' => 'Volume Bundles', 'desc' => 'Tiered pricing and mixed-pallet discounts. Buy more, scale your savings.', 'icon' => 'heroicon-o-archive-box', 'gradient' => 'from-sky-400 to-blue-600', 'hover' => 'group-hover:shadow-blue-500/20'],
+                            ['title' => 'Store Promos', 'desc' => 'Supplier-specific verified promotions, digital vouchers, and loyalty drops.', 'icon' => 'heroicon-o-tag', 'gradient' => 'from-emerald-400 to-teal-500', 'hover' => 'group-hover:shadow-emerald-500/20'],
+                            ['title' => 'Liquidation Lots', 'desc' => 'End-of-season, overstock, or fleet clearance assets at heavily reduced pricing.', 'icon' => 'heroicon-o-banknotes', 'gradient' => 'from-rose-400 to-pink-600', 'hover' => 'group-hover:shadow-rose-500/20'],
                         ];
                     @endphp
                     @foreach ($dealTypes as $deal)
-                        <div class="group {{ $deal['bg'] }} border border-slate-100 dark:border-slate-800 rounded-2xl p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-                            <div class="h-12 w-12 rounded-xl bg-gradient-to-br {{ $deal['gradient'] }} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <div class="group relative bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/50 rounded-3xl p-8 transition-all duration-500 hover:-translate-y-1 shadow-sm {{ $deal['hover'] }} overflow-hidden">
+                            {{-- Top glowing line --}}
+                            <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r {{ $deal['gradient'] }} scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+                            
+                            <div class="h-14 w-14 rounded-2xl bg-gradient-to-br {{ $deal['gradient'] }} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-500">
                                 <x-dynamic-component :component="$deal['icon']" class="w-6 h-6 text-white" />
                             </div>
-                            <h3 class="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight mb-1.5">{{ $deal['title'] }}</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">{{ $deal['desc'] }}</p>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight mb-2">{{ $deal['title'] }}</h3>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{{ $deal['desc'] }}</p>
                         </div>
                     @endforeach
                 </div>
             </div>
 
             {{-- Newsletter CTA --}}
-            <div class="rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white dark:bg-slate-800/40 p-8 lg:p-10 text-center">
-                <div class="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-amber-100 dark:bg-amber-900/30 mb-5">
-                    <x-heroicon-o-bell-alert class="w-7 h-7 text-amber-600 dark:text-amber-400" />
-                </div>
-                <h3 class="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">Get notified when deals go live</h3>
-                <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6">Be the first to know about flash sales, exclusive promos, and limited-time offers from verified sellers.</p>
-                <div class="max-w-sm mx-auto flex gap-2">
-                    <input type="email" placeholder="Your email address" class="flex-1 rounded-xl border border-slate-200 dark:border-slate-600 dark:bg-slate-700 px-4 py-3 text-sm placeholder:text-slate-400 focus:ring-2 focus:ring-sky-500 focus:border-transparent focus:outline-none dark:text-white">
-                    <button class="px-6 py-3 rounded-xl bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-sm font-bold text-white shadow-lg shadow-sky-500/20 transition-all duration-300 hover:-translate-y-0.5 shrink-0">
-                        Notify Me
-                    </button>
+            <div class="relative rounded-3xl bg-slate-900 dark:bg-slate-800 border border-slate-800 dark:border-slate-700/60 p-10 lg:p-14 text-center overflow-hidden shadow-2xl">
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent to-amber-500/5 mix-blend-overlay"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(#fff_1px,transparent_1px)] opacity-[0.03] [background-size:24px_24px]"></div>
+
+                <div class="relative z-10">
+                    <div class="inline-flex items-center justify-center h-16 w-16 rounded-2xl bg-amber-500/20 mb-6 border border-amber-500/30 shadow-inner">
+                        <x-heroicon-o-bell-alert class="w-8 h-8 text-amber-400" />
+                    </div>
+                    <h3 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-3">Get notified when Phase 2 launches</h3>
+                    <p class="text-base text-slate-400 max-w-lg mx-auto mb-8 leading-relaxed">Join the enterprise procurement waitlist. Be the first to secure access to wholesale flash sales and verified corporate liquidation events.</p>
+                    
+                    <div class="max-w-md mx-auto flex flex-col sm:flex-row gap-3">
+                        <div class="relative flex-1 group/input">
+                            <div class="absolute -inset-0.5 bg-gradient-to-r from-amber-400 to-orange-500 rounded-xl blur opacity-20 group-focus-within/input:opacity-50 transition duration-500"></div>
+                            <input type="email" placeholder="Corporate email address" class="relative w-full rounded-xl border border-slate-700 bg-slate-800/80 px-4 py-4 text-base placeholder:text-slate-500 focus:ring-0 focus:border-amber-500 focus:outline-none text-white shadow-inner transition-all">
+                        </div>
+                        <button class="px-8 py-4 rounded-xl bg-white hover:bg-slate-100 text-base font-bold text-slate-900 shadow-xl shadow-black/20 transition-all duration-300 transform hover:-translate-y-1 shrink-0">
+                            Notify Me
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
