@@ -1,5 +1,24 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ darkMode: localStorage.getItem('darkMode') !== null ? localStorage.getItem('darkMode') === 'true' : window.matchMedia('(prefers-color-scheme: dark)').matches }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" :class="{ 'dark': darkMode }">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      x-data="{
+          theme: localStorage.getItem('theme') || 'system',
+          darkMode: false,
+          resolve() {
+              this.darkMode = this.theme === 'dark' || (this.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          },
+          toggle() {
+              const next = { system: 'dark', dark: 'light', light: 'system' };
+              this.theme = next[this.theme];
+              this.theme === 'system' ? localStorage.removeItem('theme') : localStorage.setItem('theme', this.theme);
+              this.resolve();
+          }
+      }"
+      x-init="
+          resolve();
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => resolve());
+          if (localStorage.getItem('darkMode') !== null) { localStorage.removeItem('darkMode'); }
+      "
+      :class="{ 'dark': darkMode }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -81,7 +100,7 @@
                                         $col1Sectors = $megaSectors->take($firstHalfCount);
                                         $col2Sectors = $megaSectors->skip($firstHalfCount);
                                     @endphp
-                                    
+
                                     {{-- Column 1 --}}
                                     <div>
                                         <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.15em] mb-3">Core Industries</h4>
@@ -172,10 +191,14 @@
                 </div>
 
                 <div class="flex items-center gap-3">
-                    {{-- Dark mode toggle --}}
-                    <button @click="darkMode = !darkMode" class="p-2.5 rounded-xl text-slate-400 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" title="Toggle dark mode" id="dark-mode-toggle">
-                        <svg x-show="!darkMode" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
-                        <svg x-show="darkMode" x-cloak class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+                    {{-- Dark mode toggle (cycles: system → dark → light → system) --}}
+                    <button @click="toggle()" class="relative p-2.5 rounded-xl text-slate-400 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" :title="'Theme: ' + theme" id="dark-mode-toggle">
+                        {{-- Moon: shown when theme resolves to light (click will go dark) --}}
+                        <svg x-show="!darkMode && theme !== 'system'" x-cloak class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+                        {{-- Sun: shown when theme resolves to dark (click will go light) --}}
+                        <svg x-show="darkMode && theme !== 'system'" x-cloak class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+                        {{-- Computer/System: shown when theme is system --}}
+                        <svg x-show="theme === 'system'" class="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z" /></svg>
                     </button>
 
                     @auth

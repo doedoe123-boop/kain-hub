@@ -1,5 +1,24 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ darkMode: localStorage.getItem('darkMode') !== null ? localStorage.getItem('darkMode') === 'true' : window.matchMedia('(prefers-color-scheme: dark)').matches }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" :class="{ 'dark': darkMode }">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+      x-data="{
+          theme: localStorage.getItem('theme') || 'system',
+          darkMode: false,
+          resolve() {
+              this.darkMode = this.theme === 'dark' || (this.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          },
+          toggle() {
+              const next = { system: 'dark', dark: 'light', light: 'system' };
+              this.theme = next[this.theme];
+              this.theme === 'system' ? localStorage.removeItem('theme') : localStorage.setItem('theme', this.theme);
+              this.resolve();
+          }
+      }"
+      x-init="
+          resolve();
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => resolve());
+          if (localStorage.getItem('darkMode') !== null) { localStorage.removeItem('darkMode'); }
+      "
+      :class="{ 'dark': darkMode }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

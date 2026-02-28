@@ -14,6 +14,9 @@
     {{-- 5. Trust & Compliance --}}
     <x-homepage.compliance-strip />
 
-    {{-- 6. Final CTA --}}
+    {{-- 6. FAQs --}}
+    <x-homepage.faqs />
+
+    {{-- 7. Final CTA --}}
     <x-homepage.supplier-cta />
 </x-layouts.app>

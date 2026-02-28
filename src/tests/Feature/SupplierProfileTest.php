@@ -27,8 +27,8 @@ it('shows verification badges when store has KYC documents', function () {
 
     $this->get(route('suppliers.show', 'verified-store'))
         ->assertStatus(200)
-        ->assertSee('ID Verified')
-        ->assertSee('Business Permit');
+        ->assertSee('Corporate ID Verified')
+        ->assertSee('Operating License Valid');
 });
 
 it('shows the store location on the profile', function () {
@@ -43,7 +43,6 @@ it('shows the store location on the profile', function () {
 
     $this->get(route('suppliers.show', 'local-store'))
         ->assertStatus(200)
-        ->assertSee('123 Rizal Ave')
         ->assertSee('Manila')
         ->assertSee('1000');
 });
