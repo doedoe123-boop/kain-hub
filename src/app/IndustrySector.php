@@ -13,7 +13,7 @@ use App\Models\Sector;
 enum IndustrySector: string
 {
     case FoodAndBeverage = 'food_and_beverage';
-    case RealEstate      = 'real_estate';
+    case RealEstate = 'real_estate';
 
     public function label(): string
     {

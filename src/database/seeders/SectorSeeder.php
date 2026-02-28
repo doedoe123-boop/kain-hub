@@ -11,15 +11,15 @@ class SectorSeeder extends Seeder
     {
         $sectors = [
             [
-                'name'        => 'Food & Beverage',
-                'slug'        => 'food_and_beverage',
+                'name' => 'Food & Beverage',
+                'slug' => 'food_and_beverage',
                 'description' => 'Restaurants, catering, food production, grocery, and beverage distribution.',
-                'icon'        => 'heroicon-o-cake',
-                'color'       => 'orange',
+                'icon' => 'heroicon-o-cake',
+                'color' => 'orange',
                 'registration_button_text' => 'Register as Food Business',
-                'is_active'   => true,
-                'sort_order'  => 1,
-                'documents'   => [
+                'is_active' => true,
+                'sort_order' => 1,
+                'documents' => [
                     ['key' => 'dti_sec_registration', 'label' => 'DTI / SEC Registration',           'description' => 'Certificate of business name registration (DTI) or SEC incorporation papers.',        'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 1],
                     ['key' => 'business_permit',       'label' => "Mayor's Permit / Business Permit", 'description' => 'Valid local business permit from your city or municipality.',                        'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 2],
                     ['key' => 'bir_registration',      'label' => 'BIR Certificate of Registration',  'description' => 'BIR Form 2303 — Certificate of Registration.',                                       'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 3],
@@ -29,15 +29,15 @@ class SectorSeeder extends Seeder
                 ],
             ],
             [
-                'name'        => 'Real Estate & Property',
-                'slug'        => 'real_estate',
+                'name' => 'Real Estate & Property',
+                'slug' => 'real_estate',
                 'description' => 'Property listings, real estate services, and property management.',
-                'icon'        => 'heroicon-o-home-modern',
-                'color'       => 'emerald',
+                'icon' => 'heroicon-o-home-modern',
+                'color' => 'emerald',
                 'registration_button_text' => 'Join as Real Estate Agent',
-                'is_active'   => true,
-                'sort_order'  => 2,
-                'documents'   => [
+                'is_active' => true,
+                'sort_order' => 2,
+                'documents' => [
                     ['key' => 'dti_sec_registration', 'label' => 'DTI / SEC Registration',           'description' => 'Certificate of business name registration (DTI) or SEC incorporation papers.',  'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 1],
                     ['key' => 'business_permit',       'label' => "Mayor's Permit / Business Permit", 'description' => 'Valid local business permit from your city or municipality.',                    'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 2],
                     ['key' => 'bir_registration',      'label' => 'BIR Certificate of Registration',  'description' => 'BIR Form 2303 — Certificate of Registration.',                                   'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 3],

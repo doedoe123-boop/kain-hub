@@ -117,8 +117,6 @@ it('shows real-estate-specific docs for real estate sector', function () {
         ->assertDontSee('FDA License to Operate');
 });
 
-
-
 // --- Successful Registration with Compliance Docs ---
 
 it('creates a user and store with compliance documents on registration', function () {

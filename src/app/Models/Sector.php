@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property int    $id
+ * @property int $id
  * @property string $name
  * @property string $slug
  * @property string $description
  * @property string $icon
  * @property string $color
  * @property string|null $registration_button_text
- * @property bool   $is_active
- * @property int    $sort_order
+ * @property bool $is_active
+ * @property int $sort_order
  */
 class Sector extends Model
 {
@@ -33,7 +33,7 @@ class Sector extends Model
     protected function casts(): array
     {
         return [
-            'is_active'  => 'boolean',
+            'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];
     }
@@ -87,11 +87,11 @@ class Sector extends Model
         return $this->documents()
             ->get()
             ->map(fn (SectorDocument $doc): array => [
-                'key'         => $doc->key,
-                'label'       => $doc->label,
+                'key' => $doc->key,
+                'label' => $doc->label,
                 'description' => $doc->description ?? '',
-                'required'    => $doc->is_required,
-                'mimes'       => $doc->mimes,
+                'required' => $doc->is_required,
+                'mimes' => $doc->mimes,
             ])
             ->toArray();
     }

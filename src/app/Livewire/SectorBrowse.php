@@ -38,9 +38,9 @@ class SectorBrowse extends Component
             }))
             ->get()
             ->map(function (Sector $sector) use ($counts): Sector {
-                $sector->supplier_count  = $counts[$sector->slug] ?? 0;
-                $sector->required_docs   = $sector->documents->where('is_required', true)->count();
-                $sector->optional_docs   = $sector->documents->where('is_required', false)->count();
+                $sector->supplier_count = $counts[$sector->slug] ?? 0;
+                $sector->required_docs = $sector->documents->where('is_required', true)->count();
+                $sector->optional_docs = $sector->documents->where('is_required', false)->count();
 
                 return $sector;
             });
@@ -49,7 +49,7 @@ class SectorBrowse extends Component
     public function render(): View
     {
         return view('livewire.sector-browse', [
-            'sectors'        => $this->getSectors(),
+            'sectors' => $this->getSectors(),
             'totalSuppliers' => Store::query()->where('status', StoreStatus::Approved)->count(),
         ])->title('Industries — NegosyoHub');
     }

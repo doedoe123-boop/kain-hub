@@ -4,12 +4,12 @@ namespace App;
 
 enum PhilippineIdType: string
 {
-    case Passport        = 'passport';
-    case DriversLicense  = 'drivers_license';
-    case NationalId      = 'national_id';
-    case Sss             = 'sss';
-    case PhilHealth      = 'philhealth';
-    case PostalId        = 'postal_id';
+    case Passport = 'passport';
+    case DriversLicense = 'drivers_license';
+    case NationalId = 'national_id';
+    case Sss = 'sss';
+    case PhilHealth = 'philhealth';
+    case PostalId = 'postal_id';
 
     /**
      * Get the regex pattern for validating the ID number.
@@ -37,23 +37,23 @@ enum PhilippineIdType: string
     {
         return match ($this) {
             // 1–2 letters, 6–7 digits, optional trailing letter
-            self::Passport       => '/^[A-Z]{1,2}[0-9]{6,7}[A-Z]?$/i',
+            self::Passport => '/^[A-Z]{1,2}[0-9]{6,7}[A-Z]?$/i',
 
             // 1–3 letters, then XX-XX-XXXXXX (LTO 3-2-6 format)
             self::DriversLicense => '/^[A-Z]{1,3}[0-9]{2}-[0-9]{2}-[0-9]{6}$/i',
 
             // 16-digit PCN (may use dashes every 4: XXXX-XXXX-XXXX-XXXX)
             // or 12-digit PSN (plain digits or dashes)
-            self::NationalId     => '/^([0-9]{4}-?){3}[0-9]{4}$|^[0-9]{12}$/',
+            self::NationalId => '/^([0-9]{4}-?){3}[0-9]{4}$|^[0-9]{12}$/',
 
             // XX-XXXXXXX-X (10 digits with dashes)
-            self::Sss            => '/^[0-9]{2}-[0-9]{7}-[0-9]$/',
+            self::Sss => '/^[0-9]{2}-[0-9]{7}-[0-9]$/',
 
             // XX-XXXXXXXXX-X (12 digits formatted) OR plain 12 digits
-            self::PhilHealth     => '/^[0-9]{2}-[0-9]{9}-[0-9]$|^[0-9]{12}$/',
+            self::PhilHealth => '/^[0-9]{2}-[0-9]{9}-[0-9]$|^[0-9]{12}$/',
 
             // PHLPost PRN: flexible alphanumeric, 6–20 chars
-            self::PostalId       => '/^[A-Z0-9]{6,20}$/i',
+            self::PostalId => '/^[A-Z0-9]{6,20}$/i',
         };
     }
 
@@ -63,12 +63,12 @@ enum PhilippineIdType: string
     public function formatHint(): string
     {
         return match ($this) {
-            self::Passport       => 'e.g. EC1234567 (2 letters + 7 digits)',
+            self::Passport => 'e.g. EC1234567 (2 letters + 7 digits)',
             self::DriversLicense => 'e.g. N01-12-123456 or D00-00-000000',
-            self::NationalId     => 'e.g. 1234-5678-9012-3456 (PCN) or 12-digit PSN',
-            self::Sss            => 'e.g. 01-2345678-9',
-            self::PhilHealth     => 'e.g. 01-234567890-1 or 123456789012',
-            self::PostalId       => '6–20 alphanumeric characters (PRN)',
+            self::NationalId => 'e.g. 1234-5678-9012-3456 (PCN) or 12-digit PSN',
+            self::Sss => 'e.g. 01-2345678-9',
+            self::PhilHealth => 'e.g. 01-234567890-1 or 123456789012',
+            self::PostalId => '6–20 alphanumeric characters (PRN)',
         };
     }
 
@@ -78,12 +78,12 @@ enum PhilippineIdType: string
     public function label(): string
     {
         return match ($this) {
-            self::Passport       => 'Passport',
+            self::Passport => 'Passport',
             self::DriversLicense => "Driver's License",
-            self::NationalId     => 'National ID (PhilSys)',
-            self::Sss            => 'SSS ID',
-            self::PhilHealth     => 'PhilHealth ID',
-            self::PostalId       => 'Postal ID',
+            self::NationalId => 'National ID (PhilSys)',
+            self::Sss => 'SSS ID',
+            self::PhilHealth => 'PhilHealth ID',
+            self::PostalId => 'Postal ID',
         };
     }
 }

@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property int    $id
- * @property int    $sector_id
+ * @property int $id
+ * @property int $sector_id
  * @property string $key
  * @property string $label
  * @property string $description
- * @property bool   $is_required
+ * @property bool $is_required
  * @property string $mimes
- * @property int    $sort_order
+ * @property int $sort_order
  */
 class SectorDocument extends Model
 {
@@ -31,7 +31,7 @@ class SectorDocument extends Model
     {
         return [
             'is_required' => 'boolean',
-            'sort_order'  => 'integer',
+            'sort_order' => 'integer',
         ];
     }
 

@@ -2,11 +2,10 @@
 
 namespace App\Livewire\Store;
 
-use App\IndustrySector;
+use App\Models\Sector;
 use App\Models\Store;
 use App\Models\User;
 use App\PhilippineIdType;
-use App\Models\Sector;
 use App\Rules\ValidateUploadContent;
 use App\UserRole;
 use Illuminate\Auth\Events\Registered;

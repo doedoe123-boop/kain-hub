@@ -60,23 +60,23 @@ class SectorResource extends Resource
 
                     Forms\Components\Select::make('color')
                         ->options([
-                            'slate'   => 'Slate',
-                            'gray'    => 'Gray',
-                            'red'     => 'Red',
-                            'orange'  => 'Orange',
-                            'amber'   => 'Amber',
-                            'yellow'  => 'Yellow',
-                            'lime'    => 'Lime',
-                            'green'   => 'Green',
+                            'slate' => 'Slate',
+                            'gray' => 'Gray',
+                            'red' => 'Red',
+                            'orange' => 'Orange',
+                            'amber' => 'Amber',
+                            'yellow' => 'Yellow',
+                            'lime' => 'Lime',
+                            'green' => 'Green',
                             'emerald' => 'Emerald',
-                            'teal'    => 'Teal',
-                            'cyan'    => 'Cyan',
-                            'sky'     => 'Sky',
-                            'blue'    => 'Blue',
-                            'indigo'  => 'Indigo',
-                            'violet'  => 'Violet',
-                            'purple'  => 'Purple',
-                            'pink'    => 'Pink',
+                            'teal' => 'Teal',
+                            'cyan' => 'Cyan',
+                            'sky' => 'Sky',
+                            'blue' => 'Blue',
+                            'indigo' => 'Indigo',
+                            'violet' => 'Violet',
+                            'purple' => 'Purple',
+                            'pink' => 'Pink',
                         ])
                         ->default('indigo'),
 
@@ -205,9 +205,9 @@ class SectorResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index'  => Pages\ListSectors::route('/'),
+            'index' => Pages\ListSectors::route('/'),
             'create' => Pages\CreateSector::route('/create'),
-            'edit'   => Pages\EditSector::route('/{record}/edit'),
+            'edit' => Pages\EditSector::route('/{record}/edit'),
         ];
     }
 }
