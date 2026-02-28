@@ -1,5 +1,5 @@
 {{-- Why Sell Here — Featured hero card + 3 supporting cards --}}
-<div class="bg-slate-50/50 dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800/60" id="why-sell-here">
+<div class="bg-white dark:bg-[#0B1120] border-b border-slate-200 dark:border-slate-800/60" id="why-sell-here">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
         <div class="text-center mb-12">
             <p class="text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-[0.2em] mb-3">Why NegosyoHub</p>
@@ -34,20 +34,26 @@
             {{-- Supporting Cards --}}
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 {{-- Card: Multi-Industry --}}
-                <div class="bg-white dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/40 rounded-2xl p-6 transition-all duration-300 hover:shadow-md relative overflow-hidden group">
+                <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-2xl p-6 transition-all duration-300 hover:shadow-md relative overflow-hidden group">
                     <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-sky-500 to-sky-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <span class="text-3xl font-black text-slate-100 dark:text-slate-800 absolute top-4 right-5">01</span>
                     <div class="relative z-10">
                         <div class="h-11 w-11 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center mb-4">
                             <x-heroicon-o-squares-2x2 class="w-5 h-5 text-sky-600 dark:text-sky-400" />
                         </div>
+                        @php
+                            $activeSectors = \App\Models\Sector::active()->pluck('name')->map(fn($n) => strtolower($n))->toArray();
+                            $sectorsList = count($activeSectors) > 0 
+                                ? implode(', ', array_slice($activeSectors, 0, 3)) . (count($activeSectors) > 3 ? ', and more' : '') 
+                                : 'multiple industries';
+                        @endphp
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white tracking-tight mb-2">Multi-Industry Exposure</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Reach buyers across construction, IT, healthcare, real estate, and more — all from one storefront.</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">Reach buyers across {{ $sectorsList }} — all from one storefront.</p>
                     </div>
                 </div>
 
                 {{-- Card: Seller Dashboard --}}
-                <div class="bg-white dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/40 rounded-2xl p-6 transition-all duration-300 hover:shadow-md relative overflow-hidden group">
+                <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-2xl p-6 transition-all duration-300 hover:shadow-md relative overflow-hidden group">
                     <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500 to-amber-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <span class="text-3xl font-black text-slate-100 dark:text-slate-800 absolute top-4 right-5">02</span>
                     <div class="relative z-10">
@@ -60,7 +66,7 @@
                 </div>
 
                 {{-- Card: Flexible Store Types --}}
-                <div class="bg-white dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/40 rounded-2xl p-6 transition-all duration-300 hover:shadow-md relative overflow-hidden group">
+                <div class="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/40 rounded-2xl p-6 transition-all duration-300 hover:shadow-md relative overflow-hidden group">
                     <div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-violet-500 to-violet-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <span class="text-3xl font-black text-slate-100 dark:text-slate-800 absolute top-4 right-5">03</span>
                     <div class="relative z-10">

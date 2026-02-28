@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" :class="{ 'dark': darkMode }">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ darkMode: localStorage.getItem('darkMode') !== null ? localStorage.getItem('darkMode') === 'true' : window.matchMedia('(prefers-color-scheme: dark)').matches }" x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -67,89 +67,61 @@
                             {{-- Full-width mega menu --}}
                             <div class="mega-menu absolute left-0 top-full mt-2 w-[800px] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl dark:shadow-black/40 border border-slate-200/80 dark:border-slate-700/60 p-6 z-50">
                                 <div class="grid grid-cols-3 gap-6">
+                                    @php
+                                        $megaSectors = \App\Models\Sector::active()->get();
+                                        $megaCounts = \App\Models\Store::query()
+                                            ->where('status', \App\StoreStatus::Approved)
+                                            ->whereNotNull('sector')
+                                            ->selectRaw('sector, count(*) as total')
+                                            ->groupBy('sector')
+                                            ->pluck('total', 'sector');
+
+                                        // Split sectors evenly across two columns
+                                        $firstHalfCount = max(ceil($megaSectors->count() / 2), 1);
+                                        $col1Sectors = $megaSectors->take($firstHalfCount);
+                                        $col2Sectors = $megaSectors->skip($firstHalfCount);
+                                    @endphp
+                                    
                                     {{-- Column 1 --}}
                                     <div>
                                         <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.15em] mb-3">Core Industries</h4>
                                         <div class="space-y-0.5">
-                                            <a href="{{ route('sector.browse') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
-                                                <div class="h-9 w-9 rounded-lg bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center group-hover:bg-sky-100 dark:group-hover:bg-sky-900/50 transition-colors">
-                                                    <x-heroicon-o-building-office-2 class="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors">Construction & Building</p>
-                                                    <p class="text-xs text-slate-400 dark:text-slate-500">240+ stores</p>
-                                                </div>
-                                            </a>
-                                            <a href="{{ route('sector.browse') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
-                                                <div class="h-9 w-9 rounded-lg bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center group-hover:bg-sky-100 dark:group-hover:bg-sky-900/50 transition-colors">
-                                                    <x-heroicon-o-computer-desktop class="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors">IT & Technology</p>
-                                                    <p class="text-xs text-slate-400 dark:text-slate-500">180+ stores</p>
-                                                </div>
-                                            </a>
-                                            <a href="{{ route('sector.browse') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
-                                                <div class="h-9 w-9 rounded-lg bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center group-hover:bg-sky-100 dark:group-hover:bg-sky-900/50 transition-colors">
-                                                    <x-heroicon-o-shopping-bag class="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors">Food & Beverage</p>
-                                                    <p class="text-xs text-slate-400 dark:text-slate-500">150+ stores</p>
-                                                </div>
-                                            </a>
-                                            <a href="{{ route('sector.browse') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
-                                                <div class="h-9 w-9 rounded-lg bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center group-hover:bg-sky-100 dark:group-hover:bg-sky-900/50 transition-colors">
-                                                    <x-heroicon-o-heart class="w-4 h-4 text-sky-600 dark:text-sky-400" />
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors">Healthcare & Pharma</p>
-                                                    <p class="text-xs text-slate-400 dark:text-slate-500">95+ stores</p>
-                                                </div>
-                                            </a>
+                                            @foreach ($col1Sectors as $sector)
+                                                @php $count = $megaCounts[$sector->slug] ?? 0; @endphp
+                                                <a href="{{ route('sector.browse', ['search' => $sector->name]) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
+                                                    <div class="h-9 w-9 rounded-lg bg-{{ $sector->color }}-50 dark:bg-{{ $sector->color }}-900/30 flex items-center justify-center group-hover:bg-{{ $sector->color }}-100 dark:group-hover:bg-{{ $sector->color }}-900/50 transition-colors">
+                                                        <x-dynamic-component :component="$sector->icon" class="w-4 h-4 text-{{ $sector->color }}-600 dark:text-{{ $sector->color }}-400" />
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-{{ $sector->color }}-700 dark:group-hover:text-{{ $sector->color }}-400 transition-colors">{{ $sector->name }}</p>
+                                                        <p class="text-xs text-slate-400 dark:text-slate-500">{{ $count }} {{ Str::plural('store', $count) }}</p>
+                                                    </div>
+                                                </a>
+                                            @endforeach
                                         </div>
                                     </div>
+
                                     {{-- Column 2 --}}
                                     <div>
                                         <h4 class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.15em] mb-3">More Sectors</h4>
-                                        <div class="space-y-0.5">
-                                            <a href="{{ route('sector.browse') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
-                                                <div class="h-9 w-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
-                                                    <x-heroicon-o-beaker class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">Chemicals & Raw Materials</p>
-                                                    <p class="text-xs text-slate-400 dark:text-slate-500">85+ stores</p>
-                                                </div>
-                                            </a>
-                                            <a href="{{ route('sector.browse') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
-                                                <div class="h-9 w-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
-                                                    <x-heroicon-o-truck class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">Logistics & Transport</p>
-                                                    <p class="text-xs text-slate-400 dark:text-slate-500">120+ stores</p>
-                                                </div>
-                                            </a>
-                                            <a href="{{ route('sector.browse') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
-                                                <div class="h-9 w-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
-                                                    <x-heroicon-o-home-modern class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">Real Estate & Property</p>
-                                                    <p class="text-xs text-slate-400 dark:text-slate-500">70+ stores</p>
-                                                </div>
-                                            </a>
-                                            <a href="{{ route('sector.browse') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
-                                                <div class="h-9 w-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
-                                                    <x-heroicon-o-globe-asia-australia class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                                                </div>
-                                                <div class="flex-1 min-w-0">
-                                                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">Agriculture & Farming</p>
-                                                    <p class="text-xs text-slate-400 dark:text-slate-500">60+ stores</p>
-                                                </div>
-                                            </a>
-                                        </div>
+                                        @if($col2Sectors->isNotEmpty())
+                                            <div class="space-y-0.5">
+                                                @foreach ($col2Sectors as $sector)
+                                                    @php $count = $megaCounts[$sector->slug] ?? 0; @endphp
+                                                    <a href="{{ route('sector.browse', ['search' => $sector->name]) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors duration-200 group">
+                                                        <div class="h-9 w-9 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/50 transition-colors">
+                                                            <x-dynamic-component :component="$sector->icon" class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                                        </div>
+                                                        <div class="flex-1 min-w-0">
+                                                            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">{{ $sector->name }}</p>
+                                                            <p class="text-xs text-slate-400 dark:text-slate-500">{{ $count }} {{ Str::plural('store', $count) }}</p>
+                                                        </div>
+                                                    </a>
+                                                @endforeach
+                                            </div>
+                                        @else
+                                            <p class="text-xs text-slate-400 dark:text-slate-500 italic mt-2">More sectors coming soon...</p>
+                                        @endif
                                     </div>
                                     {{-- Column 3: Featured --}}
                                     <div class="bg-gradient-to-br from-slate-50 to-sky-50/50 dark:from-slate-800/50 dark:to-sky-900/20 rounded-xl p-5 border border-slate-100 dark:border-slate-700/50">

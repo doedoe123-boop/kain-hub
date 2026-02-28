@@ -1,5 +1,5 @@
 {{-- Final CTA — With social proof and trust signals --}}
-<div class="bg-slate-900 dark:bg-slate-950 relative overflow-hidden" id="final-cta">
+<div class="bg-slate-900 dark:bg-[#0B1120] relative overflow-hidden" id="final-cta">
     {{-- Radial glow --}}
     <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div class="w-[600px] h-[300px] bg-sky-500/5 rounded-full blur-3xl"></div>

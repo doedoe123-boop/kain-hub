@@ -47,6 +47,12 @@ class SectorResource extends Resource
                         ->rows(2)
                         ->columnSpanFull(),
 
+                    Forms\Components\TextInput::make('registration_button_text')
+                        ->maxLength(120)
+                        ->placeholder('Register as Supplier')
+                        ->helperText('Custom text for the action button natively (e.g. "Join as Real Estate Agent").')
+                        ->columnSpanFull(),
+
                     Forms\Components\TextInput::make('icon')
                         ->placeholder('heroicon-o-building-storefront')
                         ->helperText('Heroicon component name, e.g. heroicon-o-cake')

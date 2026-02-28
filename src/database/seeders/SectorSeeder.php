@@ -16,6 +16,7 @@ class SectorSeeder extends Seeder
                 'description' => 'Restaurants, catering, food production, grocery, and beverage distribution.',
                 'icon'        => 'heroicon-o-cake',
                 'color'       => 'orange',
+                'registration_button_text' => 'Register as Food Business',
                 'is_active'   => true,
                 'sort_order'  => 1,
                 'documents'   => [
@@ -33,6 +34,7 @@ class SectorSeeder extends Seeder
                 'description' => 'Property listings, real estate services, and property management.',
                 'icon'        => 'heroicon-o-home-modern',
                 'color'       => 'emerald',
+                'registration_button_text' => 'Join as Real Estate Agent',
                 'is_active'   => true,
                 'sort_order'  => 2,
                 'documents'   => [

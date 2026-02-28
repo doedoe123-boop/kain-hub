@@ -80,13 +80,13 @@
         @enderror
 
         {{-- Sector Grid --}}
-        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 flex-1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl">
             @foreach ($sectors as $sector)
                 <button
                     wire:click="selectSector('{{ $sector->slug }}')"
                     wire:loading.attr="disabled"
                     wire:loading.class="opacity-60 cursor-wait"
-                    class="group relative flex flex-col items-center justify-center p-5 sm:p-6 bg-white dark:bg-slate-800/80 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 cursor-pointer text-center"
+                    class="group relative flex flex-col items-center justify-center p-6 sm:p-8 bg-white dark:bg-slate-800/80 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 cursor-pointer text-center"
                 >
                     {{-- Dynamic icon from DB --}}
                     <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/40 transition-colors duration-200 shadow-sm">

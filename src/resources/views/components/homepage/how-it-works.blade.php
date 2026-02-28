@@ -1,5 +1,5 @@
 {{-- How It Works — 3 steps with numbered indicators and connectors --}}
-<div class="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800/60" id="how-it-works">
+<div class="bg-slate-50 dark:bg-[#0B1120] border-b border-slate-200 dark:border-slate-800/60" id="how-it-works">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
         <div class="text-center mb-14">
             <p class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.2em] mb-3">Getting Started</p>
@@ -14,7 +14,7 @@
 
                 {{-- Step 1 --}}
                 <div class="text-center px-6 pb-10 md:pb-0 relative">
-                    <div class="relative z-10 inline-flex items-center justify-center h-20 w-20 rounded-2xl bg-sky-50 dark:bg-sky-900/20 border-2 border-sky-100 dark:border-sky-800 mb-5 group-hover:scale-105 transition-transform">
+                    <div class="relative z-10 inline-flex items-center justify-center h-20 w-20 rounded-2xl bg-white dark:bg-sky-900/20 border-2 border-slate-200 dark:border-sky-800 mb-5 group-hover:scale-105 transition-transform">
                         <span class="text-2xl font-black text-sky-600/20 dark:text-sky-400/20 absolute -top-1 -right-1 text-[40px] leading-none">1</span>
                         <x-heroicon-o-user-plus class="w-8 h-8 text-sky-600 dark:text-sky-400" />
                     </div>
@@ -27,8 +27,8 @@
                 </div>
 
                 {{-- Step 2 --}}
-                <div class="text-center px-6 pb-10 md:pb-0 relative border-t md:border-t-0 border-slate-100 dark:border-slate-800 pt-10 md:pt-0">
-                    <div class="relative z-10 inline-flex items-center justify-center h-20 w-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border-2 border-emerald-100 dark:border-emerald-800 mb-5">
+                <div class="text-center px-6 pb-10 md:pb-0 relative border-t md:border-t-0 border-slate-200 dark:border-slate-800 pt-10 md:pt-0">
+                    <div class="relative z-10 inline-flex items-center justify-center h-20 w-20 rounded-2xl bg-white dark:bg-emerald-900/20 border-2 border-slate-200 dark:border-emerald-800 mb-5">
                         <span class="text-2xl font-black text-emerald-600/20 dark:text-emerald-400/20 absolute -top-1 -right-1 text-[40px] leading-none">2</span>
                         <x-heroicon-o-building-storefront class="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
                     </div>
@@ -41,8 +41,8 @@
                 </div>
 
                 {{-- Step 3 --}}
-                <div class="text-center px-6 relative border-t md:border-t-0 border-slate-100 dark:border-slate-800 pt-10 md:pt-0">
-                    <div class="relative z-10 inline-flex items-center justify-center h-20 w-20 rounded-2xl bg-violet-50 dark:bg-violet-900/20 border-2 border-violet-100 dark:border-violet-800 mb-5">
+                <div class="text-center px-6 relative border-t md:border-t-0 border-slate-200 dark:border-slate-800 pt-10 md:pt-0">
+                    <div class="relative z-10 inline-flex items-center justify-center h-20 w-20 rounded-2xl bg-white dark:bg-violet-900/20 border-2 border-slate-200 dark:border-violet-800 mb-5">
                         <span class="text-2xl font-black text-violet-600/20 dark:text-violet-400/20 absolute -top-1 -right-1 text-[40px] leading-none">3</span>
                         <x-heroicon-o-rocket-launch class="w-8 h-8 text-violet-600 dark:text-violet-400" />
                     </div>

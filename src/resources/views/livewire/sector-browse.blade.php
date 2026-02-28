@@ -44,13 +44,13 @@
                 <p class="mt-1 text-sm text-gray-500">Try adjusting your search query.</p>
             </div>
         @else
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="flex flex-wrap justify-center gap-5">
                 @foreach ($sectors as $sector)
-                    <div class="group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-{{ $sector->color }}-300 transition-all duration-200 overflow-hidden">
+                    <div class="w-full sm:w-[calc(50%-10px)] lg:max-w-md flex-1 group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-{{ $sector->color }}-300 transition-all duration-200 overflow-hidden flex flex-col">
                         {{-- Color Header Bar --}}
                         <div class="h-1.5 bg-{{ $sector->color }}-500"></div>
 
-                        <div class="p-5">
+                        <div class="p-5 flex-1 flex flex-col">
                             {{-- Icon & Label --}}
                             <div class="flex items-start gap-3 mb-3">
                                 <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-{{ $sector->color }}-50 flex items-center justify-center">
@@ -102,8 +102,8 @@
 
                             {{-- Action --}}
                             <a href="{{ route('register.store-owner', ['sector' => $sector->slug]) }}"
-                               class="block w-full text-center text-xs font-semibold py-2 rounded-lg border border-{{ $sector->color }}-200 text-{{ $sector->color }}-700 hover:bg-{{ $sector->color }}-50 transition-colors">
-                                Register as Supplier
+                               class="mt-auto block w-full text-center text-xs font-semibold py-2 rounded-lg border border-{{ $sector->color }}-200 text-{{ $sector->color }}-700 hover:bg-{{ $sector->color }}-50 transition-colors">
+                                {{ $sector->registration_button_text ?? 'Register as Supplier' }}
                             </a>
                         </div>
                     </div>

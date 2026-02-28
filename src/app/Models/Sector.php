@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $description
  * @property string $icon
  * @property string $color
+ * @property string|null $registration_button_text
  * @property bool   $is_active
  * @property int    $sort_order
  */
@@ -22,6 +23,7 @@ class Sector extends Model
         'name',
         'slug',
         'description',
+        'registration_button_text',
         'icon',
         'color',
         'is_active',
