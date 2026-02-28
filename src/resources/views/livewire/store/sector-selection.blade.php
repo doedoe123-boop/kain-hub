@@ -83,53 +83,28 @@
         <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 flex-1">
             @foreach ($sectors as $sector)
                 <button
-                    wire:click="selectSector('{{ $sector->value }}')"
+                    wire:click="selectSector('{{ $sector->slug }}')"
                     wire:loading.attr="disabled"
                     wire:loading.class="opacity-60 cursor-wait"
                     class="group relative flex flex-col items-center justify-center p-5 sm:p-6 bg-white dark:bg-slate-800/80 rounded-2xl border-2 border-slate-200 dark:border-slate-700 shadow-sm hover:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 cursor-pointer text-center"
                 >
-                    {{-- Icon bubble --}}
+                    {{-- Dynamic icon from DB --}}
                     <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-700 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/40 transition-colors duration-200 shadow-sm">
-                        @switch($sector)
-                            @case(App\IndustrySector::Construction)
-                                <x-heroicon-o-wrench-screwdriver class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                                @break
-                            @case(App\IndustrySector::Technology)
-                                <x-heroicon-o-cpu-chip class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                                @break
-                            @case(App\IndustrySector::FoodAndBeverage)
-                                <x-heroicon-o-cake class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                                @break
-                            @case(App\IndustrySector::Healthcare)
-                                <x-heroicon-o-heart class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                                @break
-                            @case(App\IndustrySector::Chemicals)
-                                <x-heroicon-o-beaker class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                                @break
-                            @case(App\IndustrySector::Logistics)
-                                <x-heroicon-o-truck class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                                @break
-                            @case(App\IndustrySector::RealEstate)
-                                <x-heroicon-o-home-modern class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                                @break
-                            @case(App\IndustrySector::Agriculture)
-                                <x-heroicon-o-sun class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
-                                @break
-                        @endswitch
+                        <x-dynamic-component :component="$sector->icon" class="w-7 h-7 text-slate-500 group-hover:text-indigo-600 transition-colors" />
                     </div>
 
                     <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-tight">
-                        {{ $sector->label() }}
+                        {{ $sector->name }}
                     </h3>
                     <p class="mt-1.5 text-[11px] text-slate-400 dark:text-slate-500 leading-relaxed hidden sm:block">
-                        {{ $sector->description() }}
+                        {{ $sector->description }}
                     </p>
 
                     {{-- Selection indicator --}}
                     <div class="absolute inset-x-0 bottom-0 h-0.5 bg-indigo-500 rounded-b-2xl scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left"></div>
 
                     {{-- Loading overlay --}}
-                    <div wire:loading wire:target="selectSector('{{ $sector->value }}')" class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-800/80 rounded-2xl">
+                    <div wire:loading wire:target="selectSector('{{ $sector->slug }}')" class="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-slate-800/80 rounded-2xl">
                         <svg class="w-5 h-5 animate-spin text-indigo-500" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>

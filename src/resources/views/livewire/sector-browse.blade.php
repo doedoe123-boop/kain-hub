@@ -45,54 +45,28 @@
             </div>
         @else
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-                @foreach ($sectors as $item)
-                    @php $sector = $item['sector']; @endphp
-                    <div class="group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-{{ $sector->color() }}-300 transition-all duration-200 overflow-hidden">
+                @foreach ($sectors as $sector)
+                    <div class="group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:border-{{ $sector->color }}-300 transition-all duration-200 overflow-hidden">
                         {{-- Color Header Bar --}}
-                        <div class="h-1.5 bg-{{ $sector->color() }}-500"></div>
+                        <div class="h-1.5 bg-{{ $sector->color }}-500"></div>
 
                         <div class="p-5">
                             {{-- Icon & Label --}}
                             <div class="flex items-start gap-3 mb-3">
-                                <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-{{ $sector->color() }}-50 flex items-center justify-center">
-                                    @switch($sector)
-                                        @case(App\IndustrySector::Construction)
-                                            <x-heroicon-o-wrench-screwdriver class="w-5 h-5 text-{{ $sector->color() }}-600" />
-                                            @break
-                                        @case(App\IndustrySector::Technology)
-                                            <x-heroicon-o-cpu-chip class="w-5 h-5 text-{{ $sector->color() }}-600" />
-                                            @break
-                                        @case(App\IndustrySector::FoodAndBeverage)
-                                            <x-heroicon-o-cake class="w-5 h-5 text-{{ $sector->color() }}-600" />
-                                            @break
-                                        @case(App\IndustrySector::Healthcare)
-                                            <x-heroicon-o-heart class="w-5 h-5 text-{{ $sector->color() }}-600" />
-                                            @break
-                                        @case(App\IndustrySector::Chemicals)
-                                            <x-heroicon-o-beaker class="w-5 h-5 text-{{ $sector->color() }}-600" />
-                                            @break
-                                        @case(App\IndustrySector::Logistics)
-                                            <x-heroicon-o-truck class="w-5 h-5 text-{{ $sector->color() }}-600" />
-                                            @break
-                                        @case(App\IndustrySector::RealEstate)
-                                            <x-heroicon-o-home-modern class="w-5 h-5 text-{{ $sector->color() }}-600" />
-                                            @break
-                                        @case(App\IndustrySector::Agriculture)
-                                            <x-heroicon-o-sun class="w-5 h-5 text-{{ $sector->color() }}-600" />
-                                            @break
-                                    @endswitch
+                                <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-{{ $sector->color }}-50 flex items-center justify-center">
+                                    <x-dynamic-component :component="$sector->icon" class="w-5 h-5 text-{{ $sector->color }}-600" />
                                 </div>
                                 <div class="min-w-0">
-                                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-{{ $sector->color() }}-700 transition-colors">
-                                        {{ $sector->label() }}
+                                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-{{ $sector->color }}-700 transition-colors">
+                                        {{ $sector->name }}
                                     </h3>
-                                    <span class="text-xs text-gray-500">{{ $item['count'] }} {{ Str::plural('supplier', $item['count']) }}</span>
+                                    <span class="text-xs text-gray-500">{{ $sector->supplier_count }} {{ Str::plural('supplier', $sector->supplier_count) }}</span>
                                 </div>
                             </div>
 
                             {{-- Description --}}
                             <p class="text-xs text-gray-500 leading-relaxed mb-4">
-                                {{ $sector->description() }}
+                                {{ $sector->description }}
                             </p>
 
                             {{-- Compliance Summary --}}
@@ -101,12 +75,12 @@
                                 <div class="flex items-center gap-3 text-xs">
                                     <span class="inline-flex items-center gap-1 text-red-600">
                                         <x-heroicon-s-check-circle class="w-3 h-3" />
-                                        {{ $item['requiredDocs'] }} required
+                                        {{ $sector->required_docs }} required
                                     </span>
-                                    @if ($item['optionalDocs'] > 0)
+                                    @if ($sector->optional_docs > 0)
                                         <span class="inline-flex items-center gap-1 text-gray-400">
                                             <x-heroicon-s-check-circle class="w-3 h-3" />
-                                            {{ $item['optionalDocs'] }} optional
+                                            {{ $sector->optional_docs }} optional
                                         </span>
                                     @endif
                                 </div>
@@ -114,21 +88,21 @@
 
                             {{-- Required Document List --}}
                             <div class="space-y-1.5 mb-4">
-                                @foreach ($sector->requiredDocuments() as $doc)
+                                @foreach ($sector->documents as $doc)
                                     <div class="flex items-start gap-1.5 text-xs">
-                                        @if ($doc['required'])
+                                        @if ($doc->is_required)
                                             <x-heroicon-s-check-circle class="w-3 h-3 text-red-500 mt-0.5 flex-shrink-0" />
                                         @else
                                             <x-heroicon-o-clock class="w-3 h-3 text-gray-300 mt-0.5 flex-shrink-0" />
                                         @endif
-                                        <span class="{{ $doc['required'] ? 'text-gray-700' : 'text-gray-400' }}">{{ $doc['label'] }}</span>
+                                        <span class="{{ $doc->is_required ? 'text-gray-700' : 'text-gray-400' }}">{{ $doc->label }}</span>
                                     </div>
                                 @endforeach
                             </div>
 
                             {{-- Action --}}
-                            <a href="{{ route('register.store-owner', ['sector' => $sector->value]) }}"
-                               class="block w-full text-center text-xs font-semibold py-2 rounded-lg border border-{{ $sector->color() }}-200 text-{{ $sector->color() }}-700 hover:bg-{{ $sector->color() }}-50 transition-colors">
+                            <a href="{{ route('register.store-owner', ['sector' => $sector->slug]) }}"
+                               class="block w-full text-center text-xs font-semibold py-2 rounded-lg border border-{{ $sector->color }}-200 text-{{ $sector->color }}-700 hover:bg-{{ $sector->color }}-50 transition-colors">
                                 Register as Supplier
                             </a>
                         </div>

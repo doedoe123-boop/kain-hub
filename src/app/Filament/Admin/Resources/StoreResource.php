@@ -54,9 +54,9 @@ class StoreResource extends Resource
                             ->required(),
                         Forms\Components\Select::make('sector')
                             ->label('Industry Sector')
-                            ->options(collect(IndustrySector::cases())->mapWithKeys(
-                                fn (IndustrySector $sector) => [$sector->value => $sector->label()]
-                            ))
+                            ->options(
+                                \App\Models\Sector::all()->pluck('name', 'slug')
+                            )
                             ->searchable(),
                         Forms\Components\TextInput::make('commission_rate')
                             ->numeric()
@@ -119,18 +119,8 @@ class StoreResource extends Resource
                         Infolists\Components\TextEntry::make('sector')
                             ->label('Industry Sector')
                             ->badge()
-                            ->formatStateUsing(fn (?IndustrySector $state): string => $state?->label() ?? '—')
-                            ->color(fn (?IndustrySector $state): string => match ($state) {
-                                IndustrySector::Construction => 'warning',
-                                IndustrySector::Technology => 'info',
-                                IndustrySector::FoodAndBeverage => 'warning',
-                                IndustrySector::Healthcare => 'danger',
-                                IndustrySector::Chemicals => 'gray',
-                                IndustrySector::Logistics => 'info',
-                                IndustrySector::RealEstate => 'success',
-                                IndustrySector::Agriculture => 'success',
-                                null => 'gray',
-                            }),
+                            ->formatStateUsing(fn (?string $state): string => \App\Models\Sector::where('slug', $state)->value('name') ?? $state ?? '—')
+                            ->color(fn (?string $state): string => \App\Models\Sector::where('slug', $state)->value('color') ?? 'gray'),
                         Infolists\Components\TextEntry::make('commission_rate')
                             ->suffix('%'),
                     ])->columns(2),
@@ -267,18 +257,8 @@ class StoreResource extends Resource
                 Tables\Columns\TextColumn::make('sector')
                     ->label('Sector')
                     ->badge()
-                    ->formatStateUsing(fn (?IndustrySector $state): string => $state?->label() ?? '—')
-                    ->color(fn (?IndustrySector $state): string => match ($state) {
-                        IndustrySector::Construction => 'warning',
-                        IndustrySector::Technology => 'info',
-                        IndustrySector::FoodAndBeverage => 'warning',
-                        IndustrySector::Healthcare => 'danger',
-                        IndustrySector::Chemicals => 'gray',
-                        IndustrySector::Logistics => 'info',
-                        IndustrySector::RealEstate => 'success',
-                        IndustrySector::Agriculture => 'success',
-                        null => 'gray',
-                    })
+                    ->formatStateUsing(fn (?string $state): string => \App\Models\Sector::where('slug', $state)->value('name') ?? $state ?? '—')
+                    ->color(fn (?string $state): string => \App\Models\Sector::where('slug', $state)->value('color') ?? 'gray')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('commission_rate')
                     ->suffix('%')
@@ -422,7 +402,7 @@ class StoreResource extends Resource
             ->groups([
                 Tables\Grouping\Group::make('sector')
                     ->label('Industry Sector')
-                    ->getTitleFromRecordUsing(fn (Store $record): string => $record->sector?->label() ?? 'Unclassified'),
+                    ->getTitleFromRecordUsing(fn (Store $record): string => \App\Models\Sector::where('slug', $record->sector)->value('name') ?? $record->sector ?? 'Unclassified'),
             ]);
     }
 

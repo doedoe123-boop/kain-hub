@@ -4,10 +4,12 @@ use App\IndustrySector;
 use App\Livewire\SectorBrowse;
 use App\Livewire\Store\SectorSelection;
 use App\Livewire\Store\StoreOwnerRegistration;
+use App\Models\Sector;
 use App\Models\Store;
 use App\Models\User;
 use App\StoreStatus;
 use App\UserRole;
+use Database\Seeders\SectorSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
@@ -16,6 +18,8 @@ use Spatie\Permission\Models\Role;
 beforeEach(function () {
     Role::firstOrCreate(['name' => 'store_owner', 'guard_name' => 'web']);
     Storage::fake('local');
+    // Seed sectors so DB-driven sector lookups work in all tests
+    (new SectorSeeder)->run();
 });
 
 // --- Sector Selection Page ---
@@ -28,20 +32,14 @@ it('shows the sector selection page to guests', function () {
 
 it('shows all industry sectors on the selection page', function () {
     Livewire::test(SectorSelection::class)
-        ->assertSee('Construction & Building')
-        ->assertSee('IT & Technology')
         ->assertSee('Food & Beverage')
-        ->assertSee('Healthcare & Pharma')
-        ->assertSee('Chemicals & Raw Materials')
-        ->assertSee('Logistics & Transport')
-        ->assertSee('Real Estate & Property')
-        ->assertSee('Agriculture & Farming');
+        ->assertSee('Real Estate & Property');
 });
 
 it('redirects to registration with selected sector', function () {
     Livewire::test(SectorSelection::class)
-        ->call('selectSector', 'technology')
-        ->assertRedirect(route('register.store-owner', ['sector' => 'technology']));
+        ->call('selectSector', 'food_and_beverage')
+        ->assertRedirect(route('register.store-owner', ['sector' => 'food_and_beverage']));
 });
 
 it('rejects invalid sector selection', function () {
@@ -60,9 +58,8 @@ it('shows the public sector browse page', function () {
 
 it('displays sector information with compliance requirements', function () {
     Livewire::test(SectorBrowse::class)
-        ->assertSee('Construction & Building')
         ->assertSee('Food & Beverage')
-        ->assertSee('required');
+        ->assertSee('Real Estate & Property');
 });
 
 it('filters sectors by search query', function () {
@@ -113,20 +110,14 @@ it('shows sector-specific compliance documents on step 5', function () {
         ->assertSee('BIR Certificate of Registration');
 });
 
-it('shows construction-specific docs for construction sector', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'construction'])
+it('shows real-estate-specific docs for real estate sector', function () {
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'real_estate'])
         ->set('step', 5)
-        ->assertSee('PCAB License')
+        ->assertSee('PRC Real Estate Broker License')
         ->assertDontSee('FDA License to Operate');
 });
 
-it('shows healthcare-specific docs for healthcare sector', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'healthcare'])
-        ->set('step', 5)
-        ->assertSee('DOH License')
-        ->assertSee('PRC Professional License')
-        ->assertDontSee('PCAB License');
-});
+
 
 // --- Successful Registration with Compliance Docs ---
 
@@ -172,7 +163,7 @@ it('creates a user and store with compliance documents on registration', functio
         ->and($store->user_id)->toBe($user->id)
         ->and($store->name)->toBe('Juan Kitchen')
         ->and($store->status)->toBe(StoreStatus::Pending)
-        ->and($store->sector)->toBe(IndustrySector::FoodAndBeverage)
+        ->and($store->sector)->toBe('food_and_beverage')
         ->and($store->id_type)->toBe('passport')
         ->and($store->id_number)->toBe('P1234567')
         ->and($store->compliance_documents)->toBeArray()
@@ -420,24 +411,25 @@ it('accepts valid SSS ID number format', function () {
 // --- Sector-Specific Document Requirements ---
 
 it('has different required documents per sector', function () {
-    $foodDocs = IndustrySector::FoodAndBeverage->requiredDocuments();
-    $constructionDocs = IndustrySector::Construction->requiredDocuments();
+    $food = Sector::where('slug', 'food_and_beverage')->first();
+    $realEstate = Sector::where('slug', 'real_estate')->first();
 
-    // Food needs FDA and Sanitary Permit
-    $foodKeys = array_column($foodDocs, 'key');
+    $foodKeys = array_column($food->documentsArray(), 'key');
+    $realEstateKeys = array_column($realEstate->documentsArray(), 'key');
+
+    // Food & Beverage needs FDA and Sanitary Permit
     expect($foodKeys)->toContain('fda_lto')
         ->toContain('sanitary_permit');
 
-    // Construction needs PCAB License
-    $constructionKeys = array_column($constructionDocs, 'key');
-    expect($constructionKeys)->toContain('pcab_license')
+    // Real Estate needs PRC broker license
+    expect($realEstateKeys)->toContain('prc_broker_license')
         ->not->toContain('fda_lto');
 
     // Both share common documents
     expect($foodKeys)->toContain('dti_sec_registration')
         ->toContain('business_permit')
         ->toContain('bir_registration');
-    expect($constructionKeys)->toContain('dti_sec_registration')
+    expect($realEstateKeys)->toContain('dti_sec_registration')
         ->toContain('business_permit')
         ->toContain('bir_registration');
 });

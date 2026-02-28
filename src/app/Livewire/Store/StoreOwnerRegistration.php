@@ -6,6 +6,7 @@ use App\IndustrySector;
 use App\Models\Store;
 use App\Models\User;
 use App\PhilippineIdType;
+use App\Models\Sector;
 use App\Rules\ValidateUploadContent;
 use App\UserRole;
 use Illuminate\Auth\Events\Registered;
@@ -92,46 +93,48 @@ class StoreOwnerRegistration extends Component
      */
     public function mount(string $sector): void
     {
-        if (IndustrySector::tryFrom($sector)) {
+        $sectorModel = Sector::active()->where('slug', $sector)->first();
+
+        if ($sectorModel) {
             $this->sector = $sector;
-            $this->initComplianceFiles();
+            $this->initComplianceFiles($sectorModel);
         } else {
             $this->redirect(route('register.sector'));
         }
     }
 
     /**
-     * Initialize compliance file slots based on sector requirements.
+     * Initialize compliance file slots based on sector's documents from DB.
      */
-    private function initComplianceFiles(): void
+    private function initComplianceFiles(?Sector $sectorModel = null): void
     {
-        $sectorEnum = IndustrySector::tryFrom($this->sector);
+        $sectorModel ??= Sector::active()->where('slug', $this->sector)->with('documents')->first();
 
-        if (! $sectorEnum) {
+        if (! $sectorModel) {
             return;
         }
 
-        foreach ($sectorEnum->requiredDocuments() as $doc) {
+        foreach ($sectorModel->documentsArray() as $doc) {
             $this->complianceFiles[$doc['key']] = null;
         }
     }
 
     /**
-     * Get the resolved IndustrySector enum instance.
+     * Get the resolved Sector model for the current sector slug.
      */
-    public function getSectorEnumProperty(): ?IndustrySector
+    public function getSectorModelProperty(): ?Sector
     {
-        return IndustrySector::tryFrom($this->sector);
+        return Sector::active()->where('slug', $this->sector)->with('documents')->first();
     }
 
     /**
-     * Get the required documents for the current sector.
+     * Get the required documents for the current sector from DB.
      *
      * @return array<int, array{key: string, label: string, description: string, required: bool, mimes: string}>
      */
     public function getSectorDocumentsProperty(): array
     {
-        return $this->sectorEnum?->requiredDocuments() ?? [];
+        return $this->sectorModel?->documentsArray() ?? [];
     }
 
     /**
@@ -312,6 +315,28 @@ class StoreOwnerRegistration extends Component
     public function updatedIdType(): void
     {
         $this->resetErrorBag('idNumber');
+    }
+
+    /**
+     * Clear file validation errors as soon as a compliance document is uploaded.
+     *
+     * With WithFileUploads on an array property, Livewire 3 calls this hook
+     * with the nested key (e.g. 'dti_sec_registration') after the temp file is set.
+     * We reset both the specific key and scan all slots to clear any that now have a file.
+     */
+    public function updatedComplianceFiles(string $key = ''): void
+    {
+        // Clear the specific key if provided
+        if ($key !== '') {
+            $this->resetValidation("complianceFiles.{$key}");
+        }
+
+        // Also sweep all slots — clear errors for any slot that now has a file
+        foreach ($this->complianceFiles as $slot => $file) {
+            if ($file !== null) {
+                $this->resetValidation("complianceFiles.{$slot}");
+            }
+        }
     }
 
     /**

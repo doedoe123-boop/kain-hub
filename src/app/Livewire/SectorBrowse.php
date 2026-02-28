@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\IndustrySector;
+use App\Models\Sector;
 use App\Models\Store;
 use App\StoreStatus;
 use Illuminate\View\View;
@@ -12,17 +12,14 @@ use Livewire\Component;
 #[Layout('components.layouts.app')]
 class SectorBrowse extends Component
 {
-    /**
-     * Search query for filtering sectors.
-     */
     public string $search = '';
 
     /**
-     * Get sector data with supplier counts.
+     * Get active sector data with supplier counts.
      *
-     * @return array<int, array{sector: IndustrySector, count: int, requiredDocs: int, optionalDocs: int}>
+     * @return \Illuminate\Database\Eloquent\Collection<int, Sector>
      */
-    private function getSectorData(): array
+    private function getSectors(): mixed
     {
         $counts = Store::query()
             ->where('status', StoreStatus::Approved)
@@ -32,31 +29,27 @@ class SectorBrowse extends Component
             ->pluck('total', 'sector')
             ->toArray();
 
-        $sectors = [];
-        foreach (IndustrySector::cases() as $sector) {
-            if ($this->search && ! str_contains(
-                strtolower($sector->label().' '.$sector->description()),
-                strtolower($this->search)
-            )) {
-                continue;
-            }
+        return Sector::active()
+            ->with('documents')
+            ->when($this->search, fn ($q) => $q->where(function ($q) {
+                $op = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
+                $q->where('name', $op, "%{$this->search}%")
+                    ->orWhere('description', $op, "%{$this->search}%");
+            }))
+            ->get()
+            ->map(function (Sector $sector) use ($counts): Sector {
+                $sector->supplier_count  = $counts[$sector->slug] ?? 0;
+                $sector->required_docs   = $sector->documents->where('is_required', true)->count();
+                $sector->optional_docs   = $sector->documents->where('is_required', false)->count();
 
-            $docs = $sector->requiredDocuments();
-            $sectors[] = [
-                'sector' => $sector,
-                'count' => $counts[$sector->value] ?? 0,
-                'requiredDocs' => count(array_filter($docs, fn (array $d) => $d['required'])),
-                'optionalDocs' => count(array_filter($docs, fn (array $d) => ! $d['required'])),
-            ];
-        }
-
-        return $sectors;
+                return $sector;
+            });
     }
 
     public function render(): View
     {
         return view('livewire.sector-browse', [
-            'sectors' => $this->getSectorData(),
+            'sectors'        => $this->getSectors(),
             'totalSuppliers' => Store::query()->where('status', StoreStatus::Approved)->count(),
         ])->title('Industries — NegosyoHub');
     }

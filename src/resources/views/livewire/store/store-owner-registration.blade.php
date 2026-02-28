@@ -66,9 +66,9 @@
         <div class="mb-10">
             <h1 class="text-2xl font-bold text-white leading-tight">Become a Supplier</h1>
             <p class="mt-2 text-sm text-slate-400 leading-relaxed">Complete all 5 steps to submit your store application for review.</p>
-            @if ($this->sectorEnum)
-                <div class="mt-4 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-500/30">
-                    <span class="text-xs font-semibold text-indigo-300">{{ $this->sectorEnum->label() }}</span>
+            @if ($this->sectorModel)
+                <div class="mt-3 px-3 py-1.5 rounded-lg bg-white/10">
+                    <span class="text-xs font-semibold text-indigo-300">{{ $this->sectorModel->name }}</span>
                     <a href="{{ route('register.sector') }}" class="text-xs text-indigo-400 hover:text-white transition-colors underline">Change</a>
                 </div>
             @endif
@@ -179,7 +179,7 @@
                         @case(2) Tell customers who you are and what you sell. @break
                         @case(3) Where is your store physically located? @break
                         @case(4) Provide a valid government-issued ID for identity verification. @break
-                        @case(5) Upload the required documents for the <strong class="text-indigo-600">{{ $this->sectorEnum?->label() }}</strong> sector. @break
+                        @case(5) Upload the required documents for the <strong class="text-indigo-600">{{ $this->sectorModel?->name }}</strong> sector. @break
                     @endswitch
                 </p>
             </div>

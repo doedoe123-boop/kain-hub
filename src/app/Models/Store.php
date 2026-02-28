@@ -84,7 +84,6 @@ class Store extends Model
             'compliance_documents' => 'encrypted:array',
             'commission_rate' => 'decimal:2',
             'status' => StoreStatus::class,
-            'sector' => IndustrySector::class,
             'suspended_at' => 'datetime',
         ];
     }
