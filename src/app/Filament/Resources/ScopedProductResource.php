@@ -8,6 +8,8 @@ use Lunar\Admin\Filament\Resources\ProductResource as LunarProductResource;
 
 class ScopedProductResource extends LunarProductResource
 {
+    protected static ?string $slug = 'products';
+
     /**
      * Scope products to the authenticated store owner's store.
      *

@@ -4,7 +4,6 @@ namespace App\Filament\Pages;
 
 use App\Models\Order;
 use App\Models\Payout;
-use App\OrderStatus;
 use Filament\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -59,23 +58,23 @@ class StoreEarnings extends Page implements HasTable
 
         return [
             'stats' => [
-                Stat::make('Total Earnings', '₱' . number_format($totalEarnings, 2))
+                Stat::make('Total Earnings', '₱'.number_format($totalEarnings, 2))
                     ->description('From delivered orders')
                     ->icon('heroicon-o-currency-dollar')
                     ->color('success'),
 
-                Stat::make('Commission Paid', '₱' . number_format($totalCommission, 2))
+                Stat::make('Commission Paid', '₱'.number_format($totalCommission, 2))
                     ->description('Platform commission')
                     ->icon('heroicon-o-receipt-percent')
                     ->color('warning'),
 
-                Stat::make('Incoming Revenue', '₱' . number_format($pendingOrders, 2))
+                Stat::make('Incoming Revenue', '₱'.number_format($pendingOrders, 2))
                     ->description('Active orders in progress')
                     ->icon('heroicon-o-clock')
                     ->color('info'),
 
-                Stat::make('Paid Out', '₱' . number_format($totalPaidOut, 2))
-                    ->description('₱' . number_format($pendingPayouts, 2) . ' pending')
+                Stat::make('Paid Out', '₱'.number_format($totalPaidOut, 2))
+                    ->description('₱'.number_format($pendingPayouts, 2).' pending')
                     ->icon('heroicon-o-banknotes')
                     ->color('success'),
             ],
@@ -96,7 +95,7 @@ class StoreEarnings extends Page implements HasTable
                 Tables\Columns\TextColumn::make('period_start')
                     ->label('Period')
                     ->date('M d, Y')
-                    ->description(fn (Payout $record): string => 'to ' . $record->period_end->format('M d, Y'))
+                    ->description(fn (Payout $record): string => 'to '.$record->period_end->format('M d, Y'))
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('amount')

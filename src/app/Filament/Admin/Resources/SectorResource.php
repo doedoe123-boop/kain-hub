@@ -6,6 +6,8 @@ use App\Filament\Admin\Resources\SectorResource\Pages;
 use App\Models\Sector;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -137,6 +139,63 @@ class SectorResource extends Resource
         ]);
     }
 
+    // ── Infolist ──────────────────────────────────────────────────────
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('Sector Details')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name'),
+                        Infolists\Components\TextEntry::make('slug')
+                            ->copyable(),
+                        Infolists\Components\TextEntry::make('description')
+                            ->columnSpanFull()
+                            ->placeholder('No description'),
+                        Infolists\Components\TextEntry::make('registration_button_text')
+                            ->label('Registration Button')
+                            ->placeholder('Default'),
+                        Infolists\Components\TextEntry::make('icon')
+                            ->placeholder('None'),
+                        Infolists\Components\TextEntry::make('color')
+                            ->badge()
+                            ->color(fn (?string $state): string => $state ?? 'gray'),
+                        Infolists\Components\IconEntry::make('is_active')
+                            ->label('Active')
+                            ->boolean(),
+                        Infolists\Components\TextEntry::make('sort_order'),
+                        Infolists\Components\TextEntry::make('documents_count')
+                            ->label('Required Documents')
+                            ->state(fn (Sector $record): int => $record->documents()->count()),
+                    ])->columns(3),
+                Infolists\Components\Section::make('Required Documents')
+                    ->schema([
+                        Infolists\Components\RepeatableEntry::make('documents')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('label')
+                                    ->weight('bold'),
+                                Infolists\Components\TextEntry::make('key')
+                                    ->color('gray'),
+                                Infolists\Components\TextEntry::make('mimes')
+                                    ->label('Allowed Types'),
+                                Infolists\Components\IconEntry::make('is_required')
+                                    ->label('Required')
+                                    ->boolean(),
+                            ])->columns(4),
+                    ])
+                    ->collapsible(),
+                Infolists\Components\Section::make('Timestamps')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->dateTime(),
+                        Infolists\Components\TextEntry::make('updated_at')
+                            ->dateTime(),
+                    ])->columns(2)
+                    ->collapsed(),
+            ]);
+    }
+
     // ── Table ─────────────────────────────────────────────────────────
 
     public static function table(Table $table): Table
@@ -178,6 +237,7 @@ class SectorResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_active')->label('Active'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('toggle_active')
                     ->label(fn (Sector $record): string => $record->is_active ? 'Deactivate' : 'Activate')
@@ -207,6 +267,7 @@ class SectorResource extends Resource
         return [
             'index' => Pages\ListSectors::route('/'),
             'create' => Pages\CreateSector::route('/create'),
+            'view' => Pages\ViewSector::route('/{record}'),
             'edit' => Pages\EditSector::route('/{record}/edit'),
         ];
     }

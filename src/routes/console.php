@@ -1,5 +1,6 @@
 <?php
 
+use App\Jobs\ExpireAnnouncementsJob;
 use App\Jobs\PurgeExpiredDocumentsJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -11,3 +12,6 @@ Artisan::command('inspire', function () {
 
 // Data lifecycle — daily cleanup of expired documents and soft-deleted records
 Schedule::job(new PurgeExpiredDocumentsJob)->daily()->at('03:00');
+
+// Deactivate announcements past their expiry date
+Schedule::job(new ExpireAnnouncementsJob)->hourly();

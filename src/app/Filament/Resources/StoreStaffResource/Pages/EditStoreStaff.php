@@ -17,6 +17,18 @@ class EditStoreStaff extends EditRecord
         ];
     }
 
+    /**
+     * Sync selected permissions after saving.
+     */
+    protected function afterSave(): void
+    {
+        /** @var \App\Models\User $staffMember */
+        $staffMember = $this->record;
+
+        $permissions = $this->data['staff_permissions'] ?? [];
+        $staffMember->syncPermissions($permissions);
+    }
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');

@@ -6,6 +6,8 @@ use App\Filament\Admin\Resources\FaqResource\Pages;
 use App\Models\Faq;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -64,6 +66,33 @@ class FaqResource extends Resource
             ]);
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make('FAQ Content')
+                    ->schema([
+                        Infolists\Components\TextEntry::make('question')
+                            ->columnSpanFull(),
+                        Infolists\Components\TextEntry::make('answer')
+                            ->html()
+                            ->columnSpanFull(),
+                    ]),
+                Infolists\Components\Section::make('Settings')
+                    ->schema([
+                        Infolists\Components\IconEntry::make('is_active')
+                            ->label('Active')
+                            ->boolean(),
+                        Infolists\Components\TextEntry::make('sort_order')
+                            ->label('Sort Order'),
+                        Infolists\Components\TextEntry::make('created_at')
+                            ->dateTime(),
+                        Infolists\Components\TextEntry::make('updated_at')
+                            ->dateTime(),
+                    ])->columns(4),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -95,6 +124,7 @@ class FaqResource extends Resource
                     ->falseLabel('Inactive only'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -115,6 +145,7 @@ class FaqResource extends Resource
         return [
             'index' => Pages\ListFaqs::route('/'),
             'create' => Pages\CreateFaq::route('/create'),
+            'view' => Pages\ViewFaq::route('/{record}'),
             'edit' => Pages\EditFaq::route('/{record}/edit'),
         ];
     }

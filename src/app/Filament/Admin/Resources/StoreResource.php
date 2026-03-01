@@ -5,7 +5,6 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\StoreResource\Pages;
 use App\IndustrySector;
 use App\Mail\StoreApproved;
-use App\Mail\StoreRejected;
 use App\Mail\StoreReinstated;
 use App\Mail\StoreSuspended;
 use App\Models\Store;
@@ -440,6 +439,38 @@ class StoreResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('bulk_approve')
+                        ->label('Approve Selected')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->modalHeading('Bulk Approve Stores')
+                        ->modalDescription('This will approve all selected pending stores and send approval emails to each owner.')
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
+                            $approved = 0;
+
+                            foreach ($records as $record) {
+                                if ($record->status === StoreStatus::Pending) {
+                                    $record->update(['status' => StoreStatus::Approved]);
+                                    $record->generateLoginToken();
+
+                                    try {
+                                        Mail::to($record->owner->email)->send(new StoreApproved($record));
+                                    } catch (\Throwable) {
+                                        // Continue processing remaining stores
+                                    }
+
+                                    $approved++;
+                                }
+                            }
+
+                            Notification::make()
+                                ->title("{$approved} store(s) approved")
+                                ->body('Approval emails have been sent to each store owner.')
+                                ->success()
+                                ->send();
+                        }),
                 ]),
             ])
             ->defaultSort('created_at', 'desc')

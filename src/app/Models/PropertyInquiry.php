@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\InquiryStatus;
+use App\Observers\PropertyInquiryObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property ?\Illuminate\Support\Carbon $viewing_date
  * @property string $source
  */
+#[ObservedBy(PropertyInquiryObserver::class)]
 class PropertyInquiry extends Model
 {
     /** @use HasFactory<\Database\Factories\PropertyInquiryFactory> */

@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $content
  * @property bool $is_featured
  * @property bool $is_published
+ * @property ?string $agent_reply
+ * @property ?\Illuminate\Support\Carbon $replied_at
  * @property ?\Illuminate\Support\Carbon $published_at
  */
 class Testimonial extends Model
@@ -36,6 +38,8 @@ class Testimonial extends Model
         'client_photo',
         'rating',
         'content',
+        'agent_reply',
+        'replied_at',
         'is_featured',
         'is_published',
         'published_at',
@@ -51,6 +55,7 @@ class Testimonial extends Model
             'is_featured' => 'boolean',
             'is_published' => 'boolean',
             'published_at' => 'datetime',
+            'replied_at' => 'datetime',
         ];
     }
 

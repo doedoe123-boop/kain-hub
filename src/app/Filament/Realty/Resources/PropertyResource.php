@@ -547,9 +547,65 @@ class PropertyResource extends Resource
                     ->requiresConfirmation()
                     ->action(fn (Model $record) => $record->publish())
                     ->visible(fn (Model $record): bool => $record->status === PropertyStatus::Draft),
+                Tables\Actions\ReplicateAction::make()
+                    ->label('Clone')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->color('gray')
+                    ->excludeAttributes(['slug', 'published_at', 'views_count'])
+                    ->mutateRecordUsing(function (Model $record): Model {
+                        $record->title = '[Copy] '.$record->title;
+                        $record->slug = Str::slug($record->title).'-'.Str::random(6);
+                        $record->status = PropertyStatus::Draft;
+                        $record->is_featured = false;
+                        $record->views_count = 0;
+                        $record->published_at = null;
+
+                        return $record;
+                    })
+                    ->successNotificationTitle('Property cloned as draft'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('bulk_publish')
+                        ->label('Publish Selected')
+                        ->icon('heroicon-o-globe-alt')
+                        ->color('success')
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
+                            $count = 0;
+                            $records->each(function (Model $record) use (&$count): void {
+                                if ($record->status === PropertyStatus::Draft) {
+                                    $record->publish();
+                                    $count++;
+                                }
+                            });
+
+                            \Filament\Notifications\Notification::make()
+                                ->success()
+                                ->title("{$count} propert".($count === 1 ? 'y' : 'ies').' published')
+                                ->send();
+                        }),
+                    Tables\Actions\BulkAction::make('bulk_archive')
+                        ->label('Archive Selected')
+                        ->icon('heroicon-o-archive-box')
+                        ->color('warning')
+                        ->requiresConfirmation()
+                        ->deselectRecordsAfterCompletion()
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
+                            $count = 0;
+                            $records->each(function (Model $record) use (&$count): void {
+                                if ($record->status !== PropertyStatus::Archived) {
+                                    $record->update(['status' => PropertyStatus::Archived]);
+                                    $count++;
+                                }
+                            });
+
+                            \Filament\Notifications\Notification::make()
+                                ->success()
+                                ->title("{$count} propert".($count === 1 ? 'y' : 'ies').' archived')
+                                ->send();
+                        }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);

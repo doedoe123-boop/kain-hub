@@ -43,22 +43,22 @@ class StoreRevenueOverview extends BaseWidget
             ->sum('store_earning') / 100;
 
         return [
-            Stat::make('Total Revenue', '₱' . number_format($totalRevenue, 2))
-                ->description('₱' . number_format($monthRevenue, 2) . ' this month')
+            Stat::make('Total Revenue', '₱'.number_format($totalRevenue, 2))
+                ->description('₱'.number_format($monthRevenue, 2).' this month')
                 ->icon('heroicon-o-currency-dollar')
                 ->color('success'),
 
-            Stat::make('Commission', '₱' . number_format($totalCommission, 2))
+            Stat::make('Commission', '₱'.number_format($totalCommission, 2))
                 ->description('Platform fees')
                 ->icon('heroicon-o-receipt-percent')
                 ->color('warning'),
 
-            Stat::make('Pending Payout', '₱' . number_format($pendingPayout, 2))
+            Stat::make('Pending Payout', '₱'.number_format($pendingPayout, 2))
                 ->description('Awaiting processing')
                 ->icon('heroicon-o-banknotes')
                 ->color($pendingPayout > 0 ? 'info' : 'gray'),
 
-            Stat::make('Total Paid Out', '₱' . number_format($paidOut, 2))
+            Stat::make('Total Paid Out', '₱'.number_format($paidOut, 2))
                 ->description('Transferred to your account')
                 ->icon('heroicon-o-check-badge')
                 ->color('success'),

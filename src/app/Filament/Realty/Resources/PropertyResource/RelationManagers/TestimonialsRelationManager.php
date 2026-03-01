@@ -102,6 +102,11 @@ class TestimonialsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('M d, Y')
                     ->sortable(),
+
+                Tables\Columns\IconColumn::make('agent_reply')
+                    ->label('Replied')
+                    ->boolean()
+                    ->getStateUsing(fn (Model $record): bool => filled($record->agent_reply)),
             ])
             ->defaultSort('created_at', 'desc')
             ->filters([
@@ -131,6 +136,25 @@ class TestimonialsRelationManager extends RelationManager
                     ->requiresConfirmation()
                     ->visible(fn (Model $record): bool => $record->is_published)
                     ->action(fn (Model $record) => $record->unpublish()),
+                Tables\Actions\Action::make('reply')
+                    ->icon('heroicon-o-chat-bubble-left-right')
+                    ->color('info')
+                    ->fillForm(fn (Model $record): array => [
+                        'agent_reply' => $record->agent_reply,
+                    ])
+                    ->form([
+                        Forms\Components\Textarea::make('agent_reply')
+                            ->label('Your Reply')
+                            ->required()
+                            ->maxLength(2000)
+                            ->rows(4),
+                    ])
+                    ->action(function (Model $record, array $data): void {
+                        $record->update([
+                            'agent_reply' => $data['agent_reply'],
+                            'replied_at' => now(),
+                        ]);
+                    }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

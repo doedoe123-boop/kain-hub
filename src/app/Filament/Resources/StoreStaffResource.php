@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -87,6 +88,32 @@ class StoreStaffResource extends Resource
                             ->maxLength(255)
                             ->helperText(fn (string $operation): ?string => $operation === 'edit' ? 'Leave blank to keep current password.' : null),
                     ])->columns(2),
+
+                Forms\Components\Section::make('Permissions')
+                    ->description('Choose which areas this staff member can access.')
+                    ->schema([
+                        Forms\Components\CheckboxList::make('staff_permissions')
+                            ->label('')
+                            ->options([
+                                'catalog:manage-products' => 'Manage Products',
+                                'catalog:manage-collections' => 'Manage Collections',
+                                'sales:manage-orders' => 'Manage Orders',
+                                'sales:manage-customers' => 'Manage Customers',
+                            ])
+                            ->columns(2)
+                            ->default([
+                                'catalog:manage-products',
+                                'catalog:manage-collections',
+                                'sales:manage-orders',
+                                'sales:manage-customers',
+                            ])
+                            ->afterStateHydrated(function (Forms\Components\CheckboxList $component, ?Model $record): void {
+                                if ($record) {
+                                    $component->state($record->getPermissionNames()->toArray());
+                                }
+                            })
+                            ->dehydrated(false),
+                    ]),
             ]);
     }
 

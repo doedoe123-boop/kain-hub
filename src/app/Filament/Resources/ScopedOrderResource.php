@@ -8,6 +8,8 @@ use Lunar\Admin\Filament\Resources\OrderResource as LunarOrderResource;
 
 class ScopedOrderResource extends LunarOrderResource
 {
+    protected static ?string $slug = 'orders';
+
     /**
      * Scope orders to the authenticated store owner's store.
      *

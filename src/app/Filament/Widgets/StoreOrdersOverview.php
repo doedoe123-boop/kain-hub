@@ -3,7 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Order;
-use App\OrderStatus;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -30,7 +29,7 @@ class StoreOrdersOverview extends BaseWidget
 
         return [
             Stat::make('Total Orders', $totalOrders)
-                ->description($todayOrders . ' today')
+                ->description($todayOrders.' today')
                 ->icon('heroicon-o-shopping-bag')
                 ->color('primary'),
 

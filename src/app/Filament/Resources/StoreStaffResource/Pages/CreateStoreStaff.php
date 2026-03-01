@@ -26,13 +26,16 @@ class CreateStoreStaff extends CreateRecord
     }
 
     /**
-     * Assign the staff Spatie role after creation.
+     * Assign the staff Spatie role and sync selected permissions after creation.
      */
     protected function afterCreate(): void
     {
         /** @var \App\Models\User $staffMember */
         $staffMember = $this->record;
         $staffMember->assignRole('staff');
+
+        $permissions = $this->data['staff_permissions'] ?? [];
+        $staffMember->syncPermissions($permissions);
     }
 
     protected function getRedirectUrl(): string
