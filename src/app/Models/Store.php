@@ -29,6 +29,15 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property float $commission_rate
  * @property StoreStatus $status
  * @property ?IndustrySector $sector
+ * @property ?string $agent_bio
+ * @property ?string $agent_photo
+ * @property ?array $agent_certifications
+ * @property ?string $prc_license_number
+ * @property ?array $agent_specializations
+ * @property ?array $social_links
+ * @property ?float $default_interest_rate
+ * @property ?int $default_loan_term_years
+ * @property ?float $default_down_payment_percent
  * @property ?\Illuminate\Support\Carbon $suspended_at
  * @property ?string $suspension_reason
  * @property ?\Illuminate\Support\Carbon $created_at
@@ -68,6 +77,15 @@ class Store extends Model
         'commission_rate',
         'status',
         'sector',
+        'agent_bio',
+        'agent_photo',
+        'agent_certifications',
+        'prc_license_number',
+        'agent_specializations',
+        'social_links',
+        'default_interest_rate',
+        'default_loan_term_years',
+        'default_down_payment_percent',
         'suspended_at',
         'suspension_reason',
     ];
@@ -84,6 +102,11 @@ class Store extends Model
             'compliance_documents' => 'encrypted:array',
             'commission_rate' => 'decimal:2',
             'status' => StoreStatus::class,
+            'agent_certifications' => 'array',
+            'agent_specializations' => 'array',
+            'social_links' => 'array',
+            'default_interest_rate' => 'decimal:2',
+            'default_down_payment_percent' => 'decimal:2',
             'suspended_at' => 'datetime',
         ];
     }
@@ -134,6 +157,38 @@ class Store extends Model
     public function propertyInquiries(): HasMany
     {
         return $this->hasMany(PropertyInquiry::class);
+    }
+
+    /**
+     * Return all developments for this store (real estate).
+     */
+    public function developments(): HasMany
+    {
+        return $this->hasMany(Development::class);
+    }
+
+    /**
+     * Return all open house events for this store.
+     */
+    public function openHouses(): HasMany
+    {
+        return $this->hasMany(OpenHouse::class);
+    }
+
+    /**
+     * Return all testimonials for this store.
+     */
+    public function testimonials(): HasMany
+    {
+        return $this->hasMany(Testimonial::class);
+    }
+
+    /**
+     * Return all property analytics for this store.
+     */
+    public function propertyAnalytics(): HasMany
+    {
+        return $this->hasMany(PropertyAnalytic::class);
     }
 
     /**

@@ -41,6 +41,9 @@ use Illuminate\Support\Str;
  * @property ?float $longitude
  * @property ?array $features
  * @property ?array $images
+ * @property ?array $floor_plans
+ * @property ?array $documents
+ * @property ?array $nearby_places
  * @property ?string $video_url
  * @property ?string $virtual_tour_url
  * @property bool $is_featured
@@ -57,6 +60,9 @@ class Property extends Model
     /** @var list<string> */
     protected $fillable = [
         'store_id',
+        'development_id',
+        'unit_number',
+        'unit_floor',
         'title',
         'slug',
         'description',
@@ -82,6 +88,9 @@ class Property extends Model
         'longitude',
         'features',
         'images',
+        'floor_plans',
+        'documents',
+        'nearby_places',
         'video_url',
         'virtual_tour_url',
         'is_featured',
@@ -103,6 +112,9 @@ class Property extends Model
             'lot_area' => 'decimal:2',
             'features' => 'array',
             'images' => 'array',
+            'floor_plans' => 'array',
+            'documents' => 'array',
+            'nearby_places' => 'array',
             'is_featured' => 'boolean',
             'published_at' => 'datetime',
             'views_count' => 'integer',
@@ -127,9 +139,24 @@ class Property extends Model
         return $this->belongsTo(Store::class);
     }
 
+    public function development(): BelongsTo
+    {
+        return $this->belongsTo(Development::class);
+    }
+
     public function inquiries(): HasMany
     {
         return $this->hasMany(PropertyInquiry::class);
+    }
+
+    public function openHouses(): HasMany
+    {
+        return $this->hasMany(OpenHouse::class);
+    }
+
+    public function analytics(): HasMany
+    {
+        return $this->hasMany(PropertyAnalytic::class);
     }
 
     // ── Scopes ─────────────────────────────────────────────────────────

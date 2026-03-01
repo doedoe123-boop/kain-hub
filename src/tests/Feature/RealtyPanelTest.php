@@ -1,6 +1,7 @@
 <?php
 
 use App\IndustrySector;
+use App\Models\Development;
 use App\Models\Property;
 use App\Models\PropertyInquiry;
 use App\Models\Store;
@@ -237,4 +238,117 @@ it('accesses property inquiries through the store relationship', function () {
     PropertyInquiry::factory()->for($property)->create(['store_id' => $store->id]);
 
     expect($store->propertyInquiries)->toHaveCount(2);
+});
+
+// =========================================================
+// Development Model
+// =========================================================
+
+it('auto-generates a slug when creating a development', function () {
+    $store = Store::factory()->create(['sector' => IndustrySector::RealEstate]);
+
+    $development = Development::factory()->for($store)->create([
+        'name' => 'Sunrise Towers Manila',
+        'slug' => null,
+    ]);
+
+    expect($development->slug)
+        ->toBeString()
+        ->toContain('sunrise-towers-manila');
+});
+
+it('scopes developments to a specific store', function () {
+    $storeA = Store::factory()->create(['sector' => IndustrySector::RealEstate]);
+    $storeB = Store::factory()->create(['sector' => IndustrySector::RealEstate]);
+
+    Development::factory()->for($storeA)->count(3)->create();
+    Development::factory()->for($storeB)->count(2)->create();
+
+    expect(Development::forStore($storeA->id)->count())->toBe(3);
+    expect(Development::forStore($storeB->id)->count())->toBe(2);
+});
+
+it('scopes active developments correctly', function () {
+    $store = Store::factory()->create(['sector' => IndustrySector::RealEstate]);
+
+    Development::factory()->for($store)->create(['status' => 'active']);
+    Development::factory()->for($store)->create(['status' => 'active']);
+    Development::factory()->for($store)->create(['status' => 'draft']);
+    Development::factory()->for($store)->create(['status' => 'sold_out']);
+
+    expect(Development::forStore($store->id)->active()->count())->toBe(2);
+});
+
+it('formats price range correctly', function () {
+    $development = Development::factory()->create([
+        'price_range_min' => 2500000,
+        'price_range_max' => 8500000,
+    ]);
+
+    expect($development->priceRange())->toBe('₱2,500,000 – ₱8,500,000');
+});
+
+it('shows price on request when no prices set', function () {
+    $development = Development::factory()->create([
+        'price_range_min' => null,
+        'price_range_max' => null,
+    ]);
+
+    expect($development->priceRange())->toBe('Price on request');
+});
+
+it('formats full location correctly', function () {
+    $development = Development::factory()->create([
+        'address_line' => '123 Rizal Ave',
+        'barangay' => 'Poblacion',
+        'city' => 'Makati',
+        'province' => 'Metro Manila',
+    ]);
+
+    expect($development->fullLocation())->toBe('123 Rizal Ave, Poblacion, Makati, Metro Manila');
+});
+
+it('syncs available units from property listings', function () {
+    $store = Store::factory()->create(['sector' => IndustrySector::RealEstate]);
+    $development = Development::factory()->for($store)->create(['available_units' => 0]);
+
+    Property::factory()->for($store)->create([
+        'development_id' => $development->id,
+        'status' => PropertyStatus::Active,
+    ]);
+    Property::factory()->for($store)->create([
+        'development_id' => $development->id,
+        'status' => PropertyStatus::Active,
+    ]);
+    Property::factory()->for($store)->create([
+        'development_id' => $development->id,
+        'status' => PropertyStatus::Sold,
+    ]);
+
+    $development->syncAvailableUnits();
+
+    expect($development->fresh()->available_units)->toBe(2);
+});
+
+it('accesses developments through the store relationship', function () {
+    $store = Store::factory()->create(['sector' => IndustrySector::RealEstate]);
+    Development::factory()->for($store)->count(4)->create();
+
+    expect($store->developments)->toHaveCount(4);
+});
+
+it('links properties to a development', function () {
+    $store = Store::factory()->create(['sector' => IndustrySector::RealEstate]);
+    $development = Development::factory()->for($store)->create();
+
+    $property = Property::factory()->for($store)->create([
+        'development_id' => $development->id,
+        'unit_number' => 'Unit 5A',
+        'unit_floor' => '5th Floor',
+    ]);
+
+    expect($property->development->id)->toBe($development->id);
+    expect($development->properties)->toHaveCount(1);
+    expect($property->unit_number)->toBe('Unit 5A');
+    expect($property->unit_floor)->toBe('5th Floor');
 });

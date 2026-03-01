@@ -4,6 +4,7 @@ namespace App\Filament\Realty\Resources;
 
 use App\Filament\Realty\Resources\PropertyResource\Pages;
 use App\ListingType;
+use App\Models\Development;
 use App\PropertyStatus;
 use App\PropertyType;
 use Filament\Forms;
@@ -88,6 +89,43 @@ class PropertyResource extends Resource
                                     ->default(PropertyStatus::Draft->value)
                                     ->required()
                                     ->native(false),
+
+                                Forms\Components\Section::make('Development / Project')
+                                    ->description('Link this property to a development project (optional).')
+                                    ->collapsible()
+                                    ->collapsed()
+                                    ->schema([
+                                        Forms\Components\Select::make('development_id')
+                                            ->label('Development')
+                                            ->options(function (): array {
+                                                $store = auth()->user()?->getStoreForPanel();
+
+                                                return Development::query()
+                                                    ->where('store_id', $store?->id)
+                                                    ->orderBy('name')
+                                                    ->pluck('name', 'id')
+                                                    ->toArray();
+                                            })
+                                            ->searchable()
+                                            ->preload()
+                                            ->native(false)
+                                            ->live()
+                                            ->placeholder('None — standalone listing'),
+
+                                        Forms\Components\TextInput::make('unit_number')
+                                            ->label('Unit Number')
+                                            ->maxLength(50)
+                                            ->placeholder('e.g. Unit 12B')
+                                            ->visible(fn (Get $get): bool => filled($get('development_id'))),
+
+                                        Forms\Components\TextInput::make('unit_floor')
+                                            ->label('Floor Level')
+                                            ->maxLength(50)
+                                            ->placeholder('e.g. 12th Floor')
+                                            ->visible(fn (Get $get): bool => filled($get('development_id'))),
+                                    ])
+                                    ->columns(3)
+                                    ->columnSpanFull(),
                             ])->columns(2),
 
                         // ── Pricing Tab ────────────────────────────────
@@ -269,6 +307,119 @@ class PropertyResource extends Resource
                                     ->url()
                                     ->maxLength(500),
                             ])->columns(2),
+
+                        // ── Floor Plans Tab ────────────────────────────
+                        Forms\Components\Tabs\Tab::make('Floor Plans')
+                            ->icon('heroicon-o-map')
+                            ->schema([
+                                Forms\Components\Repeater::make('floor_plans')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('url')
+                                            ->label('Floor Plan Image URL')
+                                            ->url()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('label')
+                                            ->label('Label')
+                                            ->maxLength(100)
+                                            ->placeholder('e.g. Ground Floor, 2BR Unit Layout'),
+                                        Forms\Components\TextInput::make('floor_number')
+                                            ->label('Floor #')
+                                            ->numeric()
+                                            ->minValue(0),
+                                    ])
+                                    ->columns(3)
+                                    ->collapsible()
+                                    ->defaultItems(0)
+                                    ->addActionLabel('Add Floor Plan')
+                                    ->columnSpanFull(),
+                            ]),
+
+                        // ── Documents Tab ──────────────────────────────
+                        Forms\Components\Tabs\Tab::make('Documents')
+                            ->icon('heroicon-o-document-arrow-down')
+                            ->schema([
+                                Forms\Components\Repeater::make('documents')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('url')
+                                            ->label('Document URL')
+                                            ->url()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('name')
+                                            ->label('Document Name')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->placeholder('e.g. Price List Q1 2026'),
+                                        Forms\Components\Select::make('type')
+                                            ->options([
+                                                'brochure' => 'Brochure',
+                                                'price_list' => 'Price List',
+                                                'floor_plan' => 'Floor Plan PDF',
+                                                'contract' => 'Sample Contract',
+                                                'terms' => 'Terms & Conditions',
+                                                'other' => 'Other',
+                                            ])
+                                            ->default('brochure')
+                                            ->native(false),
+                                        Forms\Components\TextInput::make('size_kb')
+                                            ->label('Size (KB)')
+                                            ->numeric()
+                                            ->minValue(0),
+                                    ])
+                                    ->columns(4)
+                                    ->collapsible()
+                                    ->defaultItems(0)
+                                    ->addActionLabel('Add Document')
+                                    ->columnSpanFull(),
+                            ]),
+
+                        // ── Neighborhood Tab ───────────────────────────
+                        Forms\Components\Tabs\Tab::make('Neighborhood')
+                            ->icon('heroicon-o-building-storefront')
+                            ->schema([
+                                Forms\Components\Repeater::make('nearby_places')
+                                    ->label('Nearby Places')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')
+                                            ->label('Place Name')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->placeholder('e.g. SM Makati'),
+                                        Forms\Components\Select::make('type')
+                                            ->options([
+                                                'school' => 'School',
+                                                'hospital' => 'Hospital',
+                                                'mall' => 'Mall / Shopping',
+                                                'transport' => 'Transport Hub',
+                                                'restaurant' => 'Restaurant',
+                                                'park' => 'Park / Recreation',
+                                                'church' => 'Church / Worship',
+                                                'bank' => 'Bank',
+                                                'government' => 'Government Office',
+                                                'other' => 'Other',
+                                            ])
+                                            ->required()
+                                            ->native(false),
+                                        Forms\Components\TextInput::make('distance')
+                                            ->numeric()
+                                            ->minValue(0)
+                                            ->step(0.1)
+                                            ->placeholder('e.g. 1.5'),
+                                        Forms\Components\Select::make('distance_unit')
+                                            ->options([
+                                                'km' => 'km',
+                                                'm' => 'meters',
+                                                'min_walk' => 'min walk',
+                                                'min_drive' => 'min drive',
+                                            ])
+                                            ->default('km')
+                                            ->native(false),
+                                    ])
+                                    ->columns(4)
+                                    ->collapsible()
+                                    ->defaultItems(0)
+                                    ->addActionLabel('Add Nearby Place')
+                                    ->columnSpanFull(),
+                            ]),
 
                         // ── Publishing Tab ─────────────────────────────
                         Forms\Components\Tabs\Tab::make('Publishing')
