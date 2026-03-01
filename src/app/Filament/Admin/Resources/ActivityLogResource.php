@@ -152,7 +152,11 @@ class ActivityLogResource extends Resource
                     ),
                 Tables\Filters\SelectFilter::make('causer_id')
                     ->label('User')
-                    ->relationship('causer', 'name')
+                    ->options(fn (): array => \App\Models\User::query()
+                        ->whereIn('id', Activity::query()->distinct('causer_id')->whereNotNull('causer_id')->pluck('causer_id'))
+                        ->pluck('name', 'id')
+                        ->toArray()
+                    )
                     ->searchable()
                     ->preload(),
             ])

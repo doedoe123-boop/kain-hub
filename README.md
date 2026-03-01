@@ -1,6 +1,6 @@
-# Multi-Restaurant Marketplace
+# NegosyoHub — Multi-Sector Marketplace
 
-A multi-restaurant marketplace built with **Laravel 12**, **Lunar PHP**, **Vue 3**, and **PostgreSQL**, running on Docker.
+A multi-sector marketplace SaaS built with **Laravel 12**, **Lunar PHP**, **Filament v3**, **Vue 3**, and **PostgreSQL**, running on Docker.
 
 ---
 
@@ -20,7 +20,7 @@ cp src/.env.example src/.env
 make setup
 ```
 
-That's it. Open **http://localhost:8080** in your browser.
+Open **http://localhost:8080** in your browser.
 
 ---
 
@@ -43,9 +43,6 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 
 # Stop
 docker compose -f docker-compose.yml -f docker-compose.dev.yml down
-
-# Rebuild
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
 ### Production
@@ -58,13 +55,15 @@ make up ENV=prod
 
 ## URLs
 
-| Service     | URL                         |
-| ----------- | --------------------------- |
-| App         | http://localhost:8080       |
-| Lunar Admin | http://localhost:8080/lunar |
-| Vite (HMR)  | http://localhost:5173       |
-| MailHog     | http://localhost:8025       |
-| PostgreSQL  | localhost:5433              |
+| Service    | URL                                      |
+| ---------- | ---------------------------------------- |
+| App        | http://localhost:8080                    |
+| Admin      | http://localhost:8080/moon/portal/…      |
+| Store      | http://localhost:8080/store/dashboard/…  |
+| Realty     | http://localhost:8080/realty/dashboard/… |
+| Vite (HMR) | http://localhost:5173                    |
+| MailHog    | http://localhost:8025                    |
+| PostgreSQL | localhost:5433                           |
 
 ---
 
@@ -74,7 +73,8 @@ make up ENV=prod
 make migrate          # Run migrations
 make migrate-fresh    # Drop & re-run migrations
 make seed             # Seed database
-make test             # Run tests
+make test             # Run Pest tests (224 tests)
+make dusk             # Run Dusk browser tests (37 tests)
 make pint             # Format code
 make shell            # Shell into app container
 make tinker           # Laravel Tinker REPL
@@ -106,6 +106,7 @@ make db-shell         # Open psql shell
 | `marketplace_db` | PostgreSQL | 5433 |
 | `frontend_node`  | Vite       | 5173 |
 | `mailhog`        | MailHog    | 8025 |
+| `selenium`       | Chromium   | 4444 |
 
 ---
 
@@ -113,20 +114,33 @@ make db-shell         # Open psql shell
 
 ```
 kain-hub/
-├── src/                     # Laravel app
+├── src/                           # Laravel 12 application
 │   ├── app/
-│   │   ├── Models/          # Eloquent models
-│   │   ├── Services/        # Business logic
-│   │   ├── Http/            # Controllers, Requests
-│   │   └── Policies/        # Authorization
-│   ├── database/            # Migrations, factories, seeders
-│   ├── routes/              # web.php, api.php
-│   └── tests/               # Pest tests
+│   │   ├── Filament/
+│   │   │   ├── Admin/             # Admin panel (Resources, Pages, Widgets)
+│   │   │   ├── Realty/            # Realty panel (Resources, Pages, Widgets)
+│   │   │   ├── Pages/             # Shared store panel pages
+│   │   │   ├── Resources/         # Shared store panel resources
+│   │   │   └── Widgets/           # Shared store panel widgets
+│   │   ├── Models/                # Eloquent models (20+)
+│   │   ├── Services/              # Business logic (Order, Commission, Store)
+│   │   ├── Http/                  # Controllers, Form Requests
+│   │   ├── Policies/              # Authorization policies
+│   │   ├── Jobs/                  # Queued jobs
+│   │   └── Observers/             # Model observers
+│   ├── database/                  # Migrations, factories, seeders
+│   ├── routes/                    # web.php, console.php
+│   └── tests/
+│       ├── Feature/               # Pest feature tests (13 files)
+│       ├── Unit/                  # Pest unit tests
+│       └── Browser/               # Dusk E2E tests (3 panels)
+├── agent/                         # AI agent instructions
+├── skills/                        # AI skill definitions
 ├── docker/
 │   ├── php/Dockerfile
 │   └── nginx/default.conf
-├── docker-compose.yml       # Base config
-├── docker-compose.dev.yml   # Dev overrides (node, mailhog)
+├── docker-compose.yml             # Base config
+├── docker-compose.dev.yml         # Dev overrides (node, mailhog, selenium)
 └── Makefile
 ```
 
@@ -134,23 +148,30 @@ kain-hub/
 
 ## User Roles
 
-| Role        | Access                                         |
-| ----------- | ---------------------------------------------- |
-| Admin       | Manage stores, view all orders, set commission |
-| Store Owner | Manage own store & products, view own orders   |
-| Customer    | Browse stores, place orders                    |
+| Role         | Panel  | Access                                        |
+| ------------ | ------ | --------------------------------------------- |
+| Admin        | Admin  | Full platform management, all orders, payouts |
+| Store Owner  | Store  | Own store, products, orders, staff, earnings  |
+| Staff        | Store  | Limited store access via Spatie permissions   |
+| Realty Agent | Realty | Properties, inquiries, open houses            |
+| Customer     | —      | Browse stores, place orders                   |
 
 ---
 
 ## Testing
 
 ```bash
-make test                               # All tests
+# Pest — unit & feature tests
+make test                               # 224 tests, 503 assertions
 make test-filter FILTER="OrderPlacement" # Specific test
+
+# Dusk — browser E2E tests
+make dusk                               # 37 tests across 3 panels
+make dusk-filter FILTER="admin can log in"
 ```
 
 ---
 
 ## Resources
 
-- [Laravel](https://laravel.com/docs) · [Lunar PHP](https://lunarphp.com) · [Vue 3](https://vuejs.org) · [Pest](https://pestphp.com) · [PostgreSQL](https://www.postgresql.org/docs)
+- [Laravel](https://laravel.com/docs) · [Lunar PHP](https://lunarphp.com) · [Filament v3](https://filamentphp.com/docs) · [Vue 3](https://vuejs.org) · [Pest](https://pestphp.com) · [Laravel Dusk](https://laravel.com/docs/dusk) · [PostgreSQL](https://www.postgresql.org/docs)

@@ -77,6 +77,14 @@ services:
     networks:
       - app-network
 
+  selenium:
+    image: selenium/standalone-chromium:latest
+    container_name: selenium
+    restart: unless-stopped
+    shm_size: "2gb"
+    networks:
+      - app-network
+
 volumes:
   dbdata:
 

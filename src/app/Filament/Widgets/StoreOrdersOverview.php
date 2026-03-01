@@ -18,12 +18,12 @@ class StoreOrdersOverview extends BaseWidget
             return [];
         }
 
-        $totalOrders = Order::forStore($store->id)->count();
-        $pendingOrders = Order::forStore($store->id)->pending()->count();
-        $activeOrders = Order::forStore($store->id)->active()->count();
-        $deliveredOrders = Order::forStore($store->id)->delivered()->count();
+        $totalOrders = Order::query()->forStore($store->id)->count();
+        $pendingOrders = Order::query()->forStore($store->id)->pending()->count();
+        $activeOrders = Order::query()->forStore($store->id)->active()->count();
+        $deliveredOrders = Order::query()->forStore($store->id)->delivered()->count();
 
-        $todayOrders = Order::forStore($store->id)
+        $todayOrders = Order::query()->forStore($store->id)
             ->whereDate('created_at', today())
             ->count();
 

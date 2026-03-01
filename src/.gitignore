@@ -1,24 +1,47 @@
-*.log
-.DS_Store
+# ─── Environment & Secrets ──────────────────────────────────────────────
 .env
 .env.backup
 .env.production
+.env.dusk.local
+!.env.example
+
+# ─── Dependencies ──────────────────────────────────────────────────────
+/node_modules
+/vendor
+auth.json
+
+# ─── Build Artifacts ───────────────────────────────────────────────────
+/public/build
+/public/hot
+
+# ─── Laravel Storage ───────────────────────────────────────────────────
+/storage/*.key
+/storage/pail
+/bootstrap/cache/*.php
+*.log
+
+# ─── IDE / Editor ───────────────────────────────────────────────────────
 .phpactor.json
-.phpunit.result.cache
 /.fleet
 /.idea
 /.nova
-/.phpunit.cache
 /.vscode
 /.zed
-/auth.json
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
+
+# ─── Testing ───────────────────────────────────────────────────────────
+.phpunit.result.cache
+/.phpunit.cache
+
+# ─── Dusk Browser Tests ────────────────────────────────────────────────
+tests/Browser/screenshots/*
+!tests/Browser/screenshots/.gitignore
+tests/Browser/console/*
+!tests/Browser/console/.gitignore
+tests/Browser/source/*
+!tests/Browser/source/.gitignore
+
+# ─── OS Generated ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
 Homestead.json
 Homestead.yaml
-Thumbs.db

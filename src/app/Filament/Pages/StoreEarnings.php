@@ -36,15 +36,15 @@ class StoreEarnings extends Page implements HasTable
             return ['stats' => []];
         }
 
-        $totalEarnings = Order::forStore($store->id)
+        $totalEarnings = Order::query()->forStore($store->id)
             ->delivered()
             ->sum('store_earning') / 100;
 
-        $totalCommission = Order::forStore($store->id)
+        $totalCommission = Order::query()->forStore($store->id)
             ->delivered()
             ->sum('commission_amount') / 100;
 
-        $pendingOrders = Order::forStore($store->id)
+        $pendingOrders = Order::query()->forStore($store->id)
             ->active()
             ->sum('store_earning') / 100;
 

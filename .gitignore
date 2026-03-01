@@ -1,4 +1,52 @@
-# Ignore files that contain sensitive information such as database credentials and API keys
-
+# ─── Environment & Secrets ──────────────────────────────────────────────
 .env
-.idea/*
+.env.*
+!.env.example
+!.env.dusk.local.example
+
+# ─── IDE / Editor ───────────────────────────────────────────────────────
+.idea/
+.vscode/
+.fleet/
+.zed/
+*.swp
+*.swo
+*~
+
+# ─── OS Generated ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ─── Dependencies ──────────────────────────────────────────────────────
+node_modules/
+vendor/
+
+# ─── Build Artifacts ───────────────────────────────────────────────────
+src/public/build/
+src/public/hot
+
+# ─── Laravel / PHP ─────────────────────────────────────────────────────
+src/storage/*.key
+src/storage/pail/
+src/bootstrap/cache/*.php
+*.log
+
+# ─── Testing ───────────────────────────────────────────────────────────
+.phpunit.result.cache
+.phpunit.cache/
+src/tests/Browser/screenshots/*
+!src/tests/Browser/screenshots/.gitignore
+src/tests/Browser/console/*
+!src/tests/Browser/console/.gitignore
+src/tests/Browser/source/*
+!src/tests/Browser/source/.gitignore
+
+# ─── Docker ────────────────────────────────────────────────────────────
+docker-compose.override.yml
+
+# ─── Misc ──────────────────────────────────────────────────────────────
+Homestead.json
+Homestead.yaml
+auth.json
+*.cache

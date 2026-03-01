@@ -19,11 +19,11 @@ class StoreRevenueOverview extends BaseWidget
             return [];
         }
 
-        $totalRevenue = Order::forStore($store->id)
+        $totalRevenue = Order::query()->forStore($store->id)
             ->delivered()
             ->sum('store_earning') / 100;
 
-        $totalCommission = Order::forStore($store->id)
+        $totalCommission = Order::query()->forStore($store->id)
             ->delivered()
             ->sum('commission_amount') / 100;
 
@@ -36,7 +36,7 @@ class StoreRevenueOverview extends BaseWidget
             ->sum('amount');
 
         // This month's revenue
-        $monthRevenue = Order::forStore($store->id)
+        $monthRevenue = Order::query()->forStore($store->id)
             ->delivered()
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)

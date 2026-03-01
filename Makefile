@@ -156,6 +156,14 @@ test:
 test-filter:
 	$(APP) php artisan test --compact --filter=$(FILTER)
 
+## Run Dusk browser tests (requires selenium container)
+dusk:
+	$(APP) php artisan dusk
+
+## Run Dusk tests matching a filter — usage: make dusk-filter FILTER="admin can log in"
+dusk-filter:
+	$(APP) php artisan dusk --filter="$(FILTER)"
+
 ## Run Laravel Pint code formatter
 pint:
 	$(APP) vendor/bin/pint --format agent
