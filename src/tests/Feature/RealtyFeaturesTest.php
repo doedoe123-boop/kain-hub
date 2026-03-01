@@ -164,7 +164,7 @@ it('scopes published testimonials', function () {
 
 it('scopes featured testimonials', function () {
     Testimonial::factory()->featured()->create(['store_id' => $this->store->id]);
-    Testimonial::factory()->published()->create(['store_id' => $this->store->id]);
+    Testimonial::factory()->published()->create(['store_id' => $this->store->id, 'is_featured' => false]);
 
     expect(Testimonial::forStore($this->store->id)->featured()->count())->toBe(1);
 });

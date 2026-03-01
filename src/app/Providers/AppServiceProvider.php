@@ -9,6 +9,8 @@ use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Lunar\Admin\Filament\Resources\OrderResource as LunarOrderResource;
+use Lunar\Admin\Filament\Resources\ProductResource as LunarProductResource;
 use Lunar\Admin\Filament\Resources\StaffResource;
 use Lunar\Admin\LunarPanelManager;
 use Lunar\Admin\Support\Facades\LunarPanel;
@@ -20,8 +22,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Remove StaffResource — we use Users, not Lunar's Staff model
-        $this->excludeLunarResources([StaffResource::class]);
+        // Remove Lunar defaults we override with scoped versions
+        $this->excludeLunarResources([
+            StaffResource::class,
+            LunarOrderResource::class,
+            LunarProductResource::class,
+        ]);
 
         LunarPanel::panel(fn ($panel) => $panel
             ->authGuard('web')

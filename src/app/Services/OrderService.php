@@ -118,4 +118,92 @@ class OrderService
             'status' => $order->status,
         ];
     }
+
+    // ── Status Transitions ─────────────────────────────────────────────
+
+    /**
+     * Confirm a pending order.
+     *
+     * @throws ValidationException
+     */
+    public function confirm(Order $order): Order
+    {
+        $this->assertStatus($order, OrderStatus::Pending);
+        $order->update(['status' => OrderStatus::Confirmed->value]);
+
+        return $order->refresh();
+    }
+
+    /**
+     * Mark a confirmed order as preparing.
+     *
+     * @throws ValidationException
+     */
+    public function markPreparing(Order $order): Order
+    {
+        $this->assertStatus($order, OrderStatus::Confirmed);
+        $order->update(['status' => OrderStatus::Preparing->value]);
+
+        return $order->refresh();
+    }
+
+    /**
+     * Mark a preparing order as ready for pickup/delivery.
+     *
+     * @throws ValidationException
+     */
+    public function markReady(Order $order): Order
+    {
+        $this->assertStatus($order, OrderStatus::Preparing);
+        $order->update(['status' => OrderStatus::Ready->value]);
+
+        return $order->refresh();
+    }
+
+    /**
+     * Mark a ready order as delivered.
+     *
+     * @throws ValidationException
+     */
+    public function markDelivered(Order $order): Order
+    {
+        $this->assertStatus($order, OrderStatus::Ready);
+        $order->update(['status' => OrderStatus::Delivered->value]);
+
+        return $order->refresh();
+    }
+
+    /**
+     * Cancel an order (allowed from any active status).
+     *
+     * @throws ValidationException
+     */
+    public function cancel(Order $order): Order
+    {
+        $activeStatuses = array_map(fn (OrderStatus $s) => $s->value, OrderStatus::active());
+
+        if (! in_array($order->status, $activeStatuses, true)) {
+            throw ValidationException::withMessages([
+                'status' => 'Only active orders can be cancelled.',
+            ]);
+        }
+
+        $order->update(['status' => OrderStatus::Cancelled->value]);
+
+        return $order->refresh();
+    }
+
+    /**
+     * Assert an order is in the expected status before transitioning.
+     *
+     * @throws ValidationException
+     */
+    private function assertStatus(Order $order, OrderStatus $expected): void
+    {
+        if ($order->status !== $expected->value) {
+            throw ValidationException::withMessages([
+                'status' => "Order must be {$expected->label()} to perform this action.",
+            ]);
+        }
+    }
 }

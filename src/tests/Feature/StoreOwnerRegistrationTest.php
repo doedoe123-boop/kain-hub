@@ -161,7 +161,7 @@ it('creates a user and store with compliance documents on registration', functio
         ->and($store->user_id)->toBe($user->id)
         ->and($store->name)->toBe('Juan Kitchen')
         ->and($store->status)->toBe(StoreStatus::Pending)
-        ->and($store->sector)->toBe('food_and_beverage')
+        ->and($store->sector)->toBe(IndustrySector::FoodAndBeverage)
         ->and($store->id_type)->toBe('passport')
         ->and($store->id_number)->toBe('P1234567')
         ->and($store->compliance_documents)->toBeArray()

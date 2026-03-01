@@ -3,6 +3,7 @@
 namespace App\Filament\Realty\Resources;
 
 use App\Filament\Realty\Resources\OpenHouseResource\Pages;
+use App\Filament\Realty\Resources\OpenHouseResource\RelationManagers;
 use App\Models\OpenHouse;
 use App\Models\Property;
 use Filament\Forms;
@@ -216,7 +217,9 @@ class OpenHouseResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\RsvpsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

@@ -102,6 +102,7 @@ class Store extends Model
             'compliance_documents' => 'encrypted:array',
             'commission_rate' => 'decimal:2',
             'status' => StoreStatus::class,
+            'sector' => IndustrySector::class,
             'agent_certifications' => 'array',
             'agent_specializations' => 'array',
             'social_links' => 'array',
@@ -184,6 +185,14 @@ class Store extends Model
     }
 
     /**
+     * Return all support tickets for this store.
+     */
+    public function supportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    /**
      * Return all e-commerce reviews (store + product) for this store.
      */
     public function reviews(): HasMany
@@ -223,6 +232,28 @@ class Store extends Model
     public function isSuspended(): bool
     {
         return $this->status === StoreStatus::Suspended;
+    }
+
+    /**
+     * Determine if the store belongs to the real estate sector.
+     */
+    public function isRealEstate(): bool
+    {
+        return $this->sector === IndustrySector::RealEstate;
+    }
+
+    /**
+     * Get the panel dashboard path for this store's sector.
+     *
+     * Real estate stores go to the Realty panel, all others to the Lunar panel.
+     */
+    public function dashboardPath(): string
+    {
+        if ($this->isRealEstate()) {
+            return '/realty/dashboard/tk_'.config('app.realty_path_token');
+        }
+
+        return '/store/dashboard/tk_'.config('app.store_path_token');
     }
 
     /**

@@ -135,6 +135,38 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
     }
 
     /**
+     * Return orders placed by this customer.
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Return the login history for this user.
+     */
+    public function loginHistory(): HasMany
+    {
+        return $this->hasMany(LoginHistory::class);
+    }
+
+    /**
+     * Return support tickets filed by this user.
+     */
+    public function supportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    /**
+     * Return reviews written by this user.
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
      * Get the store this user belongs to (as owner or staff).
      */
     public function getStoreForPanel(): ?Store
@@ -180,7 +212,7 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
             return false;
         }
 
-        return $store->sector !== IndustrySector::RealEstate->value;
+        return $store->sector !== IndustrySector::RealEstate;
     }
 
     /**
@@ -196,7 +228,7 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
             return false;
         }
 
-        return $store->sector === IndustrySector::RealEstate->value;
+        return $store->sector === IndustrySector::RealEstate;
     }
 
     /**

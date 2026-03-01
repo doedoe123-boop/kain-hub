@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\StoreResource\Pages;
 use App\IndustrySector;
 use App\Mail\StoreApproved;
+use App\Mail\StoreRejected;
 use App\Mail\StoreReinstated;
 use App\Mail\StoreSuspended;
 use App\Models\Store;
@@ -257,8 +258,12 @@ class StoreResource extends Resource
                 Tables\Columns\TextColumn::make('sector')
                     ->label('Sector')
                     ->badge()
-                    ->formatStateUsing(fn (?string $state): string => \App\Models\Sector::where('slug', $state)->value('name') ?? $state ?? '—')
-                    ->color(fn (?string $state): string => \App\Models\Sector::where('slug', $state)->value('color') ?? 'gray')
+                    ->formatStateUsing(fn (?IndustrySector $state): string => $state?->label() ?? '—')
+                    ->color(fn (?IndustrySector $state): string => match ($state) {
+                        IndustrySector::FoodAndBeverage => 'warning',
+                        IndustrySector::RealEstate => 'success',
+                        default => 'gray',
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('commission_rate')
                     ->suffix('%')
@@ -329,6 +334,45 @@ class StoreResource extends Resource
                             ->title('Store approved')
                             ->body("Approval email sent to {$ownerEmail}")
                             ->success()
+                            ->send();
+                    }),
+                Tables\Actions\Action::make('reject')
+                    ->label('Reject')
+                    ->icon('heroicon-o-x-mark')
+                    ->color('danger')
+                    ->visible(fn (Store $record): bool => $record->status === StoreStatus::Pending)
+                    ->form([
+                        Forms\Components\Select::make('reason_category')
+                            ->label('Reason Category')
+                            ->options([
+                                'Incomplete Documentation' => 'Incomplete Documentation',
+                                'Invalid ID / Verification' => 'Invalid ID / Verification',
+                                'Business Permit Issue' => 'Business Permit Issue',
+                                'Duplicate Application' => 'Duplicate Application',
+                                'Policy Violation' => 'Policy Violation',
+                                'Other' => 'Other',
+                            ])
+                            ->required(),
+                        Forms\Components\Textarea::make('reason_details')
+                            ->label('Additional Details')
+                            ->placeholder('Provide details about the rejection reason...')
+                            ->maxLength(1000),
+                    ])
+                    ->modalHeading('Reject Store Application')
+                    ->modalDescription('This will reject the store application and notify the owner via email.')
+                    ->modalSubmitActionLabel('Reject Application')
+                    ->action(function (Store $record, array $data): void {
+                        $reason = $data['reason_category'];
+                        if (! empty($data['reason_details'])) {
+                            $reason .= ': '.$data['reason_details'];
+                        }
+
+                        app(StoreService::class)->reject($record, $reason);
+
+                        Notification::make()
+                            ->title('Store Rejected')
+                            ->body("Store '{$record->name}' has been rejected and the owner has been notified.")
+                            ->danger()
                             ->send();
                     }),
                 Tables\Actions\Action::make('suspend')
@@ -408,7 +452,11 @@ class StoreResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            StoreResource\RelationManagers\OrdersRelationManager::class,
+            StoreResource\RelationManagers\PayoutsRelationManager::class,
+            StoreResource\RelationManagers\StaffRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

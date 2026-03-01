@@ -3,6 +3,7 @@
 namespace App\Filament\Realty\Resources;
 
 use App\Filament\Realty\Resources\DevelopmentResource\Pages;
+use App\Filament\Realty\Resources\DevelopmentResource\RelationManagers;
 use App\Models\Development;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -338,7 +339,9 @@ class DevelopmentResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\PropertiesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

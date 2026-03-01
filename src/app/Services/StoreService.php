@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Mail\StoreRejected;
 use App\Models\Store;
 use App\Models\User;
 use App\StoreStatus;
 use App\UserRole;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Handles store registration, approval, and management.
@@ -45,6 +47,25 @@ class StoreService
     {
         $store->update(['status' => StoreStatus::Approved]);
         $store->generateLoginToken();
+
+        return $store->refresh();
+    }
+
+    /**
+     * Reject a pending store with a reason.
+     *
+     * Sends a rejection email to the store owner.
+     */
+    public function reject(Store $store, string $reason): Store
+    {
+        $store->update([
+            'status' => StoreStatus::Rejected,
+            'suspension_reason' => $reason,
+        ]);
+
+        Mail::to($store->owner->email)->queue(
+            new StoreRejected($store, $reason)
+        );
 
         return $store->refresh();
     }

@@ -75,12 +75,7 @@ Route::middleware('auth')->group(function () {
             $store = auth()->user()->store;
 
             if ($store?->isApproved()) {
-                // Real estate stores → realty panel, others → Lunar panel
-                if ($store->sector === 'real_estate') {
-                    return redirect('/realty/dashboard/tk_'.config('app.realty_path_token'));
-                }
-
-                return redirect('/store/dashboard/tk_'.config('app.store_path_token'));
+                return redirect($store->dashboardPath());
             }
 
             return view('store.dashboard');

@@ -1,5 +1,6 @@
 <?php
 
+use App\IndustrySector;
 use App\Livewire\Store\StoreLogin;
 use App\Models\Store;
 use App\Models\User;
@@ -192,11 +193,26 @@ it('redirects authenticated user from subdomain root to Lunar panel', function (
     $store = Store::factory()->for($owner, 'owner')->create([
         'slug' => 'test-store',
         'status' => StoreStatus::Approved,
+        'sector' => IndustrySector::FoodAndBeverage,
     ]);
 
     $this->actingAs($owner)
         ->get(storeUrl('test-store', '/'))
         ->assertRedirect('/store/dashboard/tk_'.config('app.store_path_token'));
+});
+
+it('redirects authenticated user from subdomain root to Realty panel for real estate stores', function () {
+    $owner = User::factory()->storeOwner()->create();
+    $owner->assignRole('store_owner');
+    $store = Store::factory()->for($owner, 'owner')->create([
+        'slug' => 'test-store',
+        'status' => StoreStatus::Approved,
+        'sector' => IndustrySector::RealEstate,
+    ]);
+
+    $this->actingAs($owner)
+        ->get(storeUrl('test-store', '/'))
+        ->assertRedirect('/realty/dashboard/tk_'.config('app.realty_path_token'));
 });
 
 it('redirects guest from subdomain root to token login', function () {
