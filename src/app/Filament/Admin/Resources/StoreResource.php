@@ -484,8 +484,6 @@ class StoreResource extends Resource
     public static function getRelations(): array
     {
         return [
-            StoreResource\RelationManagers\OrdersRelationManager::class,
-            StoreResource\RelationManagers\PayoutsRelationManager::class,
             StoreResource\RelationManagers\StaffRelationManager::class,
         ];
     }

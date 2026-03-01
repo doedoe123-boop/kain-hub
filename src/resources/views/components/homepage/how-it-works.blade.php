@@ -1,6 +1,6 @@
 {{-- How It Works — Premium Edition --}}
 <div class="relative bg-slate-50 dark:bg-[#0B1120] border-b border-slate-200 dark:border-slate-800/60 overflow-hidden" id="how-it-works">
-    
+
     {{-- Ambient Mesh Gradient Background --}}
     <div class="absolute inset-0 z-0 opacity-40 dark:opacity-20 pointer-events-none hidden sm:block">
         <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-sky-400/20 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen"></div>
@@ -22,17 +22,22 @@
 
         <div class="max-w-5xl mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 relative group/grid">
-                
-                {{-- Animated Connector line (desktop only) --}}
-                <div class="hidden md:block absolute top-[44px] left-[calc(16.67%+30px)] right-[calc(16.67%+30px)] h-0.5 bg-slate-200 dark:bg-slate-800 overflow-hidden">
+
+                {{-- Connector lines with step numbers (desktop only) --}}
+                <div class="hidden md:flex absolute top-[44px] left-[calc(16.67%+30px)] right-[calc(16.67%+30px)] items-center h-0.5 bg-slate-200 dark:bg-slate-800">
+                    {{-- Step 1→2 number --}}
+                    <div class="absolute left-[calc(25%-10px)] -top-[11px] z-20 flex items-center justify-center w-6 h-6 rounded-full bg-sky-100 dark:bg-sky-500/20 border border-sky-300 dark:border-sky-500/40 text-[10px] font-bold text-sky-700 dark:text-sky-400">1</div>
+                    {{-- Step 2→3 number --}}
+                    <div class="absolute left-[calc(75%-10px)] -top-[11px] z-20 flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-300 dark:border-emerald-500/40 text-[10px] font-bold text-emerald-700 dark:text-emerald-400">2</div>
+                    {{-- Shimmer --}}
                     <div class="absolute inset-y-0 left-0 w-full bg-gradient-to-r from-transparent via-sky-400 to-transparent -translate-x-full group-hover/grid:animate-[shimmer_2s_infinite]"></div>
                 </div>
 
                 {{-- Step 1 --}}
                 <div class="text-center px-4 relative group">
+                    {{-- Mobile step number --}}
+                    <div class="md:hidden flex items-center justify-center w-7 h-7 rounded-full bg-sky-100 dark:bg-sky-500/20 border border-sky-300 dark:border-sky-500/40 text-xs font-bold text-sky-700 dark:text-sky-400 mx-auto mb-4">1</div>
                     <div class="relative z-10 mx-auto flex items-center justify-center h-[5.5rem] w-[5.5rem] rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl shadow-sky-500/5 mb-6 group-hover:-translate-y-2 group-hover:border-sky-300 dark:group-hover:border-sky-600 transition-all duration-300">
-                        {{-- Number background --}}
-                        <span class="absolute -top-3 -right-3 text-[4rem] font-black text-slate-100 dark:text-slate-800/80 leading-none pointer-events-none group-hover:text-sky-100 dark:group-hover:text-sky-900/40 transition-colors duration-300">1</span>
                         <x-heroicon-o-user-plus class="relative z-10 w-8 h-8 text-sky-600 dark:text-sky-400 group-hover:scale-110 transition-transform duration-300" />
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-3">Create Account</h3>
@@ -47,8 +52,8 @@
 
                 {{-- Step 2 --}}
                 <div class="text-center px-4 relative group mt-12 md:mt-0">
+                    <div class="md:hidden flex items-center justify-center w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-300 dark:border-emerald-500/40 text-xs font-bold text-emerald-700 dark:text-emerald-400 mx-auto mb-4">2</div>
                     <div class="relative z-10 mx-auto flex items-center justify-center h-[5.5rem] w-[5.5rem] rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl shadow-emerald-500/5 mb-6 group-hover:-translate-y-2 group-hover:border-emerald-300 dark:group-hover:border-emerald-600 transition-all duration-300">
-                        <span class="absolute -top-3 -right-3 text-[4rem] font-black text-slate-100 dark:text-slate-800/80 leading-none pointer-events-none group-hover:text-emerald-100 dark:group-hover:text-emerald-900/40 transition-colors duration-300">2</span>
                         <x-heroicon-o-building-storefront class="relative z-10 w-8 h-8 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300" />
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-3">Set Up Store</h3>
@@ -63,8 +68,8 @@
 
                 {{-- Step 3 --}}
                 <div class="text-center px-4 relative group mt-12 md:mt-0">
+                    <div class="md:hidden flex items-center justify-center w-7 h-7 rounded-full bg-violet-100 dark:bg-violet-500/20 border border-violet-300 dark:border-violet-500/40 text-xs font-bold text-violet-700 dark:text-violet-400 mx-auto mb-4">3</div>
                     <div class="relative z-10 mx-auto flex items-center justify-center h-[5.5rem] w-[5.5rem] rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl shadow-violet-500/5 mb-6 group-hover:-translate-y-2 group-hover:border-violet-300 dark:group-hover:border-violet-600 transition-all duration-300">
-                        <span class="absolute -top-3 -right-3 text-[4rem] font-black text-slate-100 dark:text-slate-800/80 leading-none pointer-events-none group-hover:text-violet-100 dark:group-hover:text-violet-900/40 transition-colors duration-300">3</span>
                         <x-heroicon-o-rocket-launch class="relative z-10 w-8 h-8 text-violet-600 dark:text-violet-400 group-hover:scale-110 transition-transform duration-300" />
                     </div>
                     <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-3">Start Selling</h3>

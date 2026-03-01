@@ -2,7 +2,6 @@
 
 namespace App\Filament\Admin\Widgets;
 
-use App\Models\Order;
 use App\Models\Store;
 use App\Models\SupportTicket;
 use App\Models\User;
@@ -28,11 +27,6 @@ class PlatformOverviewWidget extends StatsOverviewWidget
                 ->description('Store Owners & Customers')
                 ->descriptionIcon('heroicon-o-users')
                 ->color('success'),
-
-            Stat::make('Total Orders', Order::query()->count())
-                ->description('All time')
-                ->descriptionIcon('heroicon-o-shopping-bag')
-                ->color('info'),
 
             Stat::make('Open Tickets', SupportTicket::query()->where('status', TicketStatus::Open)->count())
                 ->description($this->urgentTicketsDescription())

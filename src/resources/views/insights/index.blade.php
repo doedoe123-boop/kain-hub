@@ -36,7 +36,7 @@
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
 
             {{-- Quick Stats Matrix --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-16">
                 @php
                     $approvedCount = \App\Models\Store::where('status', \App\StoreStatus::Approved)->count();
                     $userCount = \App\Models\User::count();
