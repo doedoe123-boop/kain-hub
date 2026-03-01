@@ -27,6 +27,7 @@
     <title>{{ $title ?? 'NegosyoHub — Philippine Online Marketplace' }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -61,7 +62,9 @@
     </div>
 
     {{-- Main navigation --}}
-    <nav class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl sticky top-0 z-50 border-b border-slate-200/60 dark:border-slate-800/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)]" id="main-nav">
+    <nav class="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl sticky top-0 z-50 border-b border-slate-200/60 dark:border-slate-800/60 shadow-[0_1px_3px_rgba(0,0,0,0.04)]" id="main-nav"
+         x-data="{ mobileOpen: false }"
+         @keydown.escape.window="mobileOpen = false">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center gap-8">
@@ -191,6 +194,12 @@
                 </div>
 
                 <div class="flex items-center gap-3">
+                    {{-- Mobile hamburger button --}}
+                    <button @click="mobileOpen = !mobileOpen" class="lg:hidden relative p-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" aria-label="Toggle mobile menu" id="mobile-menu-btn">
+                        <svg x-show="!mobileOpen" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+                        <svg x-show="mobileOpen" x-cloak class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+
                     {{-- Dark mode toggle (cycles: system → dark → light → system) --}}
                     <button @click="toggle()" class="relative p-2.5 rounded-xl text-slate-400 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors duration-200" :title="'Theme: ' + theme" id="dark-mode-toggle">
                         {{-- Moon: shown when theme resolves to light (click will go dark) --}}
@@ -216,11 +225,91 @@
                         </div>
                     @else
                         <a href="{{ route('register.sector') }}"
-                            class="inline-flex items-center px-4 py-2.5 text-sm font-bold rounded-xl text-white bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 shadow-lg shadow-sky-500/20 transition-all duration-300 hover:-translate-y-0.5" id="register-seller-btn">
+                            class="hidden sm:inline-flex items-center px-4 py-2.5 text-sm font-bold rounded-xl text-white bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 shadow-lg shadow-sky-500/20 transition-all duration-300 hover:-translate-y-0.5" id="register-seller-btn">
                             Sell on NegosyoHub
                         </a>
                     @endauth
                 </div>
+            </div>
+        </div>
+
+        {{-- Mobile navigation drawer --}}
+        <div x-show="mobileOpen"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-2"
+             x-cloak
+             class="lg:hidden border-t border-slate-200/60 dark:border-slate-800/60 bg-white dark:bg-slate-900"
+             @click.outside="mobileOpen = false"
+             id="mobile-drawer">
+            <div class="max-w-[1400px] mx-auto px-4 sm:px-6 py-4 space-y-1">
+                {{-- Main links --}}
+                <a href="{{ route('stores.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <x-heroicon-o-building-storefront class="w-5 h-5 text-slate-400" />
+                    Stores
+                </a>
+                <a href="{{ route('sector.browse') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <x-heroicon-o-squares-2x2 class="w-5 h-5 text-slate-400" />
+                    Categories
+                </a>
+                <a href="{{ route('deals.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <x-heroicon-o-tag class="w-5 h-5 text-slate-400" />
+                    Deals
+                </a>
+                <a href="{{ route('insights.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    <x-heroicon-o-chart-bar class="w-5 h-5 text-slate-400" />
+                    Insights
+                </a>
+
+                @auth
+                    @if (auth()->user()->isAdmin())
+                        <div class="pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
+                            <a href="/moon/portal/itsec_tk_{{ config('app.admin_path_token') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-colors">
+                                <x-heroicon-o-cog-6-tooth class="w-5 h-5" />
+                                Admin Panel
+                            </a>
+                        </div>
+                    @endif
+                    @if (auth()->user()->isStoreOwner())
+                        <div class="pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
+                            @if (auth()->user()->store?->isApproved())
+                                <a href="/store/dashboard/tk_{{ config('app.store_path_token') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-500/10 transition-colors">
+                                    <x-heroicon-o-chart-pie class="w-5 h-5" />
+                                    Dashboard
+                                </a>
+                            @else
+                                <a href="{{ route('store.pending') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-colors">
+                                    <x-heroicon-o-clock class="w-5 h-5" />
+                                    Under Review
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+
+                    {{-- User info + logout --}}
+                    <div class="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between px-4">
+                        <div class="flex items-center gap-2.5">
+                            <div class="h-8 w-8 rounded-xl bg-gradient-to-br from-sky-500 to-emerald-500 flex items-center justify-center shadow-sm">
+                                <span class="text-xs font-bold text-white">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                            </div>
+                            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">{{ auth()->user()->name }}</span>
+                        </div>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="text-xs text-slate-400 hover:text-red-500 dark:hover:text-red-400 px-2.5 py-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-all duration-200 font-medium">Logout</button>
+                        </form>
+                    </div>
+                @else
+                    <div class="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 px-4 space-y-2">
+                        <a href="{{ route('register.sector') }}" class="flex items-center justify-center gap-2 w-full px-4 py-3 text-sm font-bold rounded-xl text-white bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 shadow-lg shadow-sky-500/20 transition-all duration-300">
+                            Sell on NegosyoHub
+                            <x-heroicon-o-arrow-right class="w-4 h-4" />
+                        </a>
+                    </div>
+                @endauth
             </div>
         </div>
     </nav>

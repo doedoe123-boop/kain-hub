@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\SupplierProfileController;
-use App\Livewire\Auth\Register;
 use App\Livewire\SectorBrowse;
 use App\Livewire\Store\SectorSelection;
 use App\Livewire\Store\StoreOwnerRegistration;
+use App\Livewire\StoreDirectory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -21,10 +21,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-// Browse stores (all verified stores)
-Route::get('/stores', function () {
-    return view('stores.index');
-})->name('stores.index');
+// Browse stores (all verified stores) — Livewire-powered search, filter, sort, pagination
+Route::get('/stores', StoreDirectory::class)->name('stores.index');
 
 // Deals & Offers page
 Route::get('/deals', function () {
@@ -51,8 +49,9 @@ Route::get('/legal/{slug}', function (string $slug) {
 
 // Guest auth & registration routes
 Route::middleware('guest')->group(function () {
+    // Customer login & register will be served via API in Phase 5 (storefront)
     Route::get('/login', fn () => abort(404))->name('login');
-    Route::get('/register', Register::class)->name('register');
+    Route::get('/register', fn () => abort(404))->name('register');
     Route::get('/register/sector', SectorSelection::class)->name('register.sector');
     Route::get('/register/store-owner/success', fn () => view('store.registration-success'))->name('register.store-owner.success');
     Route::get('/register/store-owner/{sector}', StoreOwnerRegistration::class)->name('register.store-owner');

@@ -1,106 +1,103 @@
-{{-- Rich Profile Supplier Card — premium procurement style --}}
+{{-- Premium Supplier Card — clean, modern procurement style --}}
 @props(['store'])
 
-<div class="card-premium bg-white dark:bg-slate-800/60 rounded-2xl border border-slate-100 dark:border-slate-700/40 group" id="supplier-card-{{ $store->id }}">
-    <div class="p-5 sm:p-6">
-        <div class="flex gap-5">
-            {{-- Company Logo Area --}}
-            <div class="shrink-0 flex flex-col items-center gap-3">
-                <div class="h-16 w-16 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-700 dark:to-slate-700/50 border border-slate-200/60 dark:border-slate-600/60 flex items-center justify-center group-hover:border-sky-200 dark:group-hover:border-sky-700 transition-colors duration-300 overflow-hidden">
+@php
+    $sectorSlug = $store->sector?->value;
+    $sectorColors = [
+        'food_and_beverage' => 'emerald',
+        'real_estate' => 'violet',
+    ];
+    $color = $sectorColors[$sectorSlug] ?? 'sky';
+    $sectorName = ucwords(str_replace('_', ' ', $sectorSlug ?? 'General'));
+    $city = $store->address['city'] ?? null;
+    $province = $store->address['province'] ?? null;
+    $location = $city ?: ($province ?: 'Philippines');
+    $hasPermit = (bool) $store->business_permit;
+    $hasId = (bool) $store->id_type;
+@endphp
+
+<a href="{{ route('suppliers.show', $store->slug) }}" class="block h-full" id="supplier-card-{{ $store->id }}">
+    <div class="h-full flex flex-col">
+
+        {{-- Colored header strip with sector + badge --}}
+        <div class="relative px-5 pt-5 pb-4">
+            {{-- Subtle gradient background glow --}}
+            <div class="absolute inset-0 bg-gradient-to-br from-{{ $color }}-500/[0.06] to-transparent dark:from-{{ $color }}-500/[0.12] rounded-t-2xl"></div>
+
+            <div class="relative flex items-start gap-4">
+                {{-- Avatar --}}
+                <div class="shrink-0 h-14 w-14 rounded-2xl bg-gradient-to-br from-{{ $color }}-500 to-{{ $color }}-600 flex items-center justify-center shadow-lg shadow-{{ $color }}-500/20 ring-2 ring-white dark:ring-slate-800 overflow-hidden">
                     @if ($store->logo)
-                        <img src="{{ $store->logo }}" alt="{{ $store->name }}" class="h-full w-full object-cover rounded-xl">
+                        <img src="{{ $store->logo }}" alt="{{ $store->name }}" class="h-full w-full object-cover">
                     @else
-                        <span class="text-lg font-extrabold text-slate-300 dark:text-slate-500 group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors duration-300">{{ strtoupper(substr($store->name, 0, 2)) }}</span>
+                        <span class="text-base font-black text-white/90 tracking-tight">{{ strtoupper(substr($store->name, 0, 2)) }}</span>
                     @endif
                 </div>
-                {{-- Verification indicator --}}
-                @if ($store->business_permit)
-                    <div class="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30 glow-ring">
-                        <x-heroicon-s-check-badge class="w-3.5 h-3.5 text-white" />
+
+                {{-- Name + sector label --}}
+                <div class="flex-1 min-w-0 pt-0.5">
+                    <h3 class="text-[15px] font-extrabold text-slate-900 dark:text-white truncate leading-snug group-hover:text-{{ $color }}-600 dark:group-hover:text-{{ $color }}-400 transition-colors duration-200">{{ $store->name }}</h3>
+                    <div class="flex items-center gap-2 mt-1">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-{{ $color }}-50 dark:bg-{{ $color }}-500/10 border border-{{ $color }}-100 dark:border-{{ $color }}-500/20 text-[10px] font-bold text-{{ $color }}-700 dark:text-{{ $color }}-400 uppercase tracking-wider">
+                            {{ $sectorName }}
+                        </span>
+                        @if ($hasPermit)
+                            <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                                <x-heroicon-s-check-badge class="w-3.5 h-3.5" />
+                                Verified
+                            </span>
+                        @endif
                     </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Description --}}
+        <div class="px-5 flex-1">
+            <p class="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">{{ $store->description ?? 'Verified store on NegosyoHub. Browse their profile for products and details.' }}</p>
+        </div>
+
+        {{-- Meta row --}}
+        <div class="px-5 pt-4 pb-5">
+            {{-- Info chips --}}
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-400 dark:text-slate-500 mb-4">
+                <span class="inline-flex items-center gap-1.5">
+                    <x-heroicon-o-map-pin class="w-3.5 h-3.5 text-{{ $color }}-400 dark:text-{{ $color }}-500" />
+                    <span class="font-medium text-slate-600 dark:text-slate-300">{{ $location }}</span>
+                </span>
+                <span class="text-slate-200 dark:text-slate-700">&middot;</span>
+                <span class="inline-flex items-center gap-1.5">
+                    <x-heroicon-o-calendar-days class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
+                    {{ $store->created_at->format('M Y') }}
+                </span>
+                @if ($hasId)
+                    <span class="text-slate-200 dark:text-slate-700">&middot;</span>
+                    <span class="inline-flex items-center gap-1 text-sky-500 dark:text-sky-400 font-semibold">
+                        <x-heroicon-o-document-check class="w-3.5 h-3.5" />
+                        SEC/DTI
+                    </span>
                 @endif
             </div>
 
-            {{-- Main Info --}}
-            <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between gap-3 mb-2">
-                    <div class="min-w-0">
-                        <div class="flex items-center gap-2.5 flex-wrap">
-                            <h3 class="text-base font-bold text-slate-900 dark:text-white group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors duration-200 truncate tracking-tight">{{ $store->name }}</h3>
-                            {{-- Custom badge icons --}}
-                            @if ($store->business_permit)
-                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/10 dark:bg-emerald-500/15 px-2.5 py-1 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
-                                    <x-heroicon-o-shield-check class="w-3 h-3" />
-                                    Verified
-                                </span>
-                            @endif
-                            @if ($store->id_type)
-                                <span class="hidden sm:inline-flex items-center gap-1 rounded-lg bg-sky-500/10 dark:bg-sky-500/15 px-2.5 py-1 text-[10px] font-bold text-sky-700 dark:text-sky-400 uppercase tracking-wider">
-                                    <x-heroicon-o-document-text class="w-3 h-3" />
-                                    SEC/DTI
-                                </span>
-                            @endif
+            {{-- CTA --}}
+            <div class="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-700/40">
+                <span class="text-xs font-bold text-{{ $color }}-600 dark:text-{{ $color }}-400 group-hover:translate-x-0.5 transition-transform duration-200 flex items-center gap-1.5">
+                    View Profile
+                    <x-heroicon-o-arrow-right class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" />
+                </span>
+                <div class="flex items-center gap-1.5">
+                    @if ($hasPermit)
+                        <div class="h-6 w-6 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center" title="Business Permit Verified">
+                            <x-heroicon-o-shield-check class="w-3.5 h-3.5 text-emerald-500" />
                         </div>
-                        <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">{{ $store->description ?? 'Verified store on NegosyoHub. Browse their profile for products and details.' }}</p>
-                    </div>
-
-                    {{-- Hover-reveal Actions (desktop) --}}
-                    <div class="card-actions shrink-0 hidden sm:flex flex-col gap-2">
-                        <a href="{{ route('suppliers.show', $store->slug) }}" class="inline-flex items-center gap-2 rounded-xl bg-sky-600 hover:bg-sky-700 px-4 py-2.5 text-xs font-bold text-white shadow-lg shadow-sky-600/20 transition-all duration-200">
-                            View Profile
-                            <x-heroicon-o-arrow-right class="w-3.5 h-3.5" />
-                        </a>
-                        <button class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 px-4 py-2.5 text-xs font-bold text-slate-900 shadow-lg shadow-amber-500/20 transition-all duration-200">
-                            <x-heroicon-o-chat-bubble-left-ellipsis class="w-3.5 h-3.5" />
-                            Contact Seller
-                        </button>
-                    </div>
-                </div>
-
-                {{-- Mini Product Gallery --}}
-                <div class="mt-3 flex gap-2">
-                    @php
-                        $productImages = [
-                            'bg-gradient-to-br from-slate-100 to-slate-50 dark:from-slate-700 dark:to-slate-700/50',
-                            'bg-gradient-to-br from-sky-50 to-slate-50 dark:from-sky-900/20 dark:to-slate-700/50',
-                            'bg-gradient-to-br from-emerald-50 to-slate-50 dark:from-emerald-900/20 dark:to-slate-700/50',
-                        ];
-                        $productLabels = ['Product', 'Catalog', 'Service'];
-                    @endphp
-                    @foreach ($productImages as $idx => $bg)
-                        <div class="product-thumb h-14 w-20 rounded-lg {{ $bg }} border border-slate-200/60 dark:border-slate-600/40 flex items-center justify-center overflow-hidden cursor-pointer">
-                            <span class="text-[10px] font-semibold text-slate-300 dark:text-slate-600">{{ $productLabels[$idx] }}</span>
-                        </div>
-                    @endforeach
-                    <div class="h-14 w-14 rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-dashed border-slate-200 dark:border-slate-600/40 flex items-center justify-center cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors">
-                        <span class="text-xs font-bold text-slate-300 dark:text-slate-600">+</span>
-                    </div>
-                </div>
-
-                {{-- Data row --}}
-                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-400 dark:text-slate-500">
-                    @if ($store->address)
-                        <span class="inline-flex items-center gap-1.5">
-                            <x-heroicon-o-map-pin class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
-                            {{ $store->address['city'] ?? 'Philippines' }}
-                        </span>
                     @endif
-                    <span class="inline-flex items-center gap-1.5">
-                        <x-heroicon-o-calendar-days class="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />
-                        Since {{ $store->created_at->format('M Y') }}
-                    </span>
-                    <span class="text-slate-200 dark:text-slate-700">·</span>
-                    <span>MOQ: Contact</span>
-                    <span class="text-slate-200 dark:text-slate-700">·</span>
-                    <span>Lead: 3–7 days</span>
+                    @if ($hasId)
+                        <div class="h-6 w-6 rounded-full bg-sky-50 dark:bg-sky-500/10 flex items-center justify-center" title="SEC/DTI Registered">
+                            <x-heroicon-o-identification class="w-3.5 h-3.5 text-sky-500" />
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
-
-    {{-- Mobile action footer --}}
-    <div class="sm:hidden border-t border-slate-100 dark:border-slate-700/40 px-5 py-3 flex gap-2">
-        <a href="{{ route('suppliers.show', $store->slug) }}" class="flex-1 text-center rounded-xl bg-sky-600 hover:bg-sky-700 px-3 py-2.5 text-xs font-bold text-white transition-colors">View Store</a>
-        <button class="flex-1 text-center rounded-xl bg-amber-500 hover:bg-amber-600 px-3 py-2.5 text-xs font-bold text-slate-900 transition-colors">Contact Seller</button>
-    </div>
-</div>
+</a>

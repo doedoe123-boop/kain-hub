@@ -1,36 +1,42 @@
 <div>
-    <h2 class="text-2xl font-bold text-center mb-2">Store Owner Login</h2>
-    <p class="text-center text-sm text-gray-500 mb-6">Sign in to manage your store</p>
+    <h2 class="text-2xl font-bold text-center text-slate-800 dark:text-white mb-1">Store Owner Login</h2>
+    <p class="text-center text-sm text-slate-500 dark:text-slate-400 mb-6">Sign in to manage your store</p>
 
-    <form wire:submit="authenticate" class="space-y-4">
+    @if (session('status'))
+        <div class="mb-4 text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30 p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-700">
+            {{ session('status') }}
+        </div>
+    @endif
+
+    <form wire:submit="authenticate" class="space-y-5">
         {{-- Email --}}
         <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Email</label>
             <input
                 wire:model="email"
                 id="email"
                 type="email"
                 required
                 autofocus
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border"
+                class="block w-full rounded-xl border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500 px-4 py-2.5 text-sm transition-colors duration-200"
             >
             @error('email')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
             @enderror
         </div>
 
         {{-- Password --}}
         <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
             <input
                 wire:model="password"
                 id="password"
                 type="password"
                 required
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 border"
+                class="block w-full rounded-xl border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm focus:border-sky-500 focus:ring-sky-500 px-4 py-2.5 text-sm transition-colors duration-200"
             >
             @error('password')
-                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                <p class="mt-1.5 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
             @enderror
         </div>
 
@@ -40,17 +46,25 @@
                 wire:model="remember"
                 id="remember"
                 type="checkbox"
-                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                class="h-4 w-4 rounded-md border-slate-300 dark:border-slate-600 text-sky-600 focus:ring-sky-500 dark:bg-slate-700"
             >
-            <label for="remember" class="ml-2 block text-sm text-gray-700">Remember me</label>
+            <label for="remember" class="ml-2.5 text-sm text-slate-600 dark:text-slate-400">Remember me</label>
         </div>
 
         {{-- Submit --}}
-        <button type="submit"
-            class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-            wire:loading.attr="disabled">
-            <span wire:loading.remove>Sign In</span>
-            <span wire:loading>Signing in...</span>
-        </button>
+        <div>
+            <button type="submit"
+                class="w-full py-2.5 px-4 rounded-xl text-sm font-semibold text-white bg-sky-600 hover:bg-sky-700 dark:bg-sky-500 dark:hover:bg-sky-600 shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-colors duration-200"
+                wire:loading.attr="disabled">
+                <span wire:loading.remove wire:target="authenticate">Sign In</span>
+                <span wire:loading wire:target="authenticate" class="inline-flex items-center gap-2">
+                    <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    Signing in...
+                </span>
+            </button>
+        </div>
     </form>
 </div>
