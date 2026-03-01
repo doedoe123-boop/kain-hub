@@ -503,3 +503,76 @@ it('accesses analytics through the property relationship', function () {
 
     expect($property->analytics)->toHaveCount(1);
 });
+
+// =========================================================
+// Property Reviews (testimonials per listing)
+// =========================================================
+
+it('accesses testimonials through the property relationship', function () {
+    $property = Property::factory()->for($this->store)->create();
+
+    Testimonial::factory()->count(3)->published()->create([
+        'store_id' => $this->store->id,
+        'property_id' => $property->id,
+    ]);
+
+    expect($property->testimonials)->toHaveCount(3);
+});
+
+it('calculates average rating for a property', function () {
+    $property = Property::factory()->for($this->store)->create();
+
+    Testimonial::factory()->published()->create([
+        'store_id' => $this->store->id,
+        'property_id' => $property->id,
+        'rating' => 5,
+    ]);
+    Testimonial::factory()->published()->create([
+        'store_id' => $this->store->id,
+        'property_id' => $property->id,
+        'rating' => 3,
+    ]);
+
+    expect($property->averageRating())->toBe(4.0);
+});
+
+it('returns null average rating when no reviews exist', function () {
+    $property = Property::factory()->for($this->store)->create();
+
+    expect($property->averageRating())->toBeNull();
+});
+
+it('only counts published reviews in average rating', function () {
+    $property = Property::factory()->for($this->store)->create();
+
+    Testimonial::factory()->published()->create([
+        'store_id' => $this->store->id,
+        'property_id' => $property->id,
+        'rating' => 5,
+    ]);
+    Testimonial::factory()->unpublished()->create([
+        'store_id' => $this->store->id,
+        'property_id' => $property->id,
+        'rating' => 1,
+    ]);
+
+    expect($property->averageRating())->toBe(5.0);
+});
+
+it('loads testimonials count and avg rating via eloquent', function () {
+    $property = Property::factory()->for($this->store)->create();
+
+    Testimonial::factory()->published()->count(3)->create([
+        'store_id' => $this->store->id,
+        'property_id' => $property->id,
+        'rating' => 4,
+    ]);
+
+    $loaded = Property::query()
+        ->withCount('testimonials')
+        ->withAvg('testimonials as avg_rating', 'rating')
+        ->find($property->id);
+
+    expect($loaded->testimonials_count)->toBe(3);
+    expect((float) $loaded->avg_rating)->toBe(4.0);
+});

@@ -184,6 +184,24 @@ class Store extends Model
     }
 
     /**
+     * Return all e-commerce reviews (store + product) for this store.
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Get the average rating from published reviews.
+     */
+    public function averageReviewRating(): float
+    {
+        return (float) $this->reviews()
+            ->where('is_published', true)
+            ->avg('rating') ?: 0;
+    }
+
+    /**
      * Return all property analytics for this store.
      */
     public function propertyAnalytics(): HasMany

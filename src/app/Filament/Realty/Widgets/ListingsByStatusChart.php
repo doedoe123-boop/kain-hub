@@ -14,6 +14,8 @@ class ListingsByStatusChart extends ChartWidget
 
     protected static ?string $maxHeight = '280px';
 
+    protected int|string|array $columnSpan = 1;
+
     protected function getData(): array
     {
         $store = auth()->user()?->getStoreForPanel();

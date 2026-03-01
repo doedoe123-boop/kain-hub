@@ -28,7 +28,15 @@ class RealtyStatsOverview extends BaseWidget
         $totalViews = Property::forStore($store->id)->sum('views_count');
         $totalDevelopments = Development::forStore($store->id)->active()->count();
         $upcomingOpenHouses = OpenHouse::forStore($store->id)->upcoming()->count();
-        $publishedTestimonials = Testimonial::forStore($store->id)->published()->count();
+        $publishedReviews = Testimonial::forStore($store->id)->published()->count();
+        $avgRating = Testimonial::forStore($store->id)->published()->avg('rating');
+        $avgRatingFormatted = $avgRating ? number_format($avgRating, 1) : '—';
+
+        // Reviews last 7 days for trend
+        $recentReviews = Testimonial::forStore($store->id)
+            ->published()
+            ->where('created_at', '>=', now()->subDays(7))
+            ->count();
 
         return [
             Stat::make('Active Listings', $activeListings)
@@ -46,18 +54,18 @@ class RealtyStatsOverview extends BaseWidget
                 ->icon('heroicon-o-chat-bubble-left-right')
                 ->color($newInquiries > 0 ? 'danger' : 'gray'),
 
+            Stat::make('Avg Rating', $avgRatingFormatted)
+                ->description("{$publishedReviews} reviews")
+                ->icon('heroicon-o-star')
+                ->color($avgRating >= 4 ? 'success' : ($avgRating >= 3 ? 'warning' : 'danger')),
+
             Stat::make('Open Houses', $upcomingOpenHouses)
                 ->description('Upcoming events')
                 ->icon('heroicon-o-calendar-days')
                 ->color('info'),
 
-            Stat::make('Reviews', $publishedTestimonials)
-                ->description('Published')
-                ->icon('heroicon-o-star')
-                ->color('primary'),
-
             Stat::make('Total Views', number_format($totalViews))
-                ->description('Across all listings')
+                ->description($recentReviews > 0 ? "{$recentReviews} new reviews this week" : 'Across all listings')
                 ->icon('heroicon-o-eye')
                 ->color('info'),
         ];

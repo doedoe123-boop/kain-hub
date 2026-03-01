@@ -159,6 +159,11 @@ class Property extends Model
         return $this->hasMany(PropertyAnalytic::class);
     }
 
+    public function testimonials(): HasMany
+    {
+        return $this->hasMany(Testimonial::class);
+    }
+
     // ── Scopes ─────────────────────────────────────────────────────────
 
     public function scopeActive(Builder $query): Builder
@@ -203,6 +208,18 @@ class Property extends Model
             $this->city,
             $this->province,
         ])->filter()->implode(', ');
+    }
+
+    /**
+     * Get the average review rating for this property.
+     */
+    public function averageRating(): ?float
+    {
+        $avg = $this->testimonials()
+            ->where('is_published', true)
+            ->avg('rating');
+
+        return $avg ? round((float) $avg, 1) : null;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Filament\Realty\Resources;
 
 use App\Filament\Realty\Resources\PropertyResource\Pages;
+use App\Filament\Realty\Resources\PropertyResource\RelationManagers;
 use App\ListingType;
 use App\Models\Development;
 use App\PropertyStatus;
@@ -37,7 +38,9 @@ class PropertyResource extends Resource
         $store = auth()->user()?->getStoreForPanel();
 
         return parent::getEloquentQuery()
-            ->where('store_id', $store?->id);
+            ->where('store_id', $store?->id)
+            ->withCount('testimonials')
+            ->withAvg('testimonials as avg_rating', 'rating');
     }
 
     public static function form(Form $form): Form
@@ -491,6 +494,25 @@ class PropertyResource extends Resource
                     ->sortable()
                     ->alignEnd(),
 
+                Tables\Columns\TextColumn::make('avg_rating')
+                    ->label('Rating')
+                    ->formatStateUsing(function ($state, Model $record): string {
+                        if (! $state) {
+                            return '—';
+                        }
+
+                        $stars = str_repeat('★', (int) round((float) $state)).str_repeat('☆', 5 - (int) round((float) $state));
+
+                        return $stars.' ('.$record->testimonials_count.')';
+                    })
+                    ->sortable()
+                    ->color(fn ($state): string => match (true) {
+                        ! $state => 'gray',
+                        (float) $state >= 4.0 => 'success',
+                        (float) $state >= 3.0 => 'warning',
+                        default => 'danger',
+                    }),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('M d, Y')
                     ->sortable()
@@ -535,7 +557,9 @@ class PropertyResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\TestimonialsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

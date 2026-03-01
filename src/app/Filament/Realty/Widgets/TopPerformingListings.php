@@ -12,7 +12,7 @@ class TopPerformingListings extends BaseWidget
 {
     protected static ?string $heading = 'Top Performing Listings (30 Days)';
 
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 7;
 
     protected int|string|array $columnSpan = 'full';
 
@@ -27,6 +27,10 @@ class TopPerformingListings extends BaseWidget
                     ->where('property_analytics.store_id', $store?->id)
                     ->where('date', '>=', $thirtyDaysAgo)
                     ->join('properties', 'property_analytics.property_id', '=', 'properties.id')
+                    ->leftJoin('testimonials', function ($join) {
+                        $join->on('properties.id', '=', 'testimonials.property_id')
+                            ->where('testimonials.is_published', true);
+                    })
                     ->selectRaw('properties.id, properties.title, properties.city,
                         SUM(property_analytics.views) as total_views,
                         SUM(property_analytics.inquiries) as total_inquiries,
@@ -35,7 +39,9 @@ class TopPerformingListings extends BaseWidget
                         CASE WHEN SUM(property_analytics.views) > 0
                             THEN ROUND(SUM(property_analytics.inquiries)::numeric / SUM(property_analytics.views)::numeric * 100, 1)
                             ELSE 0
-                        END as conversion_rate')
+                        END as conversion_rate,
+                        ROUND(AVG(testimonials.rating)::numeric, 1) as avg_review,
+                        COUNT(DISTINCT testimonials.id) as review_count')
                     ->groupBy('properties.id', 'properties.title', 'properties.city')
                     ->orderByDesc('total_views')
             )
@@ -60,18 +66,6 @@ class TopPerformingListings extends BaseWidget
                     ->sortable()
                     ->alignEnd(),
 
-                Tables\Columns\TextColumn::make('total_phone_clicks')
-                    ->label('Phone')
-                    ->numeric()
-                    ->sortable()
-                    ->alignEnd(),
-
-                Tables\Columns\TextColumn::make('total_email_clicks')
-                    ->label('Email')
-                    ->numeric()
-                    ->sortable()
-                    ->alignEnd(),
-
                 Tables\Columns\TextColumn::make('conversion_rate')
                     ->label('Conversion')
                     ->suffix('%')
@@ -81,6 +75,24 @@ class TopPerformingListings extends BaseWidget
                         $state >= 5 => 'success',
                         $state >= 2 => 'warning',
                         default => 'gray',
+                    }),
+
+                Tables\Columns\TextColumn::make('avg_review')
+                    ->label('Avg Review')
+                    ->formatStateUsing(function ($state, $record): string {
+                        if (! $state) {
+                            return '—';
+                        }
+
+                        return number_format((float) $state, 1).' ★ ('.$record->review_count.')';
+                    })
+                    ->sortable()
+                    ->alignEnd()
+                    ->color(fn ($state): string => match (true) {
+                        ! $state => 'gray',
+                        (float) $state >= 4.0 => 'success',
+                        (float) $state >= 3.0 => 'warning',
+                        default => 'danger',
                     }),
             ])
             ->paginated([5]);
