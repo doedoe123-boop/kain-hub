@@ -19,6 +19,13 @@ Route::domain('{storeSlug}.'.config('app.domain'))
         // Subdomain root redirects to login with token
         Route::get('/', function () {
             if (Auth::check()) {
+                $store = app('currentStore');
+
+                // Real estate stores → realty panel, others → Lunar panel
+                if ($store?->sector === 'real_estate') {
+                    return redirect('/realty/dashboard/tk_'.config('app.realty_path_token'));
+                }
+
                 return redirect('/store/dashboard/tk_'.config('app.store_path_token'));
             }
 

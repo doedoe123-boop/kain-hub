@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\IndustrySector;
 use App\UserRole;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
@@ -150,6 +151,7 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
     {
         return match ($panel->getId()) {
             'admin' => $this->isAdmin(),
+            'realty' => $this->canAccessRealtyPanel(),
             'lunar' => $this->canAccessLunarPanel(),
             default => false,
         };
@@ -158,21 +160,34 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
     /**
      * Check if the user can access the Lunar store panel.
      *
-     * Store owners: must have an approved store.
-     * Staff: must belong to an approved store.
+     * Store owners: must have an approved, non-real-estate store.
+     * Staff: must belong to an approved, non-real-estate store.
      */
     private function canAccessLunarPanel(): bool
     {
-        if ($this->isStoreOwner()) {
-            return $this->store?->isApproved() === true;
+        $store = $this->getStoreForPanel();
+
+        if (! $store?->isApproved()) {
+            return false;
         }
 
-        if ($this->isStaff()) {
-            return $this->store_id !== null
-                && $this->assignedStore?->isApproved() === true;
+        return $store->sector !== IndustrySector::RealEstate->value;
+    }
+
+    /**
+     * Check if the user can access the Real Estate agent panel.
+     *
+     * Only approved stores in the real_estate sector.
+     */
+    private function canAccessRealtyPanel(): bool
+    {
+        $store = $this->getStoreForPanel();
+
+        if (! $store?->isApproved()) {
+            return false;
         }
 
-        return false;
+        return $store->sector === IndustrySector::RealEstate->value;
     }
 
     /**

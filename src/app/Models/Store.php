@@ -121,6 +121,22 @@ class Store extends Model
     }
 
     /**
+     * Return the properties listed by this store (real estate).
+     */
+    public function properties(): HasMany
+    {
+        return $this->hasMany(Property::class);
+    }
+
+    /**
+     * Return all property inquiries for this store.
+     */
+    public function propertyInquiries(): HasMany
+    {
+        return $this->hasMany(PropertyInquiry::class);
+    }
+
+    /**
      * Determine if the store is approved.
      */
     public function isApproved(): bool

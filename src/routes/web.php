@@ -69,10 +69,17 @@ Route::middleware('auth')->group(function () {
         return redirect('/');
     })->name('logout');
 
-    // Store owner dashboard — approved stores go to Lunar panel
+    // Store owner dashboard — approved stores go to the correct panel
     Route::middleware('role:store_owner')->group(function () {
         Route::get('/store/dashboard', function () {
-            if (auth()->user()->store?->isApproved()) {
+            $store = auth()->user()->store;
+
+            if ($store?->isApproved()) {
+                // Real estate stores → realty panel, others → Lunar panel
+                if ($store->sector === 'real_estate') {
+                    return redirect('/realty/dashboard/tk_'.config('app.realty_path_token'));
+                }
+
                 return redirect('/store/dashboard/tk_'.config('app.store_path_token'));
             }
 

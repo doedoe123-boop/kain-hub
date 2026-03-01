@@ -53,6 +53,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Real Estate Panel Path Token
+    |--------------------------------------------------------------------------
+    |
+    | An obscure token used in the real estate agent panel URL path to
+    | prevent discovery by automated scanners. Change via REALTY_PATH_TOKEN.
+    |
+    */
+
+    'realty_path_token' => env('REALTY_PATH_TOKEN', 'e7m2xk9w4q'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Environment
     |--------------------------------------------------------------------------
     |

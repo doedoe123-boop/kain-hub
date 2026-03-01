@@ -103,7 +103,12 @@ class StoreLogin extends Component
 
         session()->regenerate();
 
-        $this->redirect('/store/dashboard/tk_'.config('app.store_path_token'));
+        // Real estate stores → realty panel, others → Lunar panel
+        if ($store->sector === 'real_estate') {
+            $this->redirect('/realty/dashboard/tk_'.config('app.realty_path_token'));
+        } else {
+            $this->redirect('/store/dashboard/tk_'.config('app.store_path_token'));
+        }
     }
 
     public function render(): \Illuminate\View\View
