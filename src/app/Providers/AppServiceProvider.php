@@ -54,6 +54,8 @@ class AppServiceProvider extends ServiceProvider
             ->darkModeBrandLogo(fn (): ?string => auth()->user()?->getStoreForPanel()?->logoUrl())
             ->brandLogoHeight('3rem')
             ->plugin(new ShippingPlugin)
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->discoverResources(
                 in: app_path('Filament/Resources'),
                 for: 'App\\Filament\\Resources'

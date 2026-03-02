@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Mail\NewOrderReceived;
 use App\Models\Order;
 use App\Models\Store;
+use App\Notifications\OrderPlacedNotification;
+use App\Notifications\OrderStatusUpdated;
 use App\OrderStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -109,25 +111,52 @@ class OrderService
     }
 
     /**
-     * Queue a new-order notification email to the store owner.
+     * Queue email + in-app (database) notification to the store owner on new order.
      *
-     * Failures are logged but never bubble up — a failed email must never
+     * Failures are logged but never bubble up — a failed notification must never
      * roll back or block a successfully placed order.
      */
     private function notifyStoreOwner(Order $order): void
     {
-        $ownerEmail = $order->store?->owner?->email;
+        $owner = $order->store?->owner;
 
-        if (! $ownerEmail) {
+        if (! $owner) {
             return;
         }
 
         try {
-            Mail::to($ownerEmail)->queue(new NewOrderReceived($order));
+            // Email
+            Mail::to($owner->email)->queue(new NewOrderReceived($order));
+            // In-app bell
+            $owner->notify(new OrderPlacedNotification($order));
         } catch (\Throwable $e) {
             Log::warning('Failed to queue new-order notification', [
                 'order_id' => $order->id,
                 'store_id' => $order->store_id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Queue email + in-app (database) notification to the customer on status change.
+     *
+     * Failures are logged but never bubble up.
+     */
+    private function notifyCustomer(Order $order): void
+    {
+        $customer = $order->customer;
+
+        if (! $customer) {
+            return;
+        }
+
+        try {
+            $customer->notify(new OrderStatusUpdated($order));
+        } catch (\Throwable $e) {
+            Log::warning('Failed to queue order-status notification', [
+                'order_id' => $order->id,
+                'status' => $order->status,
                 'error' => $e->getMessage(),
             ]);
         }
@@ -184,8 +213,11 @@ class OrderService
     {
         $this->assertStatus($order, OrderStatus::Pending);
         $order->update(['status' => OrderStatus::Confirmed->value]);
+        $order->refresh();
 
-        return $order->refresh();
+        $this->notifyCustomer($order);
+
+        return $order;
     }
 
     /**
@@ -197,8 +229,11 @@ class OrderService
     {
         $this->assertStatus($order, OrderStatus::Confirmed);
         $order->update(['status' => OrderStatus::Preparing->value]);
+        $order->refresh();
 
-        return $order->refresh();
+        $this->notifyCustomer($order);
+
+        return $order;
     }
 
     /**
@@ -210,8 +245,11 @@ class OrderService
     {
         $this->assertStatus($order, OrderStatus::Preparing);
         $order->update(['status' => OrderStatus::Ready->value]);
+        $order->refresh();
 
-        return $order->refresh();
+        $this->notifyCustomer($order);
+
+        return $order;
     }
 
     /**
@@ -223,8 +261,11 @@ class OrderService
     {
         $this->assertStatus($order, OrderStatus::Ready);
         $order->update(['status' => OrderStatus::Delivered->value]);
+        $order->refresh();
 
-        return $order->refresh();
+        $this->notifyCustomer($order);
+
+        return $order;
     }
 
     /**
@@ -243,8 +284,11 @@ class OrderService
         }
 
         $order->update(['status' => OrderStatus::Cancelled->value]);
+        $order->refresh();
 
-        return $order->refresh();
+        $this->notifyCustomer($order);
+
+        return $order;
     }
 
     /**

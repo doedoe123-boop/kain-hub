@@ -42,6 +42,8 @@ class RealEstatePanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Realty/Widgets'), for: 'App\\Filament\\Realty\\Widgets')
             ->widgets([])
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
