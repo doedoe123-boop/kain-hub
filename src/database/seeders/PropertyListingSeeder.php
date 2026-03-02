@@ -4,35 +4,42 @@ namespace Database\Seeders;
 
 use App\ListingType;
 use App\Models\Property;
+use App\Models\Store;
 use App\PropertyStatus;
 use App\PropertyType;
 use Illuminate\Database\Seeder;
 
 /**
- * Seeds property listings for store_id = 10 (Real Estate & Property store).
+ * Seeds property listings for the dedicated real-estate store (slug: realty-hub).
  *
  * Uses PropertyFactory for the heavy lifting, then overrides `store_id` and
  * applies hand-crafted variety so the seed data reflects realistic listings.
  *
- * Depends on: StoreSeeder (or a store with id=10 already existing).
+ * Depends on: StoreSeeder (must run first to create the realty-hub store).
  */
 class PropertyListingSeeder extends Seeder
 {
-    private const STORE_ID = 9;
+    private const REALTY_STORE_SLUG = 'realty-hub';
+
+    private int $storeId;
 
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
+        $store = Store::where('slug', self::REALTY_STORE_SLUG)->firstOrFail();
+
         // Guard: only seed if this store has no listings yet.
-        if (Property::where('store_id', self::STORE_ID)->exists()) {
+        if (Property::where('store_id', $store->id)->exists()) {
             $this->command->getOutput()->writeln(
-                '<comment>PropertyListingSeeder: store_id='.self::STORE_ID.' already has property listings — skipping.</comment>'
+                '<comment>PropertyListingSeeder: store "'.self::REALTY_STORE_SLUG.'" already has property listings — skipping.</comment>'
             );
 
             return;
         }
+
+        $this->storeId = $store->id;
 
         // ── For-Sale listings ─────────────────────────────────────────────────
         Property::factory()->create($this->merge([
@@ -271,6 +278,6 @@ class PropertyListingSeeder extends Seeder
      */
     private function merge(array $overrides): array
     {
-        return array_merge(['store_id' => self::STORE_ID], $overrides);
+        return array_merge(['store_id' => $this->storeId], $overrides);
     }
 }
