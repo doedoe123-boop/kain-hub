@@ -7,10 +7,16 @@ import {
   BriefcaseIcon,
 } from "@heroicons/vue/24/outline";
 import { storesApi } from "@/api/stores";
+import { productsApi } from "@/api/products";
+import { propertiesApi } from "@/api/properties";
 import PhMapHero from "@/components/PhMapHero.vue";
 
 const featuredStores = ref([]);
+const featuredProducts = ref([]);
+const latestProperties = ref([]);
 const loading = ref(true);
+const productsLoading = ref(true);
+const propertiesLoading = ref(true);
 
 const sectors = [
   {
@@ -45,6 +51,24 @@ onMounted(async () => {
     featuredStores.value = [];
   } finally {
     loading.value = false;
+  }
+
+  try {
+    const { data } = await productsApi.list({ per_page: 6 });
+    featuredProducts.value = data.data ?? data;
+  } catch {
+    featuredProducts.value = [];
+  } finally {
+    productsLoading.value = false;
+  }
+
+  try {
+    const { data } = await propertiesApi.list({ per_page: 4 });
+    latestProperties.value = data.data ?? data;
+  } catch {
+    latestProperties.value = [];
+  } finally {
+    propertiesLoading.value = false;
   }
 });
 </script>
@@ -93,6 +117,142 @@ onMounted(async () => {
             </p>
           </div>
         </component>
+      </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <div class="mb-6 flex items-end justify-between">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900">Latest Products</h2>
+          <p class="mt-1 text-sm text-slate-500">Shop from local e-commerce stores.</p>
+        </div>
+        <RouterLink
+          to="/stores"
+          class="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors"
+        >
+          Browse stores →
+        </RouterLink>
+      </div>
+
+      <!-- Skeleton -->
+      <div v-if="productsLoading" class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        <div v-for="i in 6" :key="i" class="h-40 animate-pulse rounded-2xl bg-slate-100" />
+      </div>
+
+      <!-- Empty -->
+      <div
+        v-else-if="featuredProducts.length === 0"
+        class="rounded-2xl border border-dashed border-slate-300 py-10 text-center text-slate-400 text-sm"
+      >
+        No products yet — check back soon!
+      </div>
+
+      <!-- Grid -->
+      <div v-else class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+        <RouterLink
+          v-for="product in featuredProducts"
+          :key="product.id"
+          :to="`/products/${product.id}`"
+          class="group flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition-shadow"
+        >
+          <div class="aspect-square overflow-hidden bg-slate-100">
+            <img
+              v-if="product.thumbnail"
+              :src="product.thumbnail"
+              :alt="product.name"
+              class="h-full w-full object-cover transition-transform group-hover:scale-105"
+            />
+            <div v-else class="flex h-full items-center justify-center text-3xl">🛍️</div>
+          </div>
+          <div class="p-2">
+            <p class="line-clamp-2 text-xs font-medium text-slate-700 group-hover:text-brand-600 transition-colors">
+              {{ product.name }}
+            </p>
+            <p v-if="product.price" class="mt-1 text-xs font-bold text-brand-600">
+              ₱{{ product.price.toLocaleString() }}
+            </p>
+          </div>
+        </RouterLink>
+      </div>
+    </section>
+
+    <!-- Latest Properties -->
+    <section class="bg-teal-50 py-10">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6">
+        <div class="mb-6 flex items-end justify-between">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Latest Properties</h2>
+            <p class="mt-1 text-sm text-slate-500">
+              Houses, condos, and commercial spaces for sale or rent.
+            </p>
+          </div>
+          <RouterLink
+            to="/properties"
+            class="text-sm font-medium text-teal-700 hover:text-teal-800 transition-colors"
+          >
+            View all →
+          </RouterLink>
+        </div>
+
+        <!-- Skeleton -->
+        <div v-if="propertiesLoading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div v-for="i in 4" :key="i" class="h-56 animate-pulse rounded-2xl bg-teal-100" />
+        </div>
+
+        <!-- Empty -->
+        <div
+          v-else-if="latestProperties.length === 0"
+          class="rounded-2xl border border-dashed border-teal-300 py-10 text-center text-slate-400 text-sm"
+        >
+          No listings yet — check back soon!
+        </div>
+
+        <!-- Grid -->
+        <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <RouterLink
+            v-for="property in latestProperties"
+            :key="property.id"
+            :to="`/properties/${property.slug}`"
+            class="group overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition-shadow"
+          >
+            <div class="relative aspect-[16/9] overflow-hidden bg-slate-100">
+              <img
+                v-if="property.images && property.images[0]"
+                :src="property.images[0]"
+                :alt="property.title"
+                class="h-full w-full object-cover transition-transform group-hover:scale-105"
+              />
+              <div
+                v-else
+                class="flex h-full items-center justify-center bg-gradient-to-br from-teal-50 to-slate-100 text-3xl"
+              >
+                🏡
+              </div>
+              <span
+                class="absolute left-2 top-2 rounded-full px-2 py-0.5 text-xs font-semibold"
+                :class="{
+                  'bg-emerald-100 text-emerald-700': property.listing_type === 'for_sale',
+                  'bg-sky-100 text-sky-700': property.listing_type === 'for_rent',
+                  'bg-amber-100 text-amber-700': property.listing_type === 'for_lease',
+                  'bg-purple-100 text-purple-700': property.listing_type === 'pre_selling',
+                  'bg-slate-100 text-slate-600': !['for_sale','for_rent','for_lease','pre_selling'].includes(property.listing_type),
+                }"
+              >
+                {{ { for_sale: 'For Sale', for_rent: 'For Rent', for_lease: 'For Lease', pre_selling: 'Pre-Selling' }[property.listing_type] ?? property.listing_type }}
+              </span>
+            </div>
+            <div class="p-3">
+              <p class="line-clamp-2 text-sm font-semibold text-slate-800 group-hover:text-teal-700 transition-colors">
+                {{ property.title }}
+              </p>
+              <p class="mt-0.5 text-xs text-slate-400">{{ property.city }}</p>
+              <p class="mt-1.5 text-sm font-bold text-teal-700">
+                ₱{{ parseFloat(property.price).toLocaleString('en-PH', { maximumFractionDigits: 0 }) }}
+              </p>
+            </div>
+          </RouterLink>
+        </div>
       </div>
     </section>
 

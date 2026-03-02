@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\OrderController;
+use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\Api\V1\StoreController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,7 +33,14 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     // ── Public browse (no auth required) ─────────────────────────────────
     Route::middleware('throttle:60,1')->group(function () {
         Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
-        Route::get('/stores/{store}', [StoreController::class, 'show'])->name('stores.show');
+        Route::get('/stores/{store:slug}', [StoreController::class, 'show'])->name('stores.show');
+        Route::get('/stores/{store:slug}/products', [ProductController::class, 'storeProducts'])->name('products.store');
+
+        Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+        Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+
+        Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
+        Route::get('/properties/{slug}', [PropertyController::class, 'show'])->name('properties.show');
     });
 
     // ── Authenticated customer endpoints ──────────────────────────────────

@@ -26,7 +26,9 @@ class ScopedProductResource extends LunarProductResource
         if ($user && ! $user->isAdmin()) {
             $store = $user->getStoreForPanel();
             if ($store) {
-                $query->whereJsonContains('attribute_data->store_id', $store->id);
+                // store_id is wrapped in a Lunar Number FieldType, so the JSON path
+                // is attribute_data -> store_id -> value.
+                $query->whereJsonContains('attribute_data->store_id->value', $store->id);
             }
         }
 

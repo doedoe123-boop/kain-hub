@@ -91,7 +91,7 @@ class OrderService
     public function validateCartBelongsToStore(Cart $cart, Store $store): void
     {
         $foreignLines = $cart->lines->filter(
-            fn ($line) => $line->purchasable?->product?->attribute_data?->get('store_id') !== $store->id
+            fn ($line) => $line->purchasable?->product?->attribute_data?->get('store_id')?->getValue() !== $store->id
         );
 
         if ($foreignLines->isNotEmpty()) {
