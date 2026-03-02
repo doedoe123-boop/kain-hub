@@ -9,6 +9,7 @@ use App\Models\Development;
 use App\PropertyStatus;
 use App\PropertyType;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
@@ -284,20 +285,17 @@ class PropertyResource extends Resource
                         Forms\Components\Tabs\Tab::make('Media')
                             ->icon('heroicon-o-photo')
                             ->schema([
-                                Forms\Components\Repeater::make('images')
-                                    ->schema([
-                                        Forms\Components\TextInput::make('url')
-                                            ->label('Image URL')
-                                            ->url()
-                                            ->required(),
-                                        Forms\Components\TextInput::make('alt')
-                                            ->label('Alt Text')
-                                            ->maxLength(255),
-                                    ])
-                                    ->columns(2)
-                                    ->collapsible()
-                                    ->defaultItems(0)
-                                    ->addActionLabel('Add Image')
+                                FileUpload::make('images')
+                                    ->label('Property Images')
+                                    ->multiple()
+                                    ->reorderable()
+                                    ->image()
+                                    ->imagePreviewHeight('120')
+                                    ->disk('public')
+                                    ->directory('properties/images')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
+                                    ->maxSize(5120)
+                                    ->panelLayout('grid')
                                     ->columnSpanFull(),
 
                                 Forms\Components\TextInput::make('video_url')
@@ -317,10 +315,15 @@ class PropertyResource extends Resource
                             ->schema([
                                 Forms\Components\Repeater::make('floor_plans')
                                     ->schema([
-                                        Forms\Components\TextInput::make('url')
-                                            ->label('Floor Plan Image URL')
-                                            ->url()
-                                            ->required(),
+                                        FileUpload::make('url')
+                                            ->label('Floor Plan Image / PDF')
+                                            ->disk('public')
+                                            ->directory('properties/floor-plans')
+                                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'application/pdf'])
+                                            ->maxSize(10240)
+                                            ->image()
+                                            ->imagePreviewHeight('80')
+                                            ->columnSpan(3),
                                         Forms\Components\TextInput::make('label')
                                             ->label('Label')
                                             ->maxLength(100)
@@ -343,10 +346,19 @@ class PropertyResource extends Resource
                             ->schema([
                                 Forms\Components\Repeater::make('documents')
                                     ->schema([
-                                        Forms\Components\TextInput::make('url')
-                                            ->label('Document URL')
-                                            ->url()
-                                            ->required(),
+                                        FileUpload::make('url')
+                                            ->label('File')
+                                            ->disk('public')
+                                            ->directory('properties/documents')
+                                            ->acceptedFileTypes([
+                                                'application/pdf',
+                                                'application/msword',
+                                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                                'image/jpeg',
+                                                'image/png',
+                                            ])
+                                            ->maxSize(20480)
+                                            ->columnSpan(3),
                                         Forms\Components\TextInput::make('name')
                                             ->label('Document Name')
                                             ->required()
@@ -363,12 +375,8 @@ class PropertyResource extends Resource
                                             ])
                                             ->default('brochure')
                                             ->native(false),
-                                        Forms\Components\TextInput::make('size_kb')
-                                            ->label('Size (KB)')
-                                            ->numeric()
-                                            ->minValue(0),
                                     ])
-                                    ->columns(4)
+                                    ->columns(3)
                                     ->collapsible()
                                     ->defaultItems(0)
                                     ->addActionLabel('Add Document')
@@ -552,15 +560,13 @@ class PropertyResource extends Resource
                     ->icon('heroicon-o-document-duplicate')
                     ->color('gray')
                     ->excludeAttributes(['slug', 'published_at', 'views_count'])
-                    ->mutateRecordUsing(function (Model $record): Model {
-                        $record->title = '[Copy] '.$record->title;
-                        $record->slug = Str::slug($record->title).'-'.Str::random(6);
-                        $record->status = PropertyStatus::Draft;
-                        $record->is_featured = false;
-                        $record->views_count = 0;
-                        $record->published_at = null;
+                    ->mutateRecordDataUsing(function (array $data): array {
+                        $data['title'] = '[Copy] '.$data['title'];
+                        $data['slug'] = Str::slug($data['title']).'-'.Str::random(6);
+                        $data['status'] = PropertyStatus::Draft->value;
+                        $data['is_featured'] = false;
 
-                        return $record;
+                        return $data;
                     })
                     ->successNotificationTitle('Property cloned as draft'),
             ])
