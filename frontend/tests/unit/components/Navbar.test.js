@@ -11,6 +11,7 @@ vi.mock("@heroicons/vue/24/outline", () => ({
   ShoppingCartIcon: { template: "<svg />" },
   Bars3Icon: { template: "<svg />" },
   XMarkIcon: { template: "<svg />" },
+  UserCircleIcon: { template: "<svg />" },
 }));
 
 const router = createRouter({
@@ -43,14 +44,14 @@ describe("Navbar", () => {
     expect(wrapper.text()).toContain("Register");
   });
 
-  it("shows My Orders and Sign out when authenticated", () => {
+  it("shows Account and Sign out when authenticated", () => {
     setActivePinia(createPinia());
     const auth = useAuthStore();
     auth.user = { id: 1, name: "Juan", role: "customer" };
 
     const wrapper = mount(Navbar, { global: { plugins: [router] } });
 
-    expect(wrapper.text()).toContain("My Orders");
+    expect(wrapper.text()).toContain("Account");
     expect(wrapper.text()).toContain("Sign out");
   });
 

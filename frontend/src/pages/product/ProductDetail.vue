@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
+import { ref, computed, onMounted } from "vue";
+import { useRoute, RouterLink } from "vue-router";
+import { ChevronRightIcon, MinusIcon, PlusIcon } from "@heroicons/vue/24/outline";
 import { productsApi } from "@/api/products";
 import { useCartStore } from "@/stores/cart";
 
@@ -11,6 +12,12 @@ const product = ref(null);
 const loading = ref(true);
 const selectedVariantId = ref(null);
 const quantity = ref(1);
+
+const selectedVariant = computed(
+  () =>
+    product.value?.variants?.find((v) => v.id === selectedVariantId.value) ??
+    product.value?.variants?.[0],
+);
 
 onMounted(async () => {
   try {
@@ -34,67 +41,155 @@ async function addToCart() {
 
 <template>
   <div class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
-    <div v-if="loading" class="grid gap-8 md:grid-cols-2">
-      <div class="aspect-square animate-pulse rounded-2xl bg-gray-100" />
+    <!-- Skeleton -->
+    <div v-if="loading" class="grid animate-pulse gap-8 md:grid-cols-2">
+      <div class="aspect-square rounded-2xl bg-slate-200" />
       <div class="space-y-4">
-        <div class="h-6 w-3/4 animate-pulse rounded bg-gray-100" />
-        <div class="h-4 w-1/2 animate-pulse rounded bg-gray-100" />
+        <div class="h-7 w-3/4 rounded bg-slate-200" />
+        <div class="h-5 w-1/3 rounded bg-slate-100" />
+        <div class="h-4 w-full rounded bg-slate-100" />
+        <div class="h-4 w-5/6 rounded bg-slate-100" />
       </div>
     </div>
 
-    <div v-else-if="product" class="grid gap-8 md:grid-cols-2">
-      <!-- Gallery -->
-      <div>
-        <img
-          :src="product.thumbnail ?? '/placeholder.png'"
-          :alt="product.name"
-          class="aspect-square w-full rounded-2xl object-cover bg-gray-100"
-        />
-      </div>
+    <template v-else-if="product">
+      <!-- Breadcrumb -->
+      <nav class="mb-6 flex items-center gap-1.5 text-xs text-slate-400">
+        <RouterLink to="/" class="hover:text-brand-600 transition-colors"
+          >Home</RouterLink
+        >
+        <ChevronRightIcon class="size-3" />
+        <RouterLink
+          v-if="product.store"
+          :to="`/stores/${product.store.slug}`"
+          class="hover:text-brand-600 transition-colors"
+        >
+          {{ product.store.name }}
+        </RouterLink>
+        <RouterLink
+          v-else
+          to="/stores"
+          class="hover:text-brand-600 transition-colors"
+        >
+          Stores
+        </RouterLink>
+        <ChevronRightIcon class="size-3" />
+        <span class="line-clamp-1 text-slate-600">{{ product.name }}</span>
+      </nav>
 
-      <!-- Info -->
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">{{ product.name }}</h1>
-        <p class="mt-2 text-2xl font-semibold text-brand-600">
-          {{ product.variants?.[0]?.price?.formatted ?? "—" }}
-        </p>
-        <p class="mt-4 text-sm leading-relaxed text-gray-600">
-          {{ product.description }}
-        </p>
-
-        <!-- Quantity -->
-        <div class="mt-6 flex items-center gap-3">
-          <label class="text-sm font-medium text-gray-700">Qty</label>
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              class="size-8 rounded border text-center hover:bg-gray-100"
-              @click="quantity = Math.max(1, quantity - 1)"
+      <div class="grid gap-8 md:grid-cols-2">
+        <!-- Gallery -->
+        <div>
+          <div
+            class="aspect-square overflow-hidden rounded-2xl bg-slate-100"
+          >
+            <img
+              v-if="product.thumbnail"
+              :src="product.thumbnail"
+              :alt="product.name"
+              class="h-full w-full object-cover"
+            />
+            <div
+              v-else
+              class="flex h-full items-center justify-center text-6xl"
             >
-              −
-            </button>
-            <span class="w-8 text-center text-sm font-medium">{{
-              quantity
-            }}</span>
-            <button
-              type="button"
-              class="size-8 rounded border text-center hover:bg-gray-100"
-              @click="quantity++"
-            >
-              +
-            </button>
+              🛍️
+            </div>
           </div>
         </div>
 
-        <button
-          type="button"
-          class="mt-6 w-full rounded-xl bg-brand-500 py-3 text-sm font-semibold text-white hover:bg-brand-600 transition-colors disabled:opacity-50"
-          :disabled="cart.loading"
-          @click="addToCart"
-        >
-          Add to Cart
-        </button>
+        <!-- Details -->
+        <div class="flex flex-col">
+          <!-- Store attribution -->
+          <RouterLink
+            v-if="product.store"
+            :to="`/stores/${product.store.slug}`"
+            class="mb-3 inline-flex items-center gap-2 text-sm text-slate-500 hover:text-brand-600 transition-colors"
+          >
+            <img
+              v-if="product.store.logo_url"
+              :src="product.store.logo_url"
+              :alt="product.store.name"
+              class="size-5 rounded object-cover"
+            />
+            {{ product.store.name }}
+          </RouterLink>
+
+          <h1 class="text-2xl font-bold leading-tight text-slate-900">
+            {{ product.name }}
+          </h1>
+
+          <p class="mt-3 text-2xl font-bold text-brand-600">
+            {{ selectedVariant?.price?.formatted ?? "—" }}
+          </p>
+
+          <p
+            v-if="product.description"
+            class="mt-4 text-sm leading-relaxed text-slate-600"
+          >
+            {{ product.description }}
+          </p>
+
+          <!-- Variant selector -->
+          <div v-if="product.variants?.length > 1" class="mt-5">
+            <p class="mb-2 text-sm font-medium text-slate-700">Option</p>
+            <div class="flex flex-wrap gap-2">
+              <button
+                v-for="variant in product.variants"
+                :key="variant.id"
+                type="button"
+                class="rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors"
+                :class="
+                  selectedVariantId === variant.id
+                    ? 'border-brand-500 bg-brand-50 text-brand-600'
+                    : 'border-slate-300 text-slate-600 hover:border-brand-400'
+                "
+                @click="selectedVariantId = variant.id"
+              >
+                {{ variant.name }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Quantity -->
+          <div class="mt-5 flex items-center gap-3">
+            <span class="text-sm font-medium text-slate-700">Quantity</span>
+            <div
+              class="flex items-center overflow-hidden rounded-xl border border-slate-300"
+            >
+              <button
+                type="button"
+                class="flex size-9 items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors"
+                @click="quantity = Math.max(1, quantity - 1)"
+              >
+                <MinusIcon class="size-4" />
+              </button>
+              <span
+                class="w-10 text-center text-sm font-semibold text-slate-800"
+              >
+                {{ quantity }}
+              </span>
+              <button
+                type="button"
+                class="flex size-9 items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors"
+                @click="quantity++"
+              >
+                <PlusIcon class="size-4" />
+              </button>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <button
+            type="button"
+            class="mt-6 w-full rounded-xl bg-brand-500 py-3.5 text-sm font-semibold text-white shadow-md shadow-brand-500/20 hover:bg-brand-600 transition-colors disabled:opacity-50"
+            :disabled="cart.loading || !selectedVariantId"
+            @click="addToCart"
+          >
+            {{ cart.loading ? "Adding…" : "Add to Cart" }}
+          </button>
+        </div>
       </div>
-    </div>
+    </template>
   </div>
 </template>
