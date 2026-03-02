@@ -239,4 +239,15 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
     {
         return $this->isAdmin();
     }
+
+    /**
+     * Send the customer-specific password reset notification.
+     *
+     * Customer accounts receive a link pointing to the Vue SPA
+     * instead of the default Laravel backend reset page.
+     */
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        $this->notify(new \App\Notifications\CustomerResetPasswordNotification($token));
+    }
 }

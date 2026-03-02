@@ -15,6 +15,8 @@ const cart = useCartStore();
 const route = useRoute();
 const mobileOpen = ref(false);
 
+const backendUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+
 const sectors = [
   { label: "Stores", to: "/stores" },
   { label: "Properties", to: "/properties" },
@@ -63,7 +65,7 @@ function isActive(path) {
         <span class="mx-1 h-4 w-px bg-slate-200" />
 
         <a
-          href="http://localhost:8080/register/sector"
+          :href="`${backendUrl}/register/sector`"
           target="_blank"
           class="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
         >
@@ -187,7 +189,7 @@ function isActive(path) {
           Sign in
         </RouterLink>
         <a
-          href="http://localhost:8080/register/sector"
+          :href="`${backendUrl}/register/sector`"
           target="_blank"
           class="flex items-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-medium text-brand-600"
           @click="mobileOpen = false"

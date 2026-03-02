@@ -3,6 +3,8 @@ import { ref } from "vue";
 import { useRouter, useRoute, RouterLink } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
+const backendUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+
 const router = useRouter();
 const route = useRoute();
 const auth = useAuthStore();
@@ -74,12 +76,12 @@ async function submit() {
           >
             Password
           </label>
-          <a
-            href="#"
+          <RouterLink
+            to="/forgot-password"
             class="text-xs font-medium text-brand-600 hover:underline"
           >
             Forgot password?
-          </a>
+          </RouterLink>
         </div>
         <div class="relative">
           <input
@@ -181,7 +183,8 @@ async function submit() {
       <p class="text-xs text-slate-400">
         Seller or listing agent?
         <a
-          href="http://localhost:8080/login"
+          :href="`${backendUrl}/register/sector`"
+          target="_blank"
           class="font-medium text-slate-500 underline transition-colors hover:text-brand-600"
         >
           Sign in at the Seller Portal

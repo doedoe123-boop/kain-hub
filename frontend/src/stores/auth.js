@@ -44,6 +44,22 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = null;
   }
 
+  async function forgotPassword(email) {
+    const { data } = await authApi.forgotPassword({ email });
+    return data;
+  }
+
+  async function resetPassword(payload) {
+    const { data } = await authApi.resetPassword(payload);
+    if (data.token) {
+      localStorage.setItem("api_token", data.token);
+    }
+    if (data.user) {
+      user.value = data.user;
+    }
+    return data;
+  }
+
   return {
     user,
     initialized,
@@ -53,5 +69,7 @@ export const useAuthStore = defineStore("auth", () => {
     register,
     login,
     logout,
+    forgotPassword,
+    resetPassword,
   };
 });

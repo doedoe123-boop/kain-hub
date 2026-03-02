@@ -18,4 +18,14 @@ export const authApi = {
   async me() {
     return client.get("/api/v1/user");
   },
+
+  async forgotPassword(payload) {
+    await initCsrf();
+    return client.post("/api/v1/forgot-password", payload);
+  },
+
+  async resetPassword(payload) {
+    await initCsrf();
+    return client.post("/api/v1/reset-password", payload);
+  },
 };

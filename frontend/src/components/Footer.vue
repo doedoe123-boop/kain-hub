@@ -1,3 +1,7 @@
+<script setup>
+const backendUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+</script>
+
 <template>
   <footer class="border-t bg-gray-50 py-10 text-sm text-gray-500">
     <div class="mx-auto max-w-7xl px-4 sm:px-6">
@@ -24,12 +28,18 @@
           <p class="mb-3 font-semibold text-gray-700">Sellers</p>
           <ul class="space-y-2">
             <li>
-              <a href="/register/store-owner/food" class="hover:text-brand-600"
+              <a
+                :href="`${backendUrl}/register/store-owner/food`"
+                class="hover:text-brand-600"
+                target="_blank"
                 >Register Store</a
               >
             </li>
             <li>
-              <a href="/store/dashboard" class="hover:text-brand-600"
+              <a
+                :href="`${backendUrl}/store/dashboard`"
+                class="hover:text-brand-600"
+                target="_blank"
                 >Store Dashboard</a
               >
             </li>
@@ -40,12 +50,16 @@
           <p class="mb-3 font-semibold text-gray-700">Legal</p>
           <ul class="space-y-2">
             <li>
-              <a href="/legal/terms" class="hover:text-brand-600"
+              <a
+                :href="`${backendUrl}/legal/terms-and-conditions`"
+                class="hover:text-brand-600"
                 >Terms of Service</a
               >
             </li>
             <li>
-              <a href="/legal/privacy" class="hover:text-brand-600"
+              <a
+                :href="`${backendUrl}/legal/privacy-policy`"
+                class="hover:text-brand-600"
                 >Privacy Policy</a
               >
             </li>

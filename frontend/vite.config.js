@@ -3,6 +3,10 @@ import vue from "@vitejs/plugin-vue";
 import tailwindcss from "@tailwindcss/vite";
 import { fileURLToPath, URL } from "node:url";
 
+// When running inside Docker the node container sets BACKEND_URL to the nginx
+// service hostname. On the host machine it falls back to the exposed port.
+const backendUrl = process.env.BACKEND_URL ?? "http://localhost:8080";
+
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
   resolve: {
@@ -13,15 +17,12 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // Proxy /api and /sanctum calls to the Laravel nginx container.
-      // Inside Docker, 'localhost' resolves to the node container itself —
-      // use the nginx service hostname on the shared app-network instead.
       "/api": {
-        target: "http://laravel_nginx:80",
+        target: backendUrl,
         changeOrigin: true,
       },
       "/sanctum": {
-        target: "http://laravel_nginx:80",
+        target: backendUrl,
         changeOrigin: true,
       },
     },

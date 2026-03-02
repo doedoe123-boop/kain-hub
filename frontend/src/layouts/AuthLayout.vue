@@ -1,6 +1,8 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router"
 
+const backendUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+
 const features = [
   "Browse 500+ local stores and properties",
   "Fast, same-day delivery in Metro Manila",
@@ -132,7 +134,7 @@ const features = [
             Register your store or list properties on the NegosyoHub platform.
           </p>
           <a
-            href="http://localhost:8080/register/sector"
+            :href="`${backendUrl}/register/sector`"
             target="_blank"
             class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-400 transition-colors hover:text-brand-300"
           >
