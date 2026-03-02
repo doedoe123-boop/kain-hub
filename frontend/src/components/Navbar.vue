@@ -59,6 +59,29 @@ function isActive(path) {
         >
           {{ sector.label }}
         </RouterLink>
+
+        <span class="mx-1 h-4 w-px bg-slate-200" />
+
+        <a
+          href="http://localhost:8080/register/sector"
+          target="_blank"
+          class="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
+        >
+          Sell with us
+          <svg
+            class="size-3 opacity-60"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+            />
+          </svg>
+        </a>
       </nav>
 
       <!-- Right utilities -->
@@ -163,6 +186,27 @@ function isActive(path) {
         >
           Sign in
         </RouterLink>
+        <a
+          href="http://localhost:8080/register/sector"
+          target="_blank"
+          class="flex items-center gap-1.5 rounded-lg px-3 py-2.5 text-sm font-medium text-brand-600"
+          @click="mobileOpen = false"
+        >
+          Sell with us
+          <svg
+            class="size-3.5 opacity-70"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+            />
+          </svg>
+        </a>
       </div>
     </nav>
   </header>

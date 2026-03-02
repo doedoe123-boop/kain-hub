@@ -7,6 +7,7 @@ import {
   BriefcaseIcon,
 } from "@heroicons/vue/24/outline";
 import { storesApi } from "@/api/stores";
+import PhMapHero from "@/components/PhMapHero.vue";
 
 const featuredStores = ref([]);
 const loading = ref(true);
@@ -51,50 +52,7 @@ onMounted(async () => {
 <template>
   <div>
     <!-- Hero -->
-    <section class="relative overflow-hidden bg-slate-900 py-20 text-white">
-      <div
-        class="pointer-events-none absolute inset-0 opacity-10"
-        style="
-          background-image: radial-gradient(
-              circle at 15% 60%,
-              #f95d2f 0%,
-              transparent 45%
-            ),
-            radial-gradient(circle at 85% 20%, #14b8a6 0%, transparent 40%);
-        "
-      />
-      <div class="relative mx-auto max-w-4xl px-4 text-center sm:px-6">
-        <span
-          class="mb-4 inline-block rounded-full bg-brand-500/20 px-4 py-1 text-sm font-medium text-brand-300 ring-1 ring-brand-500/30"
-        >
-          🇵🇭 Your Local Marketplace
-        </span>
-        <h1
-          class="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl"
-        >
-          Everything local,<br />
-          <span class="text-brand-400">all in one place.</span>
-        </h1>
-        <p class="mx-auto mt-5 max-w-xl text-lg text-slate-400">
-          Food, retail, real estate and more — discover trusted local businesses
-          and services near you.
-        </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <RouterLink
-            to="/stores"
-            class="rounded-xl bg-brand-500 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-500/30 hover:bg-brand-600 transition-colors"
-          >
-            Browse Stores
-          </RouterLink>
-          <RouterLink
-            to="/properties"
-            class="rounded-xl bg-white/10 px-7 py-3 text-sm font-semibold text-white ring-1 ring-white/20 hover:bg-white/15 transition-colors"
-          >
-            View Properties
-          </RouterLink>
-        </div>
-      </div>
-    </section>
+    <PhMapHero />
 
     <!-- Sector picker -->
     <section class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
@@ -176,10 +134,7 @@ onMounted(async () => {
       </div>
 
       <!-- Grid -->
-      <div
-        v-else
-        class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
-      >
+      <div v-else class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         <RouterLink
           v-for="store in featuredStores"
           :key="store.id"

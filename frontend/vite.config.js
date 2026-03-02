@@ -13,13 +13,15 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // Proxy /api and /sanctum calls to Laravel during development
+      // Proxy /api and /sanctum calls to the Laravel nginx container.
+      // Inside Docker, 'localhost' resolves to the node container itself —
+      // use the nginx service hostname on the shared app-network instead.
       "/api": {
-        target: "http://localhost:8080",
+        target: "http://laravel_nginx:80",
         changeOrigin: true,
       },
       "/sanctum": {
-        target: "http://localhost:8080",
+        target: "http://laravel_nginx:80",
         changeOrigin: true,
       },
     },

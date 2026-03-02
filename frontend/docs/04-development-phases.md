@@ -20,6 +20,7 @@ Development is split into phases that each deliver working, testable functionali
 - [ ] Store detail page — store header, product grid
 - [ ] Product detail page
 - [ ] Auth pages — login, register (already scaffolded)
+- [ ] Email verification flow — post-registration verify-email screen (see backlog)
 - [ ] Auth guards working (already done)
 - [ ] Basic responsive layout (mobile-first)
 
@@ -167,3 +168,48 @@ Development is split into phases that each deliver working, testable functionali
 | ------------------------- | ----- | -------------- |
 | Unit (Vitest)             | 28    | ✅ All passing |
 | E2E (Playwright/Chromium) | 19    | ✅ All passing |
+
+---
+
+## Backlog / Tracked Issues
+
+### TODO — Customer Email Registration (Phase 5A)
+
+**Feature:** After a customer registers, they must verify their email before accessing the marketplace.
+
+#### Frontend tasks
+
+- [ ] Create `/email/verify-notice` route — "Check your inbox" screen shown immediately after registration
+  - Static page with: user's email, resend button, "wrong email? sign out" link
+  - Resend calls `POST /api/email/verification-notification`
+- [ ] Create `/email/verify/:id/:hash` handler — intercepts the verification URL from the email link
+  - Calls `GET /api/email/verify/{id}/{hash}?expires=...&signature=...`
+  - On success: redirects to `/` with a success toast
+  - On failure: shows error with retry option
+- [ ] Auth guard: redirect unverified customers to `/email/verify-notice`
+  - Check `user.email_verified_at` in the auth store
+  - Exempt routes: `/email/verify-notice`, `/email/verify/*`, `/logout`
+- [ ] RegisterPage: after `POST /api/auth/register`, redirect to `/email/verify-notice` instead of `/`
+
+#### Backend tasks
+
+- [ ] Confirm `User` model implements `MustVerifyEmail` (Laravel built-in)
+- [ ] Add Sanctum-compatible verification routes in **`routes/api.php`**:
+  ```php
+  Route::middleware('auth:sanctum')->group(function () {
+      Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+          ->middleware('throttle:6,1');
+      Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+          ->middleware(['signed', 'throttle:6,1']);
+  });
+  ```
+- [ ] `GET /api/user` response must include `email_verified_at` field
+- [ ] Add feature test: `POST /api/auth/register` sends verification email
+- [ ] Add feature test: unverified user is blocked from protected endpoints
+
+#### API contract
+
+| Method | Endpoint                               | Auth          | Description               |
+| ------ | -------------------------------------- | ------------- | ------------------------- |
+| `POST` | `/api/email/verification-notification` | ✅ Sanctum    | Resend verification email |
+| `GET`  | `/api/email/verify/{id}/{hash}`        | ✅ Signed URL | Verify email address      |
