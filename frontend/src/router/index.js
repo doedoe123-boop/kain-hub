@@ -31,6 +31,7 @@ const routes = [
         path: "cart",
         name: "cart.index",
         component: () => import("@/pages/cart/CartPage.vue"),
+        meta: { requiresAuth: true },
       },
       // ─── Real Estate ──────────────────────────────────────────────────
       {

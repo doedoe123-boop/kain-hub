@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\StoreStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+use Lunar\Facades\CartSession;
 
 /**
  * Validates order placement requests.
@@ -16,6 +17,24 @@ use Illuminate\Validation\Validator;
  */
 class PlaceOrderRequest extends FormRequest
 {
+    /**
+     * Inject store_id from the active cart's meta when not provided in the
+     * request body. This allows the SPA to place an order without re-sending
+     * the store_id that was already persisted when adding items to the cart.
+     */
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('store_id')) {
+            // Use current() rather than manager() so we never trigger cart
+            // creation when no session cart exists (e.g. during tests).
+            $cart = CartSession::current();
+
+            if ($cart && ! empty($cart->meta['store_id'])) {
+                $this->merge(['store_id' => (int) $cart->meta['store_id']]);
+            }
+        }
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */

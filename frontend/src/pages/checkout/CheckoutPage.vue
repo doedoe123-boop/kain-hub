@@ -64,7 +64,9 @@ async function placeOrder() {
   loading.value = true;
   error.value = null;
   try {
-    const { data } = await ordersApi.place({ payment_method: "paypal" });
+    const { data } = await ordersApi.place({
+      store_id: cart.storeId,
+    });
     // PayPal redirect URL comes back from the API
     if (data.redirect_url) {
       window.location.href = data.redirect_url;
@@ -101,7 +103,7 @@ async function placeOrder() {
         <h2 class="mb-4 text-lg font-semibold text-gray-900">
           Delivery Address
         </h2>
-        <form class="grid grid-cols-2 gap-4" @submit.prevent="saveAddress">
+        <form class="grid grid-cols-1 gap-4 sm:grid-cols-2" @submit.prevent="saveAddress">
           <div>
             <label
               for="addr-first-name"
@@ -128,7 +130,7 @@ async function placeOrder() {
               class="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
           </div>
-          <div class="col-span-2">
+          <div class="col-span-full">
             <label
               for="addr-line-one"
               class="mb-1 block text-xs font-medium text-gray-600"
@@ -193,7 +195,7 @@ async function placeOrder() {
               class="w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
           </div>
-          <div class="col-span-2">
+          <div class="col-span-full">
             <button
               type="submit"
               :disabled="loading"

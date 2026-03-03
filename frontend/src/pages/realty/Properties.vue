@@ -182,10 +182,10 @@ watch(
           />
         </div>
 
-        <div class="flex flex-wrap gap-2">
+        <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
           <select
             v-model="filters.type"
-            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            class="col-span-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-auto"
           >
             <option v-for="t in propertyTypes" :key="t.value" :value="t.value">
               {{ t.label }}
@@ -197,7 +197,7 @@ watch(
             type="number"
             min="1"
             placeholder="Min bedrooms"
-            class="w-32 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-32"
           />
 
           <input
@@ -205,7 +205,7 @@ watch(
             type="number"
             min="0"
             placeholder="Min price"
-            class="w-32 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-32"
           />
 
           <input
@@ -213,19 +213,19 @@ watch(
             type="number"
             min="0"
             placeholder="Max price"
-            class="w-32 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-32"
           />
 
           <input
             v-model="filters.city"
             type="text"
             placeholder="City"
-            class="w-36 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-36"
           />
 
           <button
             type="submit"
-            class="flex items-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 transition-colors"
+            class="flex items-center justify-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700"
           >
             <FunnelIcon class="size-4" />
             Search
@@ -233,7 +233,7 @@ watch(
 
           <button
             type="button"
-            class="rounded-xl border border-slate-200 px-4 py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+            class="rounded-xl border border-slate-200 px-4 py-2 text-sm text-slate-500 transition-colors hover:text-slate-700"
             @click="resetFilters"
           >
             Reset

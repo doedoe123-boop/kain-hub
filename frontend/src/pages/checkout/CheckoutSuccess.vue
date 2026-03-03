@@ -16,7 +16,7 @@ const orderId = route.query.order;
     <p v-if="orderId" class="mt-1 text-sm text-gray-400">
       Order #{{ orderId }}
     </p>
-    <div class="mt-8 flex gap-4">
+    <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
       <RouterLink
         to="/account/orders"
         class="rounded-xl bg-brand-500 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-600 transition-colors"

@@ -202,7 +202,7 @@ async function submitInquiry() {
 
       <!-- Price + location bar -->
       <div class="border-b border-teal-700 bg-teal-600 text-white">
-        <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
+        <div class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:px-6">
           <div>
             <p class="text-2xl font-bold tracking-tight">{{ formattedPrice }}</p>
             <p v-if="fullAddress" class="mt-0.5 flex items-center gap-1 text-sm text-teal-100">
@@ -300,7 +300,7 @@ async function submitInquiry() {
             <!-- Property details table -->
             <section class="mb-8">
               <h2 class="mb-4 text-lg font-semibold text-slate-900">Property Details</h2>
-              <div class="overflow-hidden rounded-xl border border-slate-100">
+              <div class="overflow-x-auto rounded-xl border border-slate-100">
                 <table class="w-full text-sm">
                   <tbody class="divide-y divide-slate-50">
                     <tr v-if="property.property_type" class="bg-white">

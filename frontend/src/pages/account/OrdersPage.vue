@@ -55,24 +55,31 @@ const statusColors = {
         :key="order.id"
         class="rounded-2xl border bg-white p-4 shadow-sm"
       >
-        <div class="flex items-center justify-between">
-          <div>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex items-center justify-between gap-3 sm:block">
             <p class="font-semibold text-gray-800">Order #{{ order.id }}</p>
-            <p class="text-xs text-gray-400">{{ order.created_at }}</p>
-          </div>
-          <div class="flex items-center gap-3">
             <span
-              class="rounded-full px-2.5 py-0.5 text-xs font-medium"
+              class="rounded-full px-2.5 py-0.5 text-xs font-medium sm:hidden"
               :class="statusColors[order.status] ?? 'bg-gray-100 text-gray-500'"
             >
               {{ order.status }}
             </span>
+          </div>
+          <p class="text-xs text-gray-400 sm:hidden">{{ order.created_at }}</p>
+          <div class="flex items-center gap-3">
+            <span
+              class="hidden rounded-full px-2.5 py-0.5 text-xs font-medium sm:inline-block"
+              :class="statusColors[order.status] ?? 'bg-gray-100 text-gray-500'"
+            >
+              {{ order.status }}
+            </span>
+            <p class="hidden text-xs text-gray-400 sm:block">{{ order.created_at }}</p>
             <span class="font-semibold text-gray-900">{{
               order.total?.formatted
             }}</span>
             <RouterLink
               :to="`/account/orders/${order.id}`"
-              class="text-xs font-medium text-brand-600 hover:underline"
+              class="rounded-lg border border-brand-200 bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-600 transition-colors hover:bg-brand-100"
             >
               View →
             </RouterLink>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\PropertyController;
@@ -52,6 +53,16 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         // Auth
         Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
         Route::get('/user', [AuthController::class, 'user'])->name('auth.user');
+
+        // Cart
+        Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
+        Route::post('/cart/lines', [CartController::class, 'addLine'])->name('cart.lines.store');
+        Route::patch('/cart/lines/{lineId}', [CartController::class, 'updateLine'])->name('cart.lines.update');
+        Route::delete('/cart/lines/{lineId}', [CartController::class, 'removeLine'])->name('cart.lines.destroy');
+        Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+        Route::get('/cart/shipping-options', [CartController::class, 'shippingOptions'])->name('cart.shipping-options');
+        Route::post('/cart/shipping-option', [CartController::class, 'setShippingOption'])->name('cart.shipping-option');
+        Route::post('/cart/address', [CartController::class, 'setAddress'])->name('cart.address');
 
         // Orders
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

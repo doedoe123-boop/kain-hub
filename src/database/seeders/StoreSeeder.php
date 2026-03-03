@@ -35,34 +35,34 @@ class StoreSeeder extends Seeder
     private function createStore(array $data, IndustrySector $sector, bool $realEstate = false): void
     {
         $owner = User::factory()->create([
-            'name'  => fake()->name(),
+            'name' => fake()->name(),
             'email' => $data['email'],
-            'role'  => UserRole::StoreOwner,
+            'role' => UserRole::StoreOwner,
         ]);
         $owner->assignRole('store_owner');
 
         $storeData = [
-            'user_id'         => $owner->id,
-            'name'            => $data['name'],
-            'slug'            => $data['slug'],
-            'login_token'     => 'stk_'.Str::random(24),
-            'tagline'         => $data['tagline'] ?? null,
-            'description'     => $data['description'],
-            'phone'           => $data['phone'],
-            'website'         => $data['website'] ?? null,
+            'user_id' => $owner->id,
+            'name' => $data['name'],
+            'slug' => $data['slug'],
+            'login_token' => 'stk_'.Str::random(24),
+            'tagline' => $data['tagline'] ?? null,
+            'description' => $data['description'],
+            'phone' => $data['phone'],
+            'website' => $data['website'] ?? null,
             'commission_rate' => 12.00,
-            'status'          => StoreStatus::Approved,
-            'sector'          => $sector,
-            'address'         => $data['address'],
+            'status' => StoreStatus::Approved,
+            'sector' => $sector,
+            'address' => $data['address'],
         ];
 
         if ($realEstate) {
             $storeData = array_merge($storeData, [
-                'agent_bio'                    => $data['agent_bio'] ?? null,
-                'prc_license_number'           => $data['prc_license_number'] ?? null,
-                'agent_specializations'        => $data['agent_specializations'] ?? null,
-                'default_interest_rate'        => $data['default_interest_rate'] ?? 7.0,
-                'default_loan_term_years'      => $data['default_loan_term_years'] ?? 20,
+                'agent_bio' => $data['agent_bio'] ?? null,
+                'prc_license_number' => $data['prc_license_number'] ?? null,
+                'agent_specializations' => $data['agent_specializations'] ?? null,
+                'default_interest_rate' => $data['default_interest_rate'] ?? 7.0,
+                'default_loan_term_years' => $data['default_loan_term_years'] ?? 20,
                 'default_down_payment_percent' => $data['default_down_payment_percent'] ?? 20,
             ]);
         }

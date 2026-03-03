@@ -79,6 +79,7 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'Order placed successfully.',
+            'order_id' => $order->id,
             'order' => $order,
             'summary' => $this->orderService->summarize($order),
         ], 201);

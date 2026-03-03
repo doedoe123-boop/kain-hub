@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { useRoute, RouterLink } from "vue-router";
+import { useRoute, useRouter, RouterLink } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 import {
   ChevronRightIcon,
   MinusIcon,
@@ -16,6 +17,8 @@ import { productsApi } from "@/api/products";
 import { useCartStore } from "@/stores/cart";
 
 const route = useRoute();
+const router = useRouter();
+const auth = useAuthStore();
 const cart = useCartStore();
 
 const product = ref(null);
@@ -66,11 +69,26 @@ onMounted(async () => {
   }
 });
 
+function requireAuth() {
+  if (!auth.isLoggedIn) {
+    router.push({ name: "auth.login", query: { redirect: route.fullPath } });
+    return false;
+  }
+  return true;
+}
+
 async function addToCart() {
+  if (!requireAuth()) return;
   if (!selectedVariantId.value) return;
   await cart.addItem("product-variant", selectedVariantId.value, quantity.value);
   addedToCart.value = true;
   setTimeout(() => (addedToCart.value = false), 2500);
+}
+
+function buyNow() {
+  if (!requireAuth()) return;
+  if (!selectedVariantId.value || !inStock.value) return;
+  router.push({ name: "checkout.index" });
 }
 </script>
 
@@ -256,6 +274,7 @@ async function addToCart() {
                 type="button"
                 class="flex items-center justify-center gap-2 rounded-xl bg-brand-500 py-3 text-sm font-semibold text-white shadow-md shadow-brand-500/20 transition-colors hover:bg-brand-600 disabled:opacity-50"
                 :disabled="!selectedVariantId || !inStock"
+                @click="buyNow"
               >
                 <BoltIcon class="size-4" />
                 Buy Now
@@ -300,7 +319,7 @@ async function addToCart() {
         </div>
 
         <!-- ── Below fold ── -->
-        <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_320px]">
+        <div class="mt-10 grid gap-6 lg:grid-cols-[1fr_320px] lg:items-start">
           <!-- Description -->
           <div>
             <div class="rounded-2xl border border-slate-100 bg-white">
@@ -326,7 +345,7 @@ async function addToCart() {
               <div class="border-b border-slate-100 px-6 py-4">
                 <h2 class="font-semibold text-slate-900">Specifications</h2>
               </div>
-              <div class="overflow-hidden">
+              <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                   <tbody class="divide-y divide-slate-50">
                     <tr
@@ -346,7 +365,7 @@ async function addToCart() {
           </div>
 
           <!-- Right sidebar: you may also like / same store products could go here -->
-          <div>
+          <div class="order-first lg:order-none">
             <div v-if="product.store" class="rounded-2xl border border-slate-100 bg-white p-5">
               <div class="mb-4 flex items-center gap-3">
                 <div class="size-12 shrink-0 overflow-hidden rounded-xl bg-slate-100">

@@ -220,15 +220,15 @@ function arcPath(conn) {
 
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div
-        class="grid min-h-[88vh] items-center gap-8 py-16 lg:grid-cols-[1fr_1.5fr] lg:gap-0"
+        class="grid items-center gap-8 py-12 sm:py-16 lg:min-h-[88vh] lg:grid-cols-[1fr_1.5fr] lg:gap-0 lg:py-16"
       >
         <!-- ── Left: rotating slides ──────────────────── -->
-        <div class="z-10 max-w-xl">
+        <div class="z-10 w-full max-w-xl">
           <!-- Slide content wrapper -->
           <div class="slide-content" :class="{ 'slide-exit': transitioning }">
             <!-- Badge -->
             <span
-              class="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-brand-400"
+              class="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-brand-400 sm:tracking-widest"
             >
               <span class="size-1.5 rounded-full bg-brand-400 animate-pulse" />
               {{ slides[currentIndex].badge }}
@@ -236,7 +236,7 @@ function arcPath(conn) {
 
             <!-- Headline -->
             <h1
-              class="mt-4 text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-[3.5rem]"
+              class="mt-4 text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl xl:text-[3.5rem]"
             >
               {{ slides[currentIndex].headline[0] }}
               <br />
@@ -297,7 +297,7 @@ function arcPath(conn) {
             </ul>
 
             <!-- CTAs -->
-            <div class="mt-10 flex flex-wrap gap-3">
+            <div class="mt-7 flex flex-wrap gap-3 sm:mt-10">
               <router-link
                 :to="slides[currentIndex].primary.to"
                 class="rounded-xl px-7 py-3 text-sm font-semibold text-white shadow-lg transition-colors"
@@ -336,7 +336,7 @@ function arcPath(conn) {
         </div>
 
         <!-- ── Right: animated PH map ─────────────────── -->
-        <div class="relative flex items-center justify-center lg:justify-end">
+        <div class="relative hidden items-center justify-center lg:flex lg:justify-end">
           <!-- Glow halo behind map -->
           <div
             class="pointer-events-none absolute inset-0 flex items-center justify-center lg:justify-end"
@@ -663,7 +663,13 @@ function arcPath(conn) {
 
 <style scoped>
 .hero-section {
-  min-height: 90vh;
+  min-height: auto;
+}
+
+@media (min-width: 1024px) {
+  .hero-section {
+    min-height: 90vh;
+  }
 }
 
 /* Dot-grid background texture */

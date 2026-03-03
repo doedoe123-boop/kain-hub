@@ -53,7 +53,7 @@ logs:
 .PHONY: setup install
 
 ## Full first-time project setup (build, start, install deps, migrate, seed)
-setup: build up install key migrate seed npm-install npm-build
+setup: build up install key migrate seed npm-install npm-build laravel-npm-install laravel-npm-build
 	@echo ""
 	@echo "✅  Setup complete!"
 	@echo "    App  → http://localhost:8080"
@@ -112,6 +112,14 @@ npm-dev:
 ## Build frontend assets for production
 npm-build:
 	$(NODE) npm run build
+
+## Install Node deps for the Laravel app (Filament/Blade assets) — runs on host
+laravel-npm-install:
+	cd src && npm install
+
+## Build Laravel Vite assets (generates public/build/manifest.json) — runs on host
+laravel-npm-build:
+	cd src && npm run build
 
 # --------------------------------------------------------------------------
 # Artisan Helpers

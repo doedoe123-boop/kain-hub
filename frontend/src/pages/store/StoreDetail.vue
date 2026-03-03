@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRoute, RouterLink } from "vue-router";
+import { useRoute, useRouter, RouterLink } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 import { ChevronRightIcon, MapPinIcon } from "@heroicons/vue/24/outline";
 import { storesApi } from "@/api/stores";
 import { useCartStore } from "@/stores/cart";
@@ -19,6 +20,8 @@ const sectorGradient = {
 };
 
 const route = useRoute();
+const router = useRouter();
+const auth = useAuthStore();
 const cart = useCartStore();
 
 const store = ref(null);
@@ -43,6 +46,10 @@ onMounted(async () => {
 });
 
 async function addToCart(product) {
+  if (!auth.isLoggedIn) {
+    router.push({ name: "auth.login", query: { redirect: route.fullPath } });
+    return;
+  }
   await cart.addItem("product-variant", product.default_variant_id, 1, {
     store_id: store.value.id,
   });
