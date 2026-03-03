@@ -79,14 +79,6 @@ const year = new Date().getFullYear();
                 class="transition-colors hover:text-white"
               >Seller Dashboard</a>
             </li>
-            <li>
-              <a
-                :href="`${backendUrl}/admin`"
-                target="_blank"
-                rel="noopener"
-                class="transition-colors hover:text-white"
-              >Admin Panel</a>
-            </li>
           </ul>
         </div>
 

@@ -20,7 +20,12 @@ class CommissionService
     public function calculate(int $orderTotal, Store $store): array
     {
         $commissionRate = (float) $store->commission_rate;
-        $commissionAmount = (int) round($orderTotal * ($commissionRate / 100));
+
+        // Use integer-only arithmetic to avoid floating-point drift on large order
+        // totals or fractional rates.  Multiply by 10_000 (rate as basis points *100)
+        // then divide by 10_000 to recover the cent value without any float division.
+        $rateBasisPoints = (int) round($commissionRate * 100); // e.g. 7.5% → 750
+        $commissionAmount = (int) intdiv($orderTotal * $rateBasisPoints + 5000, 10000);
         $storeEarning = $orderTotal - $commissionAmount;
 
         return [

@@ -27,11 +27,11 @@ class OrderPolicy
             return true;
         }
 
-        if ($user->isStoreOwner() && $order->store?->user_id === $user->id) {
+        if ($user->isStoreOwner() && (int) $order->store?->user_id === $user->id) {
             return true;
         }
 
-        return $order->user_id === $user->id;
+        return (int) $order->user_id === $user->id;
     }
 
     /**
@@ -51,7 +51,7 @@ class OrderPolicy
             return true;
         }
 
-        return $user->isStoreOwner() && $order->store?->user_id === $user->id;
+        return $user->isStoreOwner() && (int) $order->store?->user_id === $user->id;
     }
 
     /**
@@ -81,7 +81,10 @@ class OrderPolicy
     /**
      * Determine whether the user can cancel the order.
      *
-     * Customers may cancel their own orders; admins may cancel any order.
+     * - Admins may cancel any active order.
+     * - Store owners may cancel any active order belonging to their store.
+     * - Customers may only cancel their own order while it is still Pending
+     *   (i.e. before the store owner has begun work on it).
      */
     public function cancel(User $user, Order $order): bool
     {
@@ -89,6 +92,60 @@ class OrderPolicy
             return true;
         }
 
-        return $order->user_id === $user->id;
+        if ($user->isStoreOwner() && (int) $order->store?->user_id === $user->id) {
+            return true;
+        }
+
+        // Customers may only cancel while the order is still Pending.
+        return (int) $order->user_id === $user->id
+            && $order->status === \App\OrderStatus::Pending->value;
+    }
+
+    /**
+     * Determine whether the user can confirm the order (store owner / admin).
+     */
+    public function confirm(User $user, Order $order): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $user->isStoreOwner() && (int) $order->store?->user_id === $user->id;
+    }
+
+    /**
+     * Determine whether the user can mark the order as preparing (store owner / admin).
+     */
+    public function prepare(User $user, Order $order): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $user->isStoreOwner() && (int) $order->store?->user_id === $user->id;
+    }
+
+    /**
+     * Determine whether the user can mark the order as ready (store owner / admin).
+     */
+    public function markReady(User $user, Order $order): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $user->isStoreOwner() && (int) $order->store?->user_id === $user->id;
+    }
+
+    /**
+     * Determine whether the user can mark the order as delivered (store owner / admin).
+     */
+    public function deliver(User $user, Order $order): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return $user->isStoreOwner() && (int) $order->store?->user_id === $user->id;
     }
 }

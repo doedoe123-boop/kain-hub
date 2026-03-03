@@ -60,6 +60,8 @@ class PlaceOrderRequest extends FormRequest
      * Configure the validator instance.
      *
      * Adds an after-validation hook to verify the store is approved.
+     * This runs in the FormRequest layer so it fires before the controller,
+     * keeping store-eligibility checks independent of cart state.
      */
     public function after(): array
     {
@@ -82,8 +84,6 @@ class PlaceOrderRequest extends FormRequest
     }
 
     /**
-     * Get custom error messages.
-     *
      * @return array<string, string>
      */
     public function messages(): array

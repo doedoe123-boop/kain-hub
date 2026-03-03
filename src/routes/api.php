@@ -64,11 +64,27 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::post('/cart/shipping-option', [CartController::class, 'setShippingOption'])->name('cart.shipping-option');
         Route::post('/cart/address', [CartController::class, 'setAddress'])->name('cart.address');
 
-        // Orders
+        // Orders — read
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-        Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-        Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+
+        // Orders — customer cancel (tighter throttle to resist abuse)
+        Route::middleware('throttle:10,1')->group(function () {
+            Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+        });
+
+        // Orders — place new (strict throttle: prevents double-click duplicates & abuse)
+        Route::middleware('throttle:5,1')->group(function () {
+            Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+        });
+
+        // Orders — store-owner progression (store owner / admin only, enforced by policy)
+        Route::middleware('throttle:30,1')->group(function () {
+            Route::patch('/orders/{order}/confirm', [OrderController::class, 'confirm'])->name('orders.confirm');
+            Route::patch('/orders/{order}/prepare', [OrderController::class, 'prepare'])->name('orders.prepare');
+            Route::patch('/orders/{order}/ready', [OrderController::class, 'markReady'])->name('orders.ready');
+            Route::patch('/orders/{order}/deliver', [OrderController::class, 'deliver'])->name('orders.deliver');
+        });
     });
 
 });

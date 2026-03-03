@@ -95,13 +95,23 @@ class OrderService
      *
      * Cart items must come from a single store to maintain tenant isolation.
      *
+     * Uses integer casting when comparing the Lunar attribute_data store_id
+     * (stored as a string inside the JSONB attribute bag) against the store's
+     * integer primary key.  Without the cast, strict !== comparison would
+     * treat "1" !== 1 as true and incorrectly flag every item as foreign.
+     *
      * @throws ValidationException
      */
     public function validateCartBelongsToStore(Cart $cart, Store $store): void
     {
-        $foreignLines = $cart->lines->filter(
-            fn ($line) => $line->purchasable?->product?->attribute_data?->get('store_id')?->getValue() !== $store->id
-        );
+        $foreignLines = $cart->lines->filter(function ($line) use ($store): bool {
+            $rawValue = $line->purchasable?->product?->attribute_data?->get('store_id')?->getValue();
+
+            // Treat missing attribute as a foreign item (null → 0 != any real store id)
+            $lineStoreId = (int) ($rawValue ?? 0);
+
+            return $lineStoreId !== $store->id;
+        });
 
         if ($foreignLines->isNotEmpty()) {
             throw ValidationException::withMessages([

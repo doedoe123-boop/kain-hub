@@ -19,6 +19,7 @@ use Lunar\Admin\Filament\Resources\StaffResource;
 use Lunar\Admin\Filament\Resources\TaxZoneResource as LunarTaxZoneResource;
 use Lunar\Admin\LunarPanelManager;
 use Lunar\Admin\Support\Facades\LunarPanel;
+use Lunar\Facades\ModelManifest;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Pages\EditShippingExclusionList;
 use Lunar\Shipping\Filament\Resources\ShippingExclusionListResource\Pages\ListShippingExclusionLists;
 use Lunar\Shipping\Filament\Resources\ShippingMethodResource\Pages\EditShippingMethod;
@@ -93,6 +94,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->app->bind(LogoutResponse::class, LunarLogoutResponse::class);
+
+        // Register our extended Lunar models so route model binding and all
+        // Lunar internals resolve App\Models\Order rather than Lunar\Models\Order.
+        // Without this registration, the {order} route parameter is typed as
+        // Lunar\Models\Order, which causes policy type-hint mismatches (403s).
+        ModelManifest::replace(
+            \Lunar\Models\Contracts\Order::class,
+            \App\Models\Order::class,
+        );
 
         // Record all login attempts (success + failure) for security audit
         Event::listen(Login::class, [RecordLoginHistory::class, 'handleLogin']);
