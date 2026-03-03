@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\Notifications\OrderPlacedNotification;
 use App\Notifications\OrderStatusUpdated;
 use App\OrderStatus;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -32,6 +33,9 @@ class OrderService
     /**
      * Validate and create an order from a Lunar cart for a specific store.
      *
+     * Wrapped in a distributed cache lock to prevent concurrent double-submissions
+     * from the same user (double-click, network retry, duplicate tab).
+     *
      * @throws ValidationException
      */
     public function createFromCart(Cart $cart, Store $store): Order
@@ -40,22 +44,36 @@ class OrderService
         $this->validateStore($store);
         $this->validateCartBelongsToStore($cart, $store);
 
-        $order = DB::transaction(function () use ($cart, $store): Order {
-            $cart = $cart->calculate();
+        // #5 — Distributed lock: prevents concurrent duplicate order creation.
+        // If the same user submits twice within 15 s the second request gets a 409.
+        $lock = Cache::lock("order-create:{$cart->customer_id}", 15);
 
-            /** @var Order $order */
-            $order = $cart->createOrder();
-
-            $order->update([
-                'store_id' => $store->id,
-                'status' => OrderStatus::Pending->value,
+        if (! $lock->get()) {
+            throw ValidationException::withMessages([
+                'order' => 'Your previous order is still being processed. Please wait a moment and try again.',
             ]);
+        }
 
-            // See /skills/commission-calculation.md
-            $this->commissionService->applyToOrder($order);
+        try {
+            $order = DB::transaction(function () use ($cart, $store): Order {
+                $cart = $cart->calculate();
 
-            return $order->refresh();
-        });
+                /** @var Order $order */
+                $order = $cart->createOrder();
+
+                $order->update([
+                    'store_id' => $store->id,
+                    'status' => OrderStatus::Pending->value,
+                ]);
+
+                // See /skills/commission-calculation.md
+                $this->commissionService->applyToOrder($order);
+
+                return $order->refresh();
+            });
+        } finally {
+            $lock->release();
+        }
 
         $this->notifyStoreOwner($order);
 
@@ -294,6 +312,51 @@ class OrderService
         }
 
         $order->update(['status' => OrderStatus::Cancelled->value]);
+        $order->refresh();
+
+        $this->notifyCustomer($order);
+
+        return $order;
+    }
+
+    /**
+     * Confirm an order after a successful PayMongo payment.
+     *
+     * Called by the PayMongo webhook controller — never trust the frontend redirect.
+     *
+     * @throws ValidationException
+     */
+    public function markPaymentPaid(Order $order): Order
+    {
+        $this->assertStatus($order, OrderStatus::Pending);
+
+        $order->update([
+            'status' => OrderStatus::Confirmed->value,
+            'payment_status' => \App\PaymentStatus::Paid->value,
+            'paid_at' => now(),
+        ]);
+        $order->refresh();
+
+        $this->notifyCustomer($order);
+
+        return $order;
+    }
+
+    /**
+     * Mark an order as PaymentFailed after a failed PayMongo payment.
+     *
+     * Called by the PayMongo webhook controller.
+     *
+     * @throws ValidationException
+     */
+    public function markPaymentFailed(Order $order): Order
+    {
+        $this->assertStatus($order, OrderStatus::Pending);
+
+        $order->update([
+            'status' => OrderStatus::PaymentFailed->value,
+            'payment_status' => \App\PaymentStatus::Failed->value,
+        ]);
         $order->refresh();
 
         $this->notifyCustomer($order);

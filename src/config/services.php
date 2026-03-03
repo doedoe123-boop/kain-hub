@@ -14,6 +14,13 @@ return [
     |
     */
 
+    'paymongo' => [
+        'public_key' => env('PAYMONGO_PUBLIC_KEY'),
+        'secret_key' => env('PAYMONGO_SECRET_KEY'),
+        'webhook_secret_test' => env('PAYMONGO_WEBHOOK_SECRET_TEST'),
+        'webhook_secret_live' => env('PAYMONGO_WEBHOOK_SECRET_LIVE'),
+    ],
+
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),
     ],

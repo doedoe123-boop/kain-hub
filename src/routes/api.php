@@ -3,9 +3,11 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\OrderController;
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\Api\V1\StoreController;
+use App\Http\Controllers\Webhooks\PayMongoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -76,6 +78,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         // Orders — place new (strict throttle: prevents double-click duplicates & abuse)
         Route::middleware('throttle:5,1')->group(function () {
             Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+            // Payment intent creation shares the same tight throttle as order placement.
+            Route::post('/orders/{order}/intent', [PaymentController::class, 'intent'])->name('orders.intent');
         });
 
         // Orders — store-owner progression (store owner / admin only, enforced by policy)
@@ -88,3 +92,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
     });
 
 });
+
+// ── PayMongo Webhooks (public — HMAC-verified, not auth:sanctum) ──────────────
+//
+// PayMongo calls this URL server-to-server.  Authentication is the HMAC-SHA256
+// signature in the Paymongo-Signature header, verified by PayMongoService.
+//
+Route::post('/webhooks/paymongo', [PayMongoController::class, 'handle'])
+    ->name('webhooks.paymongo');

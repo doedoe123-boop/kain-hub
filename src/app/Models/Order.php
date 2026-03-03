@@ -16,6 +16,11 @@ use Spatie\Activitylog\LogOptions;
  * @property int $commission_amount
  * @property int $store_earning
  * @property int $platform_earning
+ * @property ?string $payment_intent_id
+ * @property ?string $payment_client_key
+ * @property ?string $payment_status
+ * @property ?\Illuminate\Support\Carbon $paid_at
+ * @property ?\Illuminate\Support\Carbon $cancelled_at
  *
  * @see /skills/commission-calculation.md
  * @see /skills/order-processing.md
@@ -38,7 +43,7 @@ class Order extends LunarOrder
     {
         return LogOptions::defaults()
             ->useLogName('lunar')
-            ->logOnly(['status', 'store_id', 'user_id'])
+            ->logOnly(['status', 'payment_status', 'store_id', 'user_id'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }
@@ -54,6 +59,8 @@ class Order extends LunarOrder
             'commission_amount' => Price::class,
             'store_earning' => Price::class,
             'platform_earning' => Price::class,
+            'paid_at' => 'datetime',
+            'cancelled_at' => 'datetime',
         ]);
     }
 

@@ -9,6 +9,7 @@ use App\Models\Store;
 use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Lunar\Facades\CartSession;
 
 /**
@@ -71,9 +72,21 @@ class OrderController extends Controller
      * Guard order: validate cart exists (422) before touching the DB.
      * After a successful order the cart is cleared so that a page-refresh,
      * network retry, or double-click cannot create a duplicate order.
+     *
+     * X-Idempotency-Key: if provided, the 201 response is cached for 24 h.
+     * A repeat request with the same key returns the cached response immediately.
      */
     public function store(PlaceOrderRequest $request): JsonResponse
     {
+        // #5 — Idempotency: return the cached response for duplicate submissions.
+        $idempotencyKey = $request->header('X-Idempotency-Key');
+        if ($idempotencyKey) {
+            $cacheKey = "idempotency:order:{$request->user()->id}:{$idempotencyKey}";
+            if ($cached = Cache::get($cacheKey)) {
+                return response()->json($cached, 201);
+            }
+        }
+
         // #3 — return a clean 422 instead of a fatal TypeError when no cart exists.
         $cart = CartSession::current();
 
@@ -92,12 +105,19 @@ class OrderController extends Controller
         // #4 — clear the cart so retries cannot create duplicate orders.
         CartSession::manager()->clear();
 
-        return response()->json([
+        $responseData = [
             'message' => 'Order placed successfully.',
             'order_id' => $order->id,
             'order' => $order,
             'summary' => $this->orderService->summarize($order),
-        ], 201);
+        ];
+
+        // Cache the response against the idempotency key for 24 hours.
+        if ($idempotencyKey) {
+            Cache::put($cacheKey, $responseData, now()->addHours(24));
+        }
+
+        return response()->json($responseData, 201);
     }
 
     // ── Store-owner order progression ─────────────────────────────────

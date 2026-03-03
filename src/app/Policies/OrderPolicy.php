@@ -102,6 +102,20 @@ class OrderPolicy
     }
 
     /**
+     * Determine whether the customer can create a payment intent for the order.
+     *
+     * Only the order's own customer may initiate payment.
+     */
+    public function createIntent(User $user, Order $order): bool
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return (int) $order->user_id === $user->id;
+    }
+
+    /**
      * Determine whether the user can confirm the order (store owner / admin).
      */
     public function confirm(User $user, Order $order): bool
