@@ -117,7 +117,7 @@ class ProductService
             'thumbnail' => $product->getFirstMediaUrl() ?: null,
             'store_id' => $product->attribute_data->get('store_id')?->getValue(),
             'default_variant_id' => $firstVariant?->id,
-            'price' => $firstPrice ? round((int) $firstPrice->price / 100, 2) : null,
+            'price' => $firstPrice ? round($firstPrice->price->value / 100, 2) : null,
             'currency' => $firstPrice?->currency?->code,
         ];
 
@@ -127,7 +127,7 @@ class ProductService
                 'sku' => $variant->sku,
                 'stock' => $variant->stock,
                 'price' => $variant->prices->first()
-                    ? round((int) $variant->prices->first()->price / 100, 2)
+                    ? round($variant->prices->first()->price->value / 100, 2)
                     : null,
                 'currency' => $variant->prices->first()?->currency?->code,
             ])->values()->toArray();

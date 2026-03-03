@@ -120,7 +120,7 @@ async function addToCart() {
           </h1>
 
           <p class="mt-3 text-2xl font-bold text-brand-600">
-            {{ selectedVariant?.price?.formatted ?? "—" }}
+            {{ selectedVariant?.price != null ? '₱' + parseFloat(selectedVariant.price).toLocaleString('en-PH', { maximumFractionDigits: 0 }) : '—' }}
           </p>
 
           <p

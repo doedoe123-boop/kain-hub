@@ -1,1 +1,0 @@
-import{s as t}from"./index-CJFtjx7J.js";const o={list(s={}){return t.get("/api/stores",{params:s})},show(s){return t.get(`/api/stores/${s}`)},products(s,r={}){return t.get(`/api/stores/${s}/products`,{params:r})}};export{o as s};

@@ -177,7 +177,7 @@ async function addToCart(product) {
                 </p>
               </RouterLink>
               <p class="mt-1 text-sm font-semibold text-brand-600">
-                {{ product.price?.formatted ?? "—" }}
+                {{ product.price != null ? '₱' + parseFloat(product.price).toLocaleString('en-PH', { maximumFractionDigits: 0 }) : '—' }}
               </p>
               <button
                 type="button"

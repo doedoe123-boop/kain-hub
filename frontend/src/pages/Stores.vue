@@ -13,10 +13,16 @@ const loading = ref(true);
 const search = ref(route.query.search ?? "");
 const sector = ref(route.query.sector ?? "");
 
+const sectorLabels = {
+  food_and_beverage: "Food & Retail",
+  real_estate: "Real Estate",
+  services: "Services",
+};
+
 const sectors = [
   { label: "All", value: "" },
-  { label: "Food & Retail", value: "retail" },
-  { label: "Real Estate", value: "realty" },
+  { label: "Food & Retail", value: "food_and_beverage" },
+  { label: "Real Estate", value: "real_estate" },
   { label: "Services", value: "services" },
 ];
 
@@ -167,7 +173,7 @@ watch(
               {{ store.name }}
             </p>
             <p class="text-xs text-slate-500">
-              {{ store.sector ?? store.city }}
+              {{ sectorLabels[store.sector] ?? store.city }}
             </p>
           </div>
         </div>

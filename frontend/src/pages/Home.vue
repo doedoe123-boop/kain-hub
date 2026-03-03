@@ -14,6 +14,12 @@ import PhMapHero from "@/components/PhMapHero.vue";
 const featuredStores = ref([]);
 const featuredProducts = ref([]);
 const latestProperties = ref([]);
+
+const sectorLabels = {
+  food_and_beverage: "Food & Retail",
+  real_estate: "Real Estate",
+  services: "Services",
+};
 const loading = ref(true);
 const productsLoading = ref(true);
 const propertiesLoading = ref(true);
@@ -330,7 +336,7 @@ onMounted(async () => {
               >
                 {{ store.name }}
               </p>
-              <p class="text-xs text-slate-500">{{ store.sector }}</p>
+              <p class="text-xs text-slate-500">{{ sectorLabels[store.sector] ?? store.sector }}</p>
             </div>
           </div>
         </RouterLink>

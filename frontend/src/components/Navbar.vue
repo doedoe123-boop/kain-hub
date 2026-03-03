@@ -180,14 +180,22 @@ function isActive(path) {
         >
           My Account
         </RouterLink>
-        <RouterLink
-          v-else
-          to="/login"
-          class="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700"
-          @click="mobileOpen = false"
-        >
-          Sign in
-        </RouterLink>
+        <template v-else>
+          <RouterLink
+            to="/login"
+            class="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700"
+            @click="mobileOpen = false"
+          >
+            Sign in
+          </RouterLink>
+          <RouterLink
+            to="/register"
+            class="flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-brand-600"
+            @click="mobileOpen = false"
+          >
+            Register
+          </RouterLink>
+        </template>
         <a
           :href="`${backendUrl}/register/sector`"
           target="_blank"

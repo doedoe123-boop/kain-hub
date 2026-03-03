@@ -59,13 +59,24 @@ const listingLabel = {
   pre_selling: "Pre-Selling",
 };
 
+const periodMap = {
+  per_month: "/mo",
+  per_year: "/yr",
+  per_sqm: "/sqm",
+  per_night: "/night",
+  per_day: "/day",
+};
+
 function formatPrice(price, currency = "PHP", period = null) {
+  if (!price && price !== 0) return "—";
   const formatted = parseFloat(price).toLocaleString("en-PH", {
     style: "currency",
     currency: currency || "PHP",
     maximumFractionDigits: 0,
   });
-  return period ? `${formatted}/${period.replace("_", " ")}` : formatted;
+  if (!period) return formatted;
+  const periodStr = periodMap[period] ?? `/${period.replace(/_/g, " ")}`;
+  return `${formatted}${periodStr}`;
 }
 
 async function load(page = 1) {
@@ -133,6 +144,27 @@ watch(
     </div>
 
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      <!-- Listing type quick-filter pills -->
+      <div class="mb-5 flex flex-wrap gap-2">
+        <button
+          v-for="l in listingTypes"
+          :key="l.value"
+          type="button"
+          class="rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
+          :class="
+            filters.listing_type === l.value
+              ? 'bg-teal-600 text-white shadow-sm'
+              : 'border border-slate-300 bg-white text-slate-600 hover:border-teal-400 hover:text-teal-700'
+          "
+          @click="
+            filters.listing_type = l.value;
+            onSearch();
+          "
+        >
+          {{ l.label }}
+        </button>
+      </div>
+
       <!-- Filters -->
       <form
         class="mb-8 rounded-2xl border bg-white p-4 shadow-sm"
@@ -157,15 +189,6 @@ watch(
           >
             <option v-for="t in propertyTypes" :key="t.value" :value="t.value">
               {{ t.label }}
-            </option>
-          </select>
-
-          <select
-            v-model="filters.listing_type"
-            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
-          >
-            <option v-for="l in listingTypes" :key="l.value" :value="l.value">
-              {{ l.label }}
             </option>
           </select>
 
@@ -256,10 +279,7 @@ watch(
       </div>
 
       <!-- Grid -->
-      <div
-        v-else
-        class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
-      >
+      <div v-else class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <RouterLink
           v-for="property in properties"
           :key="property.id"
@@ -281,7 +301,10 @@ watch(
             </div>
             <span
               class="absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold"
-              :class="listingBadgeClass[property.listing_type] ?? 'bg-slate-100 text-slate-600'"
+              :class="
+                listingBadgeClass[property.listing_type] ??
+                'bg-slate-100 text-slate-600'
+              "
             >
               {{ listingLabel[property.listing_type] ?? property.listing_type }}
             </span>
@@ -294,18 +317,31 @@ watch(
               {{ property.title }}
             </p>
             <p class="mb-2 text-xs text-slate-400">
-              {{ property.city }}{{ property.province ? `, ${property.province}` : "" }}
+              {{ property.city
+              }}{{ property.province ? `, ${property.province}` : "" }}
             </p>
             <div
               v-if="property.bedrooms || property.floor_area"
               class="mb-3 flex flex-wrap gap-3 text-xs text-slate-500"
             >
-              <span v-if="property.bedrooms">🛏 {{ property.bedrooms }} BR</span>
-              <span v-if="property.bathrooms">🚿 {{ property.bathrooms }} BA</span>
-              <span v-if="property.floor_area">📐 {{ property.floor_area }} sqm</span>
+              <span v-if="property.bedrooms"
+                >🛏 {{ property.bedrooms }} BR</span
+              >
+              <span v-if="property.bathrooms"
+                >🚿 {{ property.bathrooms }} BA</span
+              >
+              <span v-if="property.floor_area"
+                >📐 {{ property.floor_area }} sqm</span
+              >
             </div>
             <p class="text-lg font-bold text-teal-700">
-              {{ formatPrice(property.price, property.price_currency, property.price_period) }}
+              {{
+                formatPrice(
+                  property.price,
+                  property.price_currency,
+                  property.price_period,
+                )
+              }}
             </p>
           </div>
         </RouterLink>
