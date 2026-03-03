@@ -259,7 +259,7 @@ class StoreResource extends Resource
                     ->badge()
                     ->formatStateUsing(fn (?IndustrySector $state): string => $state?->label() ?? '—')
                     ->color(fn (?IndustrySector $state): string => match ($state) {
-                        IndustrySector::FoodAndBeverage => 'warning',
+                        IndustrySector::Ecommerce => 'warning',
                         IndustrySector::RealEstate => 'success',
                         default => 'gray',
                     })

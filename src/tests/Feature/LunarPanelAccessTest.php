@@ -48,7 +48,7 @@ it('allows approved store owners to access the Lunar panel', function () {
     $owner->assignRole('store_owner');
     Store::factory()->for($owner, 'owner')->create([
         'status' => StoreStatus::Approved,
-        'sector' => IndustrySector::FoodAndBeverage,
+        'sector' => IndustrySector::Ecommerce,
         'setup_completed_at' => now(),
     ]);
 
@@ -62,7 +62,7 @@ it('redirects approved store owners with incomplete setup to the setup wizard', 
     $owner->assignRole('store_owner');
     Store::factory()->for($owner, 'owner')->create([
         'status' => StoreStatus::Approved,
-        'sector' => IndustrySector::FoodAndBeverage,
+        'sector' => IndustrySector::Ecommerce,
         'setup_completed_at' => null,
     ]);
 
@@ -141,7 +141,7 @@ it('blocks store owners from the admin panel', function () {
     $owner->assignRole('store_owner');
     Store::factory()->for($owner, 'owner')->create([
         'status' => StoreStatus::Approved,
-        'sector' => IndustrySector::FoodAndBeverage,
+        'sector' => IndustrySector::Ecommerce,
     ]);
 
     $this->actingAs($owner)
@@ -170,7 +170,7 @@ it('redirects approved store owners from /store/dashboard to the Lunar panel', f
     $owner = User::factory()->storeOwner()->create();
     Store::factory()->for($owner, 'owner')->create([
         'status' => StoreStatus::Approved,
-        'sector' => IndustrySector::FoodAndBeverage,
+        'sector' => IndustrySector::Ecommerce,
     ]);
 
     $this->actingAs($owner)

@@ -45,6 +45,7 @@ services:
     container_name: frontend_node
     restart: unless-stopped
     working_dir: /frontend
+    user: "1000:1000"
     environment:
       BACKEND_URL: "http://laravel_nginx:80"
     volumes:

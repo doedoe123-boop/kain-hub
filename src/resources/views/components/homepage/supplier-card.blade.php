@@ -4,7 +4,7 @@
 @php
     $sectorSlug = $store->sector?->value;
     $sectorColors = [
-        'food_and_beverage' => 'emerald',
+        'ecommerce' => 'emerald',
         'real_estate' => 'violet',
     ];
     $color = $sectorColors[$sectorSlug] ?? 'sky';

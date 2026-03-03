@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Store;
 use Illuminate\Database\Seeder;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\TranslatedText;
@@ -16,19 +17,13 @@ use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
 
 /**
- * Seeds Lunar e-commerce products for store_id = 9.
+ * Seeds Lunar e-commerce products for all 10 e-commerce stores.
+ * Catalog data lives in data/products.php (keyed by store slug).
  *
- * Depends on: LunarSeeder (channel, currency, tax class, customer group)
- * and LunarCatalogSeeder (attribute groups).
- *
- * Products are linked to their store via `attribute_data->store_id`, which is
- * how ScopedProductResource and OrderService query them:
- *   ->whereJsonContains('attribute_data->store_id', $store->id)
+ * Depends on: LunarSeeder, LunarCatalogSeeder, StoreSeeder.
  */
 class ProductSeeder extends Seeder
 {
-    private const STORE_ID = 9;
-
     private Channel $channel;
 
     private Currency $currency;
@@ -37,149 +32,36 @@ class ProductSeeder extends Seeder
 
     private CustomerGroup $customerGroup;
 
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Guard: only seed if this store has no products yet.
-        if (Product::whereJsonContains('attribute_data->store_id->value', self::STORE_ID)->exists()) {
-            $this->command->getOutput()->writeln(
-                '<comment>ProductSeeder: store_id='.self::STORE_ID.' already has products — skipping.</comment>'
-            );
-
-            return;
-        }
-
         $this->channel = Channel::whereDefault(true)->firstOrFail();
         $this->currency = Currency::whereDefault(true)->firstOrFail();
-        $this->taxClass = TaxClass::first() ?? throw new \RuntimeException('No TaxClass found. Run LunarSeeder first.');
+        $this->taxClass = TaxClass::first() ?? throw new \RuntimeException('Run LunarSeeder first.');
         $this->customerGroup = CustomerGroup::whereDefault(true)->firstOrFail();
 
         $this->ensureProductTypes();
 
-        foreach ($this->catalog() as $item) {
-            $this->createProduct($item);
+        $catalogs = require __DIR__.'/data/products.php';
+
+        foreach ($catalogs as $slug => $items) {
+            $store = Store::where('slug', $slug)->first();
+
+            if (! $store) {
+                $this->command->getOutput()->writeln("<comment>ProductSeeder: store [{$slug}] not found — skipping.</comment>");
+
+                continue;
+            }
+
+            if (Product::whereJsonContains('attribute_data->store_id->value', $store->id)->exists()) {
+                $this->command->getOutput()->writeln("<comment>ProductSeeder: [{$slug}] already seeded — skipping.</comment>");
+
+                continue;
+            }
+
+            foreach ($items as $item) {
+                $this->createProduct($item, $store->id);
+            }
         }
-    }
-
-    // ── Product catalog ────────────────────────────────────────────────────────
-
-    /**
-     * Product definitions for the e-commerce store.
-     *
-     * `price` and `compare_price` are in the smallest currency unit
-     * (e.g. centavos for PHP, cents for USD — matches the Lunar prices table).
-     *
-     * @return list<array{
-     *     name: string,
-     *     description: string,
-     *     type: string,
-     *     sku: string,
-     *     price: int,
-     *     compare_price: int|null,
-     *     stock: int,
-     * }>
-     */
-    private function catalog(): array
-    {
-        return [
-            // === Electronics ===
-            [
-                'name' => 'Wireless Bluetooth Earbuds',
-                'description' => 'True wireless stereo earbuds with active noise cancellation, 24-hour battery life, and IPX5 water resistance. Compatible with all Bluetooth 5.0 devices.',
-                'type' => 'Electronics',
-                'sku' => 'ELEC-001',
-                'price' => 249900,        // PHP 2,499.00
-                'compare_price' => 349900,
-                'stock' => 80,
-            ],
-            [
-                'name' => 'Portable Powerbank 20000mAh',
-                'description' => 'Ultra-capacity power bank with dual USB-A and USB-C output. Fast-charge support. Keeps your phone topped up for days away from the socket.',
-                'type' => 'Electronics',
-                'sku' => 'ELEC-002',
-                'price' => 129900,
-                'compare_price' => 159900,
-                'stock' => 120,
-            ],
-            [
-                'name' => 'USB-C Mechanical Keyboard',
-                'description' => 'Compact tenkeyless mechanical keyboard with tactile blue switches, per-key RGB, and a hot-swappable PCB. Ships with a braided USB-C cable.',
-                'type' => 'Electronics',
-                'sku' => 'ELEC-003',
-                'price' => 399900,
-                'compare_price' => null,
-                'stock' => 45,
-            ],
-            [
-                'name' => 'HD Webcam 1080p with Built-in Mic',
-                'description' => 'Plug-and-play 1080p webcam with auto-focus, low-light correction, and a dual omnidirectional microphone. Works on Windows, macOS, and Linux.',
-                'type' => 'Electronics',
-                'sku' => 'ELEC-004',
-                'price' => 179900,
-                'compare_price' => 229900,
-                'stock' => 65,
-            ],
-
-            // === Clothing ===
-            [
-                'name' => 'Premium Cotton Polo Shirt',
-                'description' => 'Classic-fit polo in 100% combed ring-spun cotton. Breathable, durable, and machine-washable. Available in 8 solid colours.',
-                'type' => 'Clothing',
-                'sku' => 'CLTH-001',
-                'price' => 79900,
-                'compare_price' => 99900,
-                'stock' => 200,
-            ],
-            [
-                'name' => 'Slim-Fit Chino Pants',
-                'description' => 'Versatile slim-fit chinos in a cotton-elastane blend for all-day comfort. Suits casual and smart-casual occasions.',
-                'type' => 'Clothing',
-                'sku' => 'CLTH-002',
-                'price' => 149900,
-                'compare_price' => null,
-                'stock' => 150,
-            ],
-            [
-                'name' => 'Lightweight Running Shoes',
-                'description' => 'Engineered mesh upper with a cushioned EVA midsole and rubber outsole for grip. Ideal for road running and gym workouts.',
-                'type' => 'Clothing',
-                'sku' => 'CLTH-003',
-                'price' => 289900,
-                'compare_price' => 359900,
-                'stock' => 100,
-            ],
-
-            // === Home & Living ===
-            [
-                'name' => 'Stainless Steel Insulated Tumbler 500ml',
-                'description' => 'Double-wall vacuum-insulated tumbler. Keeps drinks cold 24 hr or hot 12 hr. BPA-free lid, sweat-free exterior.',
-                'type' => 'Home & Living',
-                'sku' => 'HOME-001',
-                'price' => 89900,
-                'compare_price' => 109900,
-                'stock' => 300,
-            ],
-            [
-                'name' => 'Minimalist Bamboo Desk Organizer',
-                'description' => 'Handcrafted bamboo organizer with 6 compartments for pens, cards, and accessories. Natural finish; anti-scratch silicone base pads.',
-                'type' => 'Home & Living',
-                'sku' => 'HOME-002',
-                'price' => 59900,
-                'compare_price' => null,
-                'stock' => 90,
-            ],
-            [
-                'name' => 'Non-Stick Ceramic Frying Pan Set (3 pcs)',
-                'description' => 'PFOA-free ceramic-coated pans in 20 cm, 24 cm, and 28 cm. Compatible with gas, electric, and induction hobs. Dishwasher-safe.',
-                'type' => 'Home & Living',
-                'sku' => 'HOME-003',
-                'price' => 249900,
-                'compare_price' => 319900,
-                'stock' => 60,
-            ],
-        ];
     }
 
     // ── Helpers ────────────────────────────────────────────────────────────────
@@ -194,10 +76,10 @@ class ProductSeeder extends Seeder
      *     sku: string,
      *     price: int,
      *     compare_price: int|null,
-     *     stock: int
+     *     stock: int,
      * } $data
      */
-    private function createProduct(array $data): void
+    private function createProduct(array $data, int $storeId): void
     {
         $productType = ProductType::where('name', $data['type'])->firstOrFail();
 
@@ -209,7 +91,7 @@ class ProductSeeder extends Seeder
                 'description' => new TranslatedText(collect(['en' => $data['description']])),
                 // Wrapped in Number so AsAttributeData cast can serialise it.
                 // Queried via whereJsonContains('attribute_data->store_id->value', $storeId).
-                'store_id' => new Number(self::STORE_ID),
+                'store_id' => new Number($storeId),
             ]),
         ]);
 
@@ -269,7 +151,20 @@ class ProductSeeder extends Seeder
             ->where('attributable_type', 'product')
             ->first();
 
-        foreach (['Electronics', 'Clothing', 'Home & Living'] as $typeName) {
+        $types = [
+            'Electronics',
+            'Clothing',
+            'Home & Living',
+            'Food & Grocery',
+            'Health & Beauty',
+            'Sports & Outdoors',
+            'Books & Stationery',
+            'Toys & Hobbies',
+            'Automotive',
+            'Pet Supplies',
+        ];
+
+        foreach ($types as $typeName) {
             $type = ProductType::firstOrCreate(['name' => $typeName]);
 
             foreach (array_filter([$detailsGroup, $pricingGroup]) as $group) {

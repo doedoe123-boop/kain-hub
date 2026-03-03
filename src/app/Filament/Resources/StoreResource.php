@@ -112,7 +112,7 @@ class StoreResource extends Resource
                     ->color(fn (?IndustrySector $state): string => match ($state) {
                         IndustrySector::Construction => 'warning',
                         IndustrySector::Technology => 'info',
-                        IndustrySector::FoodAndBeverage => 'warning',
+                        IndustrySector::Ecommerce => 'warning',
                         IndustrySector::Healthcare => 'danger',
                         IndustrySector::Chemicals => 'gray',
                         IndustrySector::Logistics => 'info',

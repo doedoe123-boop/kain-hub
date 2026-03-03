@@ -6,7 +6,7 @@ import { storesApi } from "@/api/stores";
 import { useCartStore } from "@/stores/cart";
 
 const sectorLabels = {
-  food_and_beverage: "Food & Beverage",
+  ecommerce: "E-Commerce",
   real_estate: "Real Estate",
   electronics: "Electronics",
   fashion: "Fashion",

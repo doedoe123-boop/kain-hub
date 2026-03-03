@@ -193,7 +193,7 @@ it('redirects authenticated user from subdomain root to Lunar panel', function (
     $store = Store::factory()->for($owner, 'owner')->create([
         'slug' => 'test-store',
         'status' => StoreStatus::Approved,
-        'sector' => IndustrySector::FoodAndBeverage,
+        'sector' => IndustrySector::Ecommerce,
     ]);
 
     $this->actingAs($owner)

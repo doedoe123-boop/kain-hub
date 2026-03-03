@@ -32,14 +32,14 @@ it('shows the sector selection page to guests', function () {
 
 it('shows all industry sectors on the selection page', function () {
     Livewire::test(SectorSelection::class)
-        ->assertSee('Food & Beverage')
+        ->assertSee('E-Commerce')
         ->assertSee('Real Estate & Property');
 });
 
 it('redirects to registration with selected sector', function () {
     Livewire::test(SectorSelection::class)
-        ->call('selectSector', 'food_and_beverage')
-        ->assertRedirect(route('register.store-owner', ['sector' => 'food_and_beverage']));
+        ->call('selectSector', 'ecommerce')
+        ->assertRedirect(route('register.store-owner', ['sector' => 'ecommerce']));
 });
 
 it('rejects invalid sector selection', function () {
@@ -58,21 +58,21 @@ it('shows the public sector browse page', function () {
 
 it('displays sector information with compliance requirements', function () {
     Livewire::test(SectorBrowse::class)
-        ->assertSee('Food & Beverage')
+        ->assertSee('E-Commerce')
         ->assertSee('Real Estate & Property');
 });
 
 it('filters sectors by search query', function () {
     Livewire::test(SectorBrowse::class)
-        ->set('search', 'food')
-        ->assertSee('Food & Beverage')
+        ->set('search', 'E-Commerce')
+        ->assertSee('E-Commerce')
         ->assertDontSee('Construction & Building');
 });
 
 // --- Registration Page Access ---
 
 it('shows the store owner registration page to guests', function () {
-    $this->get(route('register.store-owner', ['sector' => 'food_and_beverage']))
+    $this->get(route('register.store-owner', ['sector' => 'ecommerce']))
         ->assertStatus(200)
         ->assertSee('Become a Supplier');
 });
@@ -81,7 +81,7 @@ it('redirects authenticated users away from registration', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->get(route('register.store-owner', ['sector' => 'food_and_beverage']))
+        ->get(route('register.store-owner', ['sector' => 'ecommerce']))
         ->assertRedirect('/');
 });
 
@@ -93,7 +93,7 @@ it('redirects to sector selection for invalid sector in URL', function () {
 // --- 5-Step Form Navigation ---
 
 it('shows 5-step progress indicator', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->assertSee('Account')
         ->assertSee('Store')
         ->assertSee('Address')
@@ -102,10 +102,10 @@ it('shows 5-step progress indicator', function () {
 });
 
 it('shows sector-specific compliance documents on step 5', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('step', 5)
-        ->assertSee('FDA License to Operate (LTO)')
-        ->assertSee('Sanitary Permit')
+        ->assertSee("Mayor's Permit / Business Permit")
+        ->assertSee('Store / Warehouse Photo')
         ->assertSee('DTI / SEC Registration')
         ->assertSee('BIR Certificate of Registration');
 });
@@ -114,7 +114,7 @@ it('shows real-estate-specific docs for real estate sector', function () {
     Livewire::test(StoreOwnerRegistration::class, ['sector' => 'real_estate'])
         ->set('step', 5)
         ->assertSee('PRC Real Estate Broker License')
-        ->assertDontSee('FDA License to Operate');
+        ->assertDontSee('Store / Warehouse Photo');
 });
 
 // --- Successful Registration with Compliance Docs ---
@@ -123,10 +123,8 @@ it('creates a user and store with compliance documents on registration', functio
     $dtiFile = UploadedFile::fake()->create('dti.pdf', 1024, 'application/pdf');
     $permitFile = UploadedFile::fake()->create('permit.pdf', 1024, 'application/pdf');
     $birFile = UploadedFile::fake()->create('bir.pdf', 1024, 'application/pdf');
-    $fdaFile = UploadedFile::fake()->create('fda.pdf', 1024, 'application/pdf');
-    $sanitaryFile = UploadedFile::fake()->create('sanitary.pdf', 1024, 'application/pdf');
 
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('name', 'Juan Dela Cruz')
         ->set('email', 'juan@example.com')
         ->set('phone', '09171234567')
@@ -143,8 +141,6 @@ it('creates a user and store with compliance documents on registration', functio
         ->set('complianceFiles.dti_sec_registration', $dtiFile)
         ->set('complianceFiles.business_permit', $permitFile)
         ->set('complianceFiles.bir_registration', $birFile)
-        ->set('complianceFiles.fda_lto', $fdaFile)
-        ->set('complianceFiles.sanitary_permit', $sanitaryFile)
         ->call('register')
         ->assertRedirect(route('register.store-owner.success'));
 
@@ -161,11 +157,11 @@ it('creates a user and store with compliance documents on registration', functio
         ->and($store->user_id)->toBe($user->id)
         ->and($store->name)->toBe('Juan Kitchen')
         ->and($store->status)->toBe(StoreStatus::Pending)
-        ->and($store->sector)->toBe(IndustrySector::FoodAndBeverage)
+        ->and($store->sector)->toBe(IndustrySector::Ecommerce)
         ->and($store->id_type)->toBe('passport')
         ->and($store->id_number)->toBe('P1234567')
         ->and($store->compliance_documents)->toBeArray()
-        ->and($store->compliance_documents)->toHaveKeys(['dti_sec_registration', 'business_permit', 'bir_registration', 'fda_lto', 'sanitary_permit'])
+        ->and($store->compliance_documents)->toHaveKeys(['dti_sec_registration', 'business_permit', 'bir_registration'])
         ->and($store->address)->toMatchArray([
             'line_one' => '123 Rizal Ave',
             'city' => 'Manila',
@@ -174,7 +170,7 @@ it('creates a user and store with compliance documents on registration', functio
 });
 
 it('auto-generates slug from store name', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('storeName', "Juan's Kitchen")
         ->assertSet('slug', 'juans-kitchen');
 });
@@ -182,13 +178,13 @@ it('auto-generates slug from store name', function () {
 // --- Validation ---
 
 it('validates required account fields', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->call('register')
         ->assertHasErrors(['name', 'email', 'phone', 'password', 'storeName', 'slug', 'description', 'addressLine', 'city', 'postcode', 'idType', 'idNumber']);
 });
 
 it('validates required compliance documents', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->set('phone', '09171234567')
@@ -207,8 +203,6 @@ it('validates required compliance documents', function () {
             'complianceFiles.dti_sec_registration',
             'complianceFiles.business_permit',
             'complianceFiles.bir_registration',
-            'complianceFiles.fda_lto',
-            'complianceFiles.sanitary_permit',
         ]);
 });
 
@@ -216,10 +210,8 @@ it('does not require optional compliance documents', function () {
     $dtiFile = UploadedFile::fake()->create('dti.pdf', 1024, 'application/pdf');
     $permitFile = UploadedFile::fake()->create('permit.pdf', 1024, 'application/pdf');
     $birFile = UploadedFile::fake()->create('bir.pdf', 1024, 'application/pdf');
-    $fdaFile = UploadedFile::fake()->create('fda.pdf', 1024, 'application/pdf');
-    $sanitaryFile = UploadedFile::fake()->create('sanitary.pdf', 1024, 'application/pdf');
 
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('name', 'Test User')
         ->set('email', 'optional@example.com')
         ->set('phone', '09171234567')
@@ -236,18 +228,16 @@ it('does not require optional compliance documents', function () {
         ->set('complianceFiles.dti_sec_registration', $dtiFile)
         ->set('complianceFiles.business_permit', $permitFile)
         ->set('complianceFiles.bir_registration', $birFile)
-        ->set('complianceFiles.fda_lto', $fdaFile)
-        ->set('complianceFiles.sanitary_permit', $sanitaryFile)
-        // halal_certification is optional — not set
+        // store_front_photo is optional — not set
         ->call('register')
-        ->assertHasNoErrors('complianceFiles.halal_certification')
+        ->assertHasNoErrors('complianceFiles.store_front_photo')
         ->assertRedirect(route('register.store-owner.success'));
 });
 
 it('validates unique email', function () {
     User::factory()->create(['email' => 'taken@example.com']);
 
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('name', 'Test User')
         ->set('email', 'taken@example.com')
         ->set('phone', '09171234567')
@@ -268,7 +258,7 @@ it('validates unique email', function () {
 it('validates unique slug', function () {
     Store::factory()->create(['slug' => 'taken-slug']);
 
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->set('phone', '09171234567')
@@ -287,7 +277,7 @@ it('validates unique slug', function () {
 });
 
 it('validates password confirmation', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('password', 'Str0ng#Pass9')
         ->set('password_confirmation', 'different')
         ->call('register')
@@ -295,7 +285,7 @@ it('validates password confirmation', function () {
 });
 
 it('validates password minimum length', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('password', 'short')
         ->set('password_confirmation', 'short')
         ->call('register')
@@ -303,7 +293,7 @@ it('validates password minimum length', function () {
 });
 
 it('rejects password without uppercase letters', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('password', 'str0ng#pass9')
         ->set('password_confirmation', 'str0ng#pass9')
         ->call('register')
@@ -311,7 +301,7 @@ it('rejects password without uppercase letters', function () {
 });
 
 it('rejects password without symbols', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('password', 'Str0ngPass9')
         ->set('password_confirmation', 'Str0ngPass9')
         ->call('register')
@@ -319,7 +309,7 @@ it('rejects password without symbols', function () {
 });
 
 it('rejects password without numbers', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('password', 'Strong#Pass')
         ->set('password_confirmation', 'Strong#Pass')
         ->call('register')
@@ -327,7 +317,7 @@ it('rejects password without numbers', function () {
 });
 
 it('rejects invalid id type', function () {
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->set('phone', '09171234567')
@@ -349,10 +339,8 @@ it('validates SSS ID number format', function () {
     $dtiFile = UploadedFile::fake()->create('dti.pdf', 1024, 'application/pdf');
     $permitFile = UploadedFile::fake()->create('permit.pdf', 1024, 'application/pdf');
     $birFile = UploadedFile::fake()->create('bir.pdf', 1024, 'application/pdf');
-    $fdaFile = UploadedFile::fake()->create('fda.pdf', 1024, 'application/pdf');
-    $sanitaryFile = UploadedFile::fake()->create('sanitary.pdf', 1024, 'application/pdf');
 
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('name', 'Test User')
         ->set('email', 'test@example.com')
         ->set('phone', '09171234567')
@@ -369,8 +357,6 @@ it('validates SSS ID number format', function () {
         ->set('complianceFiles.dti_sec_registration', $dtiFile)
         ->set('complianceFiles.business_permit', $permitFile)
         ->set('complianceFiles.bir_registration', $birFile)
-        ->set('complianceFiles.fda_lto', $fdaFile)
-        ->set('complianceFiles.sanitary_permit', $sanitaryFile)
         ->call('register')
         ->assertHasErrors('idNumber');
 });
@@ -379,10 +365,8 @@ it('accepts valid SSS ID number format', function () {
     $dtiFile = UploadedFile::fake()->create('dti.pdf', 1024, 'application/pdf');
     $permitFile = UploadedFile::fake()->create('permit.pdf', 1024, 'application/pdf');
     $birFile = UploadedFile::fake()->create('bir.pdf', 1024, 'application/pdf');
-    $fdaFile = UploadedFile::fake()->create('fda.pdf', 1024, 'application/pdf');
-    $sanitaryFile = UploadedFile::fake()->create('sanitary.pdf', 1024, 'application/pdf');
 
-    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'food_and_beverage'])
+    Livewire::test(StoreOwnerRegistration::class, ['sector' => 'ecommerce'])
         ->set('name', 'Test User')
         ->set('email', 'sss-test@example.com')
         ->set('phone', '09171234567')
@@ -399,8 +383,6 @@ it('accepts valid SSS ID number format', function () {
         ->set('complianceFiles.dti_sec_registration', $dtiFile)
         ->set('complianceFiles.business_permit', $permitFile)
         ->set('complianceFiles.bir_registration', $birFile)
-        ->set('complianceFiles.fda_lto', $fdaFile)
-        ->set('complianceFiles.sanitary_permit', $sanitaryFile)
         ->call('register')
         ->assertHasNoErrors('idNumber')
         ->assertRedirect(route('register.store-owner.success'));
@@ -409,19 +391,19 @@ it('accepts valid SSS ID number format', function () {
 // --- Sector-Specific Document Requirements ---
 
 it('has different required documents per sector', function () {
-    $food = Sector::where('slug', 'food_and_beverage')->first();
+    $food = Sector::where('slug', 'ecommerce')->first();
     $realEstate = Sector::where('slug', 'real_estate')->first();
 
     $foodKeys = array_column($food->documentsArray(), 'key');
     $realEstateKeys = array_column($realEstate->documentsArray(), 'key');
 
-    // Food & Beverage needs FDA and Sanitary Permit
-    expect($foodKeys)->toContain('fda_lto')
-        ->toContain('sanitary_permit');
+    // E-Commerce uses store front photo (optional) — no FDA/Sanitary
+    expect($foodKeys)->not->toContain('fda_lto')
+        ->not->toContain('sanitary_permit');
 
     // Real Estate needs PRC broker license
     expect($realEstateKeys)->toContain('prc_broker_license')
-        ->not->toContain('fda_lto');
+        ->not->toContain('store_front_photo');
 
     // Both share common documents
     expect($foodKeys)->toContain('dti_sec_registration')
@@ -433,14 +415,13 @@ it('has different required documents per sector', function () {
 });
 
 it('returns required document keys for a sector', function () {
-    $required = IndustrySector::FoodAndBeverage->requiredDocumentKeys();
+    $required = IndustrySector::Ecommerce->requiredDocumentKeys();
 
     expect($required)->toContain('dti_sec_registration')
         ->toContain('business_permit')
         ->toContain('bir_registration')
-        ->toContain('fda_lto')
-        ->toContain('sanitary_permit')
-        ->not->toContain('halal_certification');
+        ->not->toContain('fda_lto')
+        ->not->toContain('sanitary_permit');
 });
 
 // --- Success Page ---

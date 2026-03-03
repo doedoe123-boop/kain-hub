@@ -65,7 +65,7 @@ it('blocks non-real-estate store owners from the realty panel', function () {
     $owner->assignRole('store_owner');
     Store::factory()->for($owner, 'owner')->create([
         'status' => StoreStatus::Approved,
-        'sector' => IndustrySector::FoodAndBeverage,
+        'sector' => IndustrySector::Ecommerce,
     ]);
 
     $this->actingAs($owner)

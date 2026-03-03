@@ -7,7 +7,7 @@ use App\Models\User;
 
 beforeEach(function () {
     $this->store = Store::factory()->create([
-        'sector' => IndustrySector::FoodAndBeverage,
+        'sector' => IndustrySector::Ecommerce,
     ]);
 });
 

@@ -11,21 +11,19 @@ class SectorSeeder extends Seeder
     {
         $sectors = [
             [
-                'name' => 'Food & Beverage',
-                'slug' => 'food_and_beverage',
-                'description' => 'Restaurants, catering, food production, grocery, and beverage distribution.',
-                'icon' => 'heroicon-o-cake',
+                'name' => 'E-Commerce',
+                'slug' => 'ecommerce',
+                'description' => 'Online retail stores, marketplaces, and digital product sellers.',
+                'icon' => 'heroicon-o-shopping-cart',
                 'color' => 'orange',
-                'registration_button_text' => 'Register as Food Business',
+                'registration_button_text' => 'Register as Online Store',
                 'is_active' => true,
                 'sort_order' => 1,
                 'documents' => [
                     ['key' => 'dti_sec_registration', 'label' => 'DTI / SEC Registration',           'description' => 'Certificate of business name registration (DTI) or SEC incorporation papers.',        'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 1],
                     ['key' => 'business_permit',       'label' => "Mayor's Permit / Business Permit", 'description' => 'Valid local business permit from your city or municipality.',                        'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 2],
                     ['key' => 'bir_registration',      'label' => 'BIR Certificate of Registration',  'description' => 'BIR Form 2303 — Certificate of Registration.',                                       'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 3],
-                    ['key' => 'fda_lto',               'label' => 'FDA License to Operate (LTO)',     'description' => 'Food and Drug Administration license for food manufacturing or distribution.',       'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 4],
-                    ['key' => 'sanitary_permit',       'label' => 'Sanitary Permit',                  'description' => 'Sanitary permit from the local health office.',                                      'is_required' => true,  'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 5],
-                    ['key' => 'halal_certification',   'label' => 'Halal Certification',              'description' => 'Halal certification if applicable to your products.',                                'is_required' => false, 'mimes' => 'pdf,jpg,jpeg,png', 'sort_order' => 6],
+                    ['key' => 'store_front_photo',     'label' => 'Store / Warehouse Photo',          'description' => 'Clear photo of your physical store, warehouse, or fulfilment centre.',               'is_required' => false, 'mimes' => 'jpg,jpeg,png',     'sort_order' => 4],
                 ],
             ],
             [

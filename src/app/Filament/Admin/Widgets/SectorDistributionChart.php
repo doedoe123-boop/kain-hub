@@ -23,7 +23,7 @@ class SectorDistributionChart extends ChartWidget
         $colorMap = [
             'construction' => 'rgb(245, 158, 11)',
             'technology' => 'rgb(59, 130, 246)',
-            'food_and_beverage' => 'rgb(249, 115, 22)',
+            'ecommerce' => 'rgb(249, 115, 22)',
             'healthcare' => 'rgb(239, 68, 68)',
             'chemicals' => 'rgb(139, 92, 246)',
             'logistics' => 'rgb(99, 102, 241)',

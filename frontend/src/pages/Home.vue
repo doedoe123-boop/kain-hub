@@ -16,7 +16,7 @@ const featuredProducts = ref([]);
 const latestProperties = ref([]);
 
 const sectorLabels = {
-  food_and_beverage: "Food & Retail",
+  ecommerce: "E-Commerce",
   real_estate: "Real Estate",
   services: "Services",
 };
@@ -131,7 +131,9 @@ onMounted(async () => {
       <div class="mb-6 flex items-end justify-between">
         <div>
           <h2 class="text-xl font-bold text-slate-900">Latest Products</h2>
-          <p class="mt-1 text-sm text-slate-500">Shop from local e-commerce stores.</p>
+          <p class="mt-1 text-sm text-slate-500">
+            Shop from local e-commerce stores.
+          </p>
         </div>
         <RouterLink
           to="/stores"
@@ -142,8 +144,15 @@ onMounted(async () => {
       </div>
 
       <!-- Skeleton -->
-      <div v-if="productsLoading" class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        <div v-for="i in 6" :key="i" class="h-40 animate-pulse rounded-2xl bg-slate-100" />
+      <div
+        v-if="productsLoading"
+        class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6"
+      >
+        <div
+          v-for="i in 6"
+          :key="i"
+          class="h-40 animate-pulse rounded-2xl bg-slate-100"
+        />
       </div>
 
       <!-- Empty -->
@@ -169,13 +178,23 @@ onMounted(async () => {
               :alt="product.name"
               class="h-full w-full object-cover transition-transform group-hover:scale-105"
             />
-            <div v-else class="flex h-full items-center justify-center text-3xl">🛍️</div>
+            <div
+              v-else
+              class="flex h-full items-center justify-center text-3xl"
+            >
+              🛍️
+            </div>
           </div>
           <div class="p-2">
-            <p class="line-clamp-2 text-xs font-medium text-slate-700 group-hover:text-brand-600 transition-colors">
+            <p
+              class="line-clamp-2 text-xs font-medium text-slate-700 group-hover:text-brand-600 transition-colors"
+            >
               {{ product.name }}
             </p>
-            <p v-if="product.price" class="mt-1 text-xs font-bold text-brand-600">
+            <p
+              v-if="product.price"
+              class="mt-1 text-xs font-bold text-brand-600"
+            >
               ₱{{ product.price.toLocaleString() }}
             </p>
           </div>
@@ -202,8 +221,15 @@ onMounted(async () => {
         </div>
 
         <!-- Skeleton -->
-        <div v-if="propertiesLoading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div v-for="i in 4" :key="i" class="h-56 animate-pulse rounded-2xl bg-teal-100" />
+        <div
+          v-if="propertiesLoading"
+          class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          <div
+            v-for="i in 4"
+            :key="i"
+            class="h-56 animate-pulse rounded-2xl bg-teal-100"
+          />
         </div>
 
         <!-- Empty -->
@@ -215,7 +241,10 @@ onMounted(async () => {
         </div>
 
         <!-- Grid -->
-        <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div
+          v-else
+          class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        >
           <RouterLink
             v-for="property in latestProperties"
             :key="property.id"
@@ -238,23 +267,45 @@ onMounted(async () => {
               <span
                 class="absolute left-2 top-2 rounded-full px-2 py-0.5 text-xs font-semibold"
                 :class="{
-                  'bg-emerald-100 text-emerald-700': property.listing_type === 'for_sale',
-                  'bg-sky-100 text-sky-700': property.listing_type === 'for_rent',
-                  'bg-amber-100 text-amber-700': property.listing_type === 'for_lease',
-                  'bg-purple-100 text-purple-700': property.listing_type === 'pre_selling',
-                  'bg-slate-100 text-slate-600': !['for_sale','for_rent','for_lease','pre_selling'].includes(property.listing_type),
+                  'bg-emerald-100 text-emerald-700':
+                    property.listing_type === 'for_sale',
+                  'bg-sky-100 text-sky-700':
+                    property.listing_type === 'for_rent',
+                  'bg-amber-100 text-amber-700':
+                    property.listing_type === 'for_lease',
+                  'bg-purple-100 text-purple-700':
+                    property.listing_type === 'pre_selling',
+                  'bg-slate-100 text-slate-600': ![
+                    'for_sale',
+                    'for_rent',
+                    'for_lease',
+                    'pre_selling',
+                  ].includes(property.listing_type),
                 }"
               >
-                {{ { for_sale: 'For Sale', for_rent: 'For Rent', for_lease: 'For Lease', pre_selling: 'Pre-Selling' }[property.listing_type] ?? property.listing_type }}
+                {{
+                  {
+                    for_sale: "For Sale",
+                    for_rent: "For Rent",
+                    for_lease: "For Lease",
+                    pre_selling: "Pre-Selling",
+                  }[property.listing_type] ?? property.listing_type
+                }}
               </span>
             </div>
             <div class="p-3">
-              <p class="line-clamp-2 text-sm font-semibold text-slate-800 group-hover:text-teal-700 transition-colors">
+              <p
+                class="line-clamp-2 text-sm font-semibold text-slate-800 group-hover:text-teal-700 transition-colors"
+              >
                 {{ property.title }}
               </p>
               <p class="mt-0.5 text-xs text-slate-400">{{ property.city }}</p>
               <p class="mt-1.5 text-sm font-bold text-teal-700">
-                ₱{{ parseFloat(property.price).toLocaleString('en-PH', { maximumFractionDigits: 0 }) }}
+                ₱{{
+                  parseFloat(property.price).toLocaleString("en-PH", {
+                    maximumFractionDigits: 0,
+                  })
+                }}
               </p>
             </div>
           </RouterLink>
@@ -336,7 +387,9 @@ onMounted(async () => {
               >
                 {{ store.name }}
               </p>
-              <p class="text-xs text-slate-500">{{ sectorLabels[store.sector] ?? store.sector }}</p>
+              <p class="text-xs text-slate-500">
+                {{ sectorLabels[store.sector] ?? store.sector }}
+              </p>
             </div>
           </div>
         </RouterLink>

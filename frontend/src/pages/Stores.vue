@@ -14,14 +14,14 @@ const search = ref(route.query.search ?? "");
 const sector = ref(route.query.sector ?? "");
 
 const sectorLabels = {
-  food_and_beverage: "Food & Retail",
+  ecommerce: "E-Commerce",
   real_estate: "Real Estate",
   services: "Services",
 };
 
 const sectors = [
   { label: "All", value: "" },
-  { label: "Food & Retail", value: "food_and_beverage" },
+  { label: "E-Commerce", value: "ecommerce" },
   { label: "Real Estate", value: "real_estate" },
   { label: "Services", value: "services" },
 ];
@@ -133,10 +133,7 @@ watch(
     </div>
 
     <!-- Grid -->
-    <div
-      v-else
-      class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
-    >
+    <div v-else class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
       <RouterLink
         v-for="store in stores"
         :key="store.id"
@@ -181,10 +178,7 @@ watch(
     </div>
 
     <!-- Pagination -->
-    <div
-      v-if="meta.last_page > 1"
-      class="mt-10 flex justify-center gap-2"
-    >
+    <div v-if="meta.last_page > 1" class="mt-10 flex justify-center gap-2">
       <button
         v-for="page in meta.last_page"
         :key="page"

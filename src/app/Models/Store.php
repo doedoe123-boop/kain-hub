@@ -297,7 +297,7 @@ class Store extends Model
     public function sectorLabel(): string
     {
         return match ($this->sector) {
-            IndustrySector::FoodAndBeverage => 'Food & Beverage Store',
+            IndustrySector::Ecommerce => 'E-Commerce Store',
             IndustrySector::RealEstate => 'Real Estate Agency',
             default => 'Business',
         };

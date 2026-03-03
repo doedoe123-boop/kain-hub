@@ -34,7 +34,7 @@ trait CreatesTestUsers
     protected function createStoreOwner(): array
     {
         $store = Store::factory()
-            ->sector(IndustrySector::FoodAndBeverage)
+            ->sector(IndustrySector::Ecommerce)
             ->create();
 
         $user = $store->owner;
