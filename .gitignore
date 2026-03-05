@@ -42,6 +42,11 @@ src/tests/Browser/console/*
 src/tests/Browser/source/*
 !src/tests/Browser/source/.gitignore
 
+# Playwright
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright-report.zip
+frontend/tests/e2e/reports/data
 # ─── Docker ────────────────────────────────────────────────────────────
 docker-compose.override.yml
 

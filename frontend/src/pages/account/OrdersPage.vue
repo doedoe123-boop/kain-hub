@@ -25,16 +25,8 @@ const statusColors = {
 </script>
 
 <template>
-  <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-    <!-- Breadcrumb -->
-    <RouterLink
-      to="/account"
-      class="mb-5 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors"
-    >
-      ← My Account
-    </RouterLink>
-
-    <h1 class="mb-6 text-3xl font-extrabold tracking-tight text-slate-900">
+  <div class="mx-auto max-w-3xl px-4 py-8 sm:px-0">
+    <h1 class="mb-6 text-2xl font-extrabold tracking-tight text-slate-900">
       My Orders
     </h1>
 

@@ -52,6 +52,8 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
         'password',
         'role',
         'store_id',
+        'paymongo_customer_id',
+        'notification_preferences',
     ];
 
     /**
@@ -72,9 +74,10 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'role' => UserRole::class,
+            'email_verified_at'          => 'datetime',
+            'password'                   => 'hashed',
+            'role'                       => UserRole::class,
+            'notification_preferences'   => 'array',
         ];
     }
 
@@ -164,6 +167,22 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Return saved delivery addresses.
+     */
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    /**
+     * Return saved payment methods.
+     */
+    public function paymentMethods(): HasMany
+    {
+        return $this->hasMany(PaymentMethod::class);
     }
 
     /**

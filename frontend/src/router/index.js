@@ -103,23 +103,49 @@ const routes = [
     children: [
       {
         path: "",
-        name: "account.dashboard",
-        component: () => import("@/pages/account/AccountDashboard.vue"),
-      },
-      {
-        path: "orders",
-        name: "account.orders",
-        component: () => import("@/pages/account/OrdersPage.vue"),
-      },
-      {
-        path: "orders/:id",
-        name: "account.orders.show",
-        component: () => import("@/pages/account/OrderDetail.vue"),
-      },
-      {
-        path: "profile",
-        name: "account.profile",
-        component: () => import("@/pages/account/ProfilePage.vue"),
+        component: () => import("@/layouts/AccountLayout.vue"),
+        children: [
+          {
+            path: "",
+            name: "account.dashboard",
+            component: () => import("@/pages/account/AccountDashboard.vue"),
+          },
+          {
+            path: "orders",
+            name: "account.orders",
+            component: () => import("@/pages/account/OrdersPage.vue"),
+          },
+          {
+            path: "orders/:id",
+            name: "account.orders.show",
+            component: () => import("@/pages/account/OrderDetail.vue"),
+          },
+          {
+            path: "addresses",
+            name: "account.addresses",
+            component: () => import("@/pages/account/AddressesPage.vue"),
+          },
+          {
+            path: "payment-methods",
+            name: "account.payment-methods",
+            component: () => import("@/pages/account/PaymentMethodsPage.vue"),
+          },
+          {
+            path: "profile",
+            name: "account.profile",
+            component: () => import("@/pages/account/ProfilePage.vue"),
+          },
+          {
+            path: "password",
+            name: "account.password",
+            component: () => import("@/pages/account/ChangePasswordPage.vue"),
+          },
+          {
+            path: "settings",
+            name: "account.settings",
+            component: () => import("@/pages/account/SettingsPage.vue"),
+          },
+        ],
       },
     ],
   },

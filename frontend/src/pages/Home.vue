@@ -147,30 +147,6 @@ onMounted(async () => {
       />
     </div>
 
-    <!-- ── Trust bar ───────────────────────────────────────────────────── -->
-    <div class="border-b border-slate-100 bg-white">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6">
-        <div class="grid grid-cols-2 divide-x divide-slate-100 sm:grid-cols-4">
-          <div
-            v-for="stat in [
-              { value: '500+', label: 'Local Stores',      icon: '🏪' },
-              { value: '8',    label: 'Cities Covered',    icon: '📍' },
-              { value: '3',    label: 'Sectors',           icon: '🏢' },
-              { value: '100%', label: 'Philippine-made',   icon: '🇵🇭' },
-            ]"
-            :key="stat.label"
-            class="flex items-center justify-center gap-3 py-4"
-          >
-            <span class="text-xl leading-none">{{ stat.icon }}</span>
-            <div>
-              <p class="text-sm font-bold text-slate-900">{{ stat.value }}</p>
-              <p class="text-xs text-slate-500">{{ stat.label }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- ── Category strip ─────────────────────────────────────────────── -->
     <CategoryStrip />
 
@@ -304,35 +280,6 @@ onMounted(async () => {
             </div>
           </div>
         </RouterLink>
-      </div>
-    </section>
-
-    <!-- ── Category Icon Row ───────────────────────────────────────────── -->
-    <section class="border-y border-slate-100 bg-white py-8">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6">
-        <div class="mb-5 flex items-end justify-between">
-          <h2 class="text-lg font-bold text-slate-900">Shop From Top Categories</h2>
-          <RouterLink to="/stores" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700">
-            View All ›
-          </RouterLink>
-        </div>
-        <div class="flex gap-5 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory">
-          <RouterLink
-            v-for="cat in categoryIcons"
-            :key="cat.label"
-            :to="cat.to"
-            class="group flex shrink-0 snap-start flex-col items-center gap-2"
-          >
-            <span
-              class="flex size-[68px] items-center justify-center rounded-2xl bg-slate-50 text-3xl ring-1 ring-slate-100 shadow-sm transition-all group-hover:scale-105 group-hover:ring-2 group-hover:ring-emerald-400 group-hover:shadow-md"
-            >
-              {{ cat.icon }}
-            </span>
-            <span class="text-[11px] font-semibold text-slate-600 text-center leading-tight max-w-[72px]">
-              {{ cat.label }}
-            </span>
-          </RouterLink>
-        </div>
       </div>
     </section>
 

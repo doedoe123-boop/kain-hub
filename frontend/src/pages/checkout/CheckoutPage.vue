@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useCartStore } from "@/stores/cart";
 import { cartApi } from "@/api/cart";
 import { ordersApi } from "@/api/orders";
+import { addressesApi } from "@/api/addresses";
 
 const router = useRouter();
 const cart = useCartStore();
@@ -26,11 +27,24 @@ const error = ref(null);
 
 onMounted(async () => {
   await cart.fetch();
-  try {
-    const { data } = await cartApi.shippingOptions();
-    shippingOptions.value = data;
-  } catch {
-    shippingOptions.value = [];
+
+  const [shippingRes, addressRes] = await Promise.allSettled([
+    cartApi.shippingOptions(),
+    addressesApi.list(),
+  ]);
+
+  shippingOptions.value =
+    shippingRes.status === "fulfilled" ? shippingRes.value.data : [];
+
+  if (addressRes.status === "fulfilled") {
+    const def = (addressRes.value.data ?? []).find((a) => a.is_default);
+
+    if (def) {
+      address.value.line_one = def.line1 ?? "";
+      address.value.city = def.city ?? "";
+      address.value.state = def.province ?? "";
+      address.value.postcode = def.postal_code ?? "";
+    }
   }
 });
 

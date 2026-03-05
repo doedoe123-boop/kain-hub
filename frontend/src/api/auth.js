@@ -28,4 +28,20 @@ export const authApi = {
     await initCsrf();
     return client.post("/api/v1/reset-password", payload);
   },
+
+  async updateProfile(payload) {
+    return client.patch("/api/v1/user", payload);
+  },
+
+  async changePassword(payload) {
+    return client.patch("/api/v1/user/password", payload);
+  },
+
+  async updateSettings(payload) {
+    return client.patch("/api/v1/user/settings", payload);
+  },
+
+  async deleteAccount() {
+    return client.delete("/api/v1/user");
+  },
 };

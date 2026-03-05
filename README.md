@@ -119,40 +119,6 @@ make db-shell         # Open psql shell
 
 ---
 
-## Project Structure
-
-```
-kain-hub/
-├── src/                           # Laravel 12 application
-│   ├── app/
-│   │   ├── Filament/
-│   │   │   ├── Admin/             # Admin panel (Resources, Pages, Widgets)
-│   │   │   ├── Realty/            # Realty panel (Resources, Pages, Widgets)
-│   │   │   ├── Pages/             # Shared store panel pages
-│   │   │   ├── Resources/         # Shared store panel resources
-│   │   │   └── Widgets/           # Shared store panel widgets
-│   │   ├── Models/                # Eloquent models (20+)
-│   │   ├── Services/              # Business logic (Order, Commission, Store)
-│   │   ├── Http/                  # Controllers, Form Requests
-│   │   ├── Policies/              # Authorization policies
-│   │   ├── Jobs/                  # Queued jobs
-│   │   └── Observers/             # Model observers
-│   ├── database/                  # Migrations, factories, seeders
-│   ├── routes/                    # web.php, console.php
-│   └── tests/
-│       ├── Feature/               # Pest feature tests (13 files)
-│       ├── Unit/                  # Pest unit tests
-│       └── Browser/               # Dusk E2E tests (3 panels)
-├── agent/                         # AI agent instructions
-├── skills/                        # AI skill definitions
-├── docker/
-│   ├── php/Dockerfile
-│   └── nginx/default.conf
-├── docker-compose.yml             # Base config
-├── docker-compose.dev.yml         # Dev overrides (node, mailhog, selenium)
-└── Makefile
-```
-
 ---
 
 ## User Roles
@@ -178,6 +144,25 @@ make test-filter FILTER="OrderPlacement" # Specific test
 make dusk                               # 37 tests across 3 panels
 make dusk-filter FILTER="admin can log in"
 ```
+
+### Frontend Tests (Vitest + Playwright)
+
+```bash
+cd frontend
+
+# Vitest — unit tests
+npm run test:unit            # Run all unit tests
+npm run test:unit -- --watch # Watch mode
+
+# Playwright — E2E tests (account portal)
+npx playwright test                          # All E2E tests (chromium + Mobile Chrome)
+npx playwright test tests/e2e/account.spec.js # Account portal suite only
+npx playwright test --project=chromium       # Chromium only
+npx playwright test --grep "Profile page"    # Filter by test name
+npx playwright test --ui                     # Interactive UI mode
+```
+
+> The Playwright dev server (`npm run dev`) starts automatically. Ensure the backend API is running on port `8080` for full integration, or rely on the built-in route mocks for offline testing.
 
 ---
 

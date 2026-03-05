@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AddressController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PaymentController;
+use App\Http\Controllers\Api\V1\PaymentMethodController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\Api\V1\StoreController;
+use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Webhooks\PayMongoController;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +58,25 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         // Auth
         Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
         Route::get('/user', [AuthController::class, 'user'])->name('auth.user');
+
+        // User profile, password, settings, account
+        Route::patch('/user', [UserController::class, 'update'])->name('user.update');
+        Route::patch('/user/password', [UserController::class, 'changePassword'])->name('user.password');
+        Route::patch('/user/settings', [UserController::class, 'updateSettings'])->name('user.settings');
+        Route::delete('/user', [UserController::class, 'destroy'])->name('user.destroy');
+
+        // Delivery addresses
+        Route::get('/user/addresses', [AddressController::class, 'index'])->name('addresses.index');
+        Route::post('/user/addresses', [AddressController::class, 'store'])->name('addresses.store');
+        Route::patch('/user/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
+        Route::delete('/user/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
+        Route::patch('/user/addresses/{address}/default', [AddressController::class, 'setDefault'])->name('addresses.default');
+
+        // Saved payment methods
+        Route::get('/user/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
+        Route::post('/user/payment-methods', [PaymentMethodController::class, 'store'])->name('payment-methods.store');
+        Route::delete('/user/payment-methods/{paymentMethod}', [PaymentMethodController::class, 'destroy'])->name('payment-methods.destroy');
+        Route::patch('/user/payment-methods/{paymentMethod}/default', [PaymentMethodController::class, 'setDefault'])->name('payment-methods.default');
 
         // Cart
         Route::get('/cart', [CartController::class, 'show'])->name('cart.show');
