@@ -26,21 +26,31 @@ const statusColors = {
 
 <template>
   <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-    <h1 class="mb-6 text-3xl font-bold text-gray-900">My Orders</h1>
+    <!-- Breadcrumb -->
+    <RouterLink
+      to="/account"
+      class="mb-5 inline-flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors"
+    >
+      ← My Account
+    </RouterLink>
+
+    <h1 class="mb-6 text-3xl font-extrabold tracking-tight text-slate-900">
+      My Orders
+    </h1>
 
     <div v-if="loading" class="space-y-3">
       <div
         v-for="i in 4"
         :key="i"
-        class="h-20 animate-pulse rounded-2xl bg-gray-100"
+        class="h-20 animate-pulse rounded-2xl bg-slate-100"
       />
     </div>
 
     <div
       v-else-if="orders.length === 0"
-      class="py-12 text-center text-gray-400"
+      class="rounded-2xl border border-dashed border-slate-200 bg-white py-12 text-center"
     >
-      <p>No orders yet.</p>
+      <p class="font-medium text-slate-500">No orders yet.</p>
       <RouterLink
         to="/stores"
         class="mt-3 inline-block text-sm font-medium text-brand-600 hover:underline"
@@ -53,28 +63,36 @@ const statusColors = {
       <li
         v-for="order in orders"
         :key="order.id"
-        class="rounded-2xl border bg-white p-4 shadow-sm"
+        class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
       >
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div
+          class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div class="flex items-center justify-between gap-3 sm:block">
-            <p class="font-semibold text-gray-800">Order #{{ order.id }}</p>
+            <p class="font-semibold text-slate-800">Order #{{ order.id }}</p>
             <span
-              class="rounded-full px-2.5 py-0.5 text-xs font-medium sm:hidden"
-              :class="statusColors[order.status] ?? 'bg-gray-100 text-gray-500'"
+              class="rounded-full px-2.5 py-0.5 text-xs font-medium capitalize sm:hidden"
+              :class="
+                statusColors[order.status] ?? 'bg-slate-100 text-slate-500'
+              "
             >
               {{ order.status }}
             </span>
           </div>
-          <p class="text-xs text-gray-400 sm:hidden">{{ order.created_at }}</p>
+          <p class="text-xs text-slate-400 sm:hidden">{{ order.created_at }}</p>
           <div class="flex items-center gap-3">
             <span
-              class="hidden rounded-full px-2.5 py-0.5 text-xs font-medium sm:inline-block"
-              :class="statusColors[order.status] ?? 'bg-gray-100 text-gray-500'"
+              class="hidden rounded-full px-2.5 py-0.5 text-xs font-medium capitalize sm:inline-block"
+              :class="
+                statusColors[order.status] ?? 'bg-slate-100 text-slate-500'
+              "
             >
               {{ order.status }}
             </span>
-            <p class="hidden text-xs text-gray-400 sm:block">{{ order.created_at }}</p>
-            <span class="font-semibold text-gray-900">{{
+            <p class="hidden text-xs text-slate-400 sm:block">
+              {{ order.created_at }}
+            </p>
+            <span class="font-bold text-slate-900">{{
               order.total?.formatted
             }}</span>
             <RouterLink

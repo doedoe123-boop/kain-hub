@@ -15,6 +15,7 @@ const auth = useAuthStore();
 const cart = useCartStore();
 const route = useRoute();
 const mobileOpen = ref(false);
+const storesFlyout = ref(false);
 
 const backendUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
 
@@ -23,56 +24,134 @@ const sectors = [
   { label: "Properties", to: "/properties" },
 ];
 
+const storeSectors = [
+  { label: "E-Commerce", value: "ecommerce", icon: "🛍️" },
+  { label: "Real Estate", value: "real_estate", icon: "🏠" },
+  { label: "Services", value: "services", icon: "🔧" },
+];
+
 function isActive(path) {
   return route.path.startsWith(path);
 }
 </script>
 
 <template>
-  <header
-    class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/95 shadow-sm backdrop-blur-md"
-  >
+  <header class="sticky top-0 z-40 shadow-md" style="background: #0f2044">
     <div
       class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6"
     >
       <!-- Logo -->
       <RouterLink to="/" class="flex shrink-0 items-center gap-2.5 group">
         <span
-          class="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-bold text-white shadow-sm ring-1 ring-brand-600/20 group-hover:shadow-brand-500/30 group-hover:shadow-md transition-shadow"
+          class="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 text-sm font-bold text-white shadow-sm ring-1 ring-emerald-600/30 transition-shadow group-hover:shadow-emerald-500/40 group-hover:shadow-md"
         >
           N
         </span>
-        <span class="hidden text-[1.05rem] font-bold tracking-tight text-slate-900 sm:block">
-          Negosyo<span class="text-brand-500">Hub</span>
+        <span
+          class="hidden text-[1.05rem] font-bold tracking-tight text-white sm:block"
+        >
+          Negosyo<span class="text-emerald-400">Hub</span>
         </span>
       </RouterLink>
 
-      <!-- Desktop sector nav -->
+      <!-- Desktop nav -->
       <nav class="hidden flex-1 items-center gap-0.5 md:flex">
+        <!-- Stores with flyout -->
+        <div
+          class="relative"
+          @mouseenter="storesFlyout = true"
+          @mouseleave="storesFlyout = false"
+        >
+          <RouterLink
+            to="/stores"
+            class="relative flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+            :class="
+              isActive('/stores')
+                ? 'bg-white/10 text-white'
+                : 'text-white/70 hover:bg-white/10 hover:text-white'
+            "
+          >
+            Stores
+            <svg
+              class="size-3.5 transition-transform"
+              :class="storesFlyout ? 'rotate-180' : ''"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m19 9-7 7-7-7"
+              />
+            </svg>
+            <span
+              v-if="isActive('/stores')"
+              class="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-emerald-400"
+            />
+          </RouterLink>
+
+          <!-- Flyout -->
+          <Transition
+            enter-active-class="transition-all duration-150 ease-out"
+            enter-from-class="-translate-y-1 opacity-0"
+            enter-to-class="translate-y-0 opacity-100"
+            leave-active-class="transition-all duration-100 ease-in"
+            leave-from-class="translate-y-0 opacity-100"
+            leave-to-class="-translate-y-1 opacity-0"
+          >
+            <div v-if="storesFlyout" class="absolute left-0 top-full z-50 pt-1">
+              <div
+                class="w-48 overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-xl ring-1 ring-black/5"
+              >
+                <RouterLink
+                  v-for="s in storeSectors"
+                  :key="s.value"
+                  :to="`/stores?sector=${s.value}`"
+                  class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 transition-colors hover:bg-emerald-50 hover:text-emerald-700"
+                  @click="storesFlyout = false"
+                >
+                  <span class="text-base">{{ s.icon }}</span>
+                  {{ s.label }}
+                </RouterLink>
+                <div class="my-1.5 border-t border-slate-100" />
+                <RouterLink
+                  to="/stores"
+                  class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-700"
+                  @click="storesFlyout = false"
+                >
+                  <span class="text-base">🔍</span>
+                  Browse all stores
+                </RouterLink>
+              </div>
+            </div>
+          </Transition>
+        </div>
+
+        <!-- Properties -->
         <RouterLink
-          v-for="sector in sectors"
-          :key="sector.to"
-          :to="sector.to"
-          class="relative px-4 py-2 text-sm font-medium transition-colors"
+          to="/properties"
+          class="relative rounded-lg px-4 py-2 text-sm font-medium transition-colors"
           :class="
-            isActive(sector.to)
-              ? 'text-brand-600'
-              : 'text-slate-600 hover:text-slate-900'
+            isActive('/properties')
+              ? 'bg-white/10 text-white'
+              : 'text-white/70 hover:bg-white/10 hover:text-white'
           "
         >
-          {{ sector.label }}
+          Properties
           <span
-            v-if="isActive(sector.to)"
-            class="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-brand-500"
+            v-if="isActive('/properties')"
+            class="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-emerald-400"
           />
         </RouterLink>
 
-        <span class="mx-1 h-4 w-px bg-slate-200" />
+        <span class="mx-1 h-4 w-px bg-white/20" />
 
         <a
           :href="`${backendUrl}/register/sector`"
           target="_blank"
-          class="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-50 hover:text-slate-900"
+          class="flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-medium text-white/50 transition-colors hover:bg-white/10 hover:text-white"
         >
           Sell with us
           <svg
@@ -93,23 +172,24 @@ function isActive(path) {
 
       <!-- Right utilities -->
       <div class="flex items-center gap-1.5">
-        <!-- Inline search shortcut (desktop) -->
+        <!-- Search (desktop) -->
         <RouterLink
           to="/stores?focus=1"
-          class="hidden items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-400 transition-colors hover:border-slate-300 hover:bg-white hover:text-slate-600 md:flex"
+          class="hidden items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-white/60 transition-colors hover:border-white/30 hover:bg-white/20 hover:text-white md:flex"
           aria-label="Search stores"
         >
           <MagnifyingGlassIcon class="size-3.5 shrink-0" />
           <span class="text-xs">Search…</span>
-          <kbd class="ml-1 hidden rounded border border-slate-200 bg-white px-1 py-0.5 text-[10px] text-slate-400 lg:inline">
-            /
-          </kbd>
+          <kbd
+            class="ml-1 hidden rounded border border-white/20 bg-white/10 px-1 py-0.5 text-[10px] text-white/40 lg:inline"
+            >/</kbd
+          >
         </RouterLink>
 
         <!-- Cart -->
         <button
           type="button"
-          class="relative rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+          class="relative rounded-lg p-2 text-white/70 hover:bg-white/10 hover:text-white transition-colors"
           aria-label="Shopping cart"
           @click="cart.toggleDrawer"
         >
@@ -124,7 +204,7 @@ function isActive(path) {
           >
             <span
               v-if="cart.totalQuantity > 0"
-              class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white ring-2 ring-white"
+              class="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white ring-2 ring-[#0F2044]"
             >
               {{ cart.totalQuantity > 9 ? "9+" : cart.totalQuantity }}
             </span>
@@ -135,13 +215,13 @@ function isActive(path) {
         <template v-if="!auth.isLoggedIn">
           <RouterLink
             to="/login"
-            class="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors sm:block"
+            class="hidden rounded-lg px-3 py-2 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-colors sm:block"
           >
             Sign in
           </RouterLink>
           <RouterLink
             to="/register"
-            class="rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-600 hover:shadow-brand-500/25 hover:shadow-md active:bg-brand-700 transition-all"
+            class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-emerald-500 hover:shadow-emerald-500/25 hover:shadow-md active:scale-[0.98] transition-all"
           >
             Register
           </RouterLink>
@@ -150,15 +230,15 @@ function isActive(path) {
         <!-- Logged in -->
         <template v-else>
           <RouterLink
-            to="/account/orders"
-            class="hidden items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors sm:flex"
+            to="/account"
+            class="hidden items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-colors sm:flex"
           >
             <UserCircleIcon class="size-4.5" />
             Account
           </RouterLink>
           <button
             type="button"
-            class="rounded-lg px-3 py-2 text-sm font-medium text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors"
+            class="rounded-lg px-3 py-2 text-sm font-medium text-white/40 hover:bg-red-500/10 hover:text-red-400 transition-colors"
             @click="auth.logout"
           >
             Sign out
@@ -168,7 +248,7 @@ function isActive(path) {
         <!-- Mobile toggle -->
         <button
           type="button"
-          class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 transition-colors md:hidden"
+          class="rounded-lg p-2 text-white/70 hover:bg-white/10 hover:text-white transition-colors md:hidden"
           :aria-label="mobileOpen ? 'Close menu' : 'Open menu'"
           @click="mobileOpen = !mobileOpen"
         >
@@ -189,7 +269,8 @@ function isActive(path) {
     >
       <nav
         v-if="mobileOpen"
-        class="border-t border-slate-100 bg-white px-4 py-2 md:hidden"
+        class="border-t border-white/10 px-4 py-2 md:hidden"
+        style="background: #0f2044"
       >
         <RouterLink
           v-for="sector in sectors"
@@ -198,19 +279,19 @@ function isActive(path) {
           class="flex items-center rounded-xl px-3 py-2.5 text-sm font-medium transition-colors"
           :class="
             isActive(sector.to)
-              ? 'bg-brand-50 text-brand-600'
-              : 'text-slate-700 hover:bg-slate-50'
+              ? 'bg-white/10 text-white'
+              : 'text-white/70 hover:bg-white/10 hover:text-white'
           "
           @click="mobileOpen = false"
         >
           {{ sector.label }}
         </RouterLink>
 
-        <div class="mt-2 border-t border-slate-100 pt-2">
+        <div class="mt-2 border-t border-white/10 pt-2">
           <RouterLink
             v-if="auth.isLoggedIn"
-            to="/account/orders"
-            class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+            to="/account"
+            class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white"
             @click="mobileOpen = false"
           >
             <UserCircleIcon class="size-4" />
@@ -219,14 +300,14 @@ function isActive(path) {
           <template v-else>
             <RouterLink
               to="/login"
-              class="flex items-center rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              class="flex items-center rounded-xl px-3 py-2.5 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white"
               @click="mobileOpen = false"
             >
               Sign in
             </RouterLink>
             <RouterLink
               to="/register"
-              class="mt-1 flex items-center rounded-xl bg-brand-50 px-3 py-2.5 text-sm font-semibold text-brand-600 hover:bg-brand-100"
+              class="mt-1 flex items-center rounded-xl bg-emerald-600 px-3 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500"
               @click="mobileOpen = false"
             >
               Create account
@@ -235,23 +316,10 @@ function isActive(path) {
           <a
             :href="`${backendUrl}/register/sector`"
             target="_blank"
-            class="mt-1 flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-500 hover:bg-slate-50"
+            class="mt-1 flex items-center gap-1.5 rounded-xl px-3 py-2.5 text-sm font-medium text-white/50 hover:bg-white/10 hover:text-white"
             @click="mobileOpen = false"
           >
             Sell with us
-            <svg
-              class="size-3.5 opacity-70"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2.5"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
-              />
-            </svg>
           </a>
         </div>
       </nav>

@@ -102,6 +102,11 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
+        path: "",
+        name: "account.dashboard",
+        component: () => import("@/pages/account/AccountDashboard.vue"),
+      },
+      {
         path: "orders",
         name: "account.orders",
         component: () => import("@/pages/account/OrdersPage.vue"),

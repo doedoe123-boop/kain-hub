@@ -12,6 +12,12 @@ export const useCartStore = defineStore("cart", () => {
     () => cart.value?.lines?.reduce((sum, line) => sum + line.quantity, 0) ?? 0,
   );
   const total = computed(() => cart.value?.total?.formatted ?? "₱0.00");
+  const rawTotal = computed(() => {
+    const val = cart.value?.total?.value;
+    if (val == null) return 0;
+    // Lunar stores amounts in minor units (centavos)
+    return val / 100;
+  });
   const storeId = computed(() => cart.value?.meta?.store_id ?? null);
 
   async function fetch() {
@@ -86,6 +92,7 @@ export const useCartStore = defineStore("cart", () => {
     lineCount,
     totalQuantity,
     total,
+    rawTotal,
     storeId,
     fetch,
     addItem,

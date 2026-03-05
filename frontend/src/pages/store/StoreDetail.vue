@@ -15,7 +15,7 @@ const sectorLabels = {
 // Gradient per sector for the banner
 const sectorGradient = {
   ecommerce: "from-brand-600 via-brand-700 to-brand-800",
-  real_estate: "from-teal-600 via-teal-700 to-teal-800",
+  real_estate: "from-[#0F2044] via-[#162d5a] to-[#0F2044]",
   services: "from-slate-700 via-slate-800 to-slate-900",
 };
 
@@ -60,10 +60,34 @@ async function addToCart(product) {
   <div>
     <!-- Skeleton -->
     <div v-if="loading" class="animate-pulse">
+      <!-- Banner -->
       <div class="h-52 w-full bg-slate-200" />
       <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        <div class="h-7 w-56 rounded bg-slate-200" />
-        <div class="mt-3 h-4 w-40 rounded bg-slate-100" />
+        <!-- Store info bar -->
+        <div class="relative -mt-10 mb-6 flex items-end gap-4">
+          <div class="size-20 shrink-0 rounded-2xl bg-slate-300 ring-4 ring-white shadow-md" />
+          <div class="mb-2 space-y-2">
+            <div class="h-6 w-40 rounded-lg bg-slate-200" />
+            <div class="h-4 w-24 rounded-full bg-slate-100" />
+          </div>
+        </div>
+        <!-- Description -->
+        <div class="mb-8 space-y-2">
+          <div class="h-3.5 w-full max-w-xl rounded bg-slate-100" />
+          <div class="h-3.5 w-2/3 max-w-md rounded bg-slate-100" />
+        </div>
+        <!-- Product grid -->
+        <div class="h-6 w-24 rounded-lg bg-slate-200 mb-4" />
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div v-for="i in 8" :key="i" class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
+            <div class="aspect-square w-full rounded-t-2xl bg-slate-100" />
+            <div class="p-3 space-y-2">
+              <div class="h-4 w-3/4 rounded bg-slate-100" />
+              <div class="h-5 w-1/2 rounded bg-slate-200" />
+              <div class="h-9 w-full rounded-xl bg-slate-100" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -157,7 +181,7 @@ async function addToCart(product) {
         </p>
 
         <!-- Products -->
-        <h2 class="mb-4 text-lg font-bold text-slate-900">Products</h2>
+        <h2 class="mb-4 text-xl font-bold text-slate-900">Products</h2>
 
         <div
           v-if="products.length === 0"
@@ -173,49 +197,60 @@ async function addToCart(product) {
           <div
             v-for="product in products"
             :key="product.id"
-            class="group overflow-hidden rounded-2xl border bg-white shadow-sm hover:shadow-md transition-shadow"
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
           >
-            <RouterLink :to="`/products/${product.id}`">
+            <!-- Low-stock badge -->
+            <span
+              v-if="product.stock != null && product.stock <= 10 && product.stock > 0"
+              class="absolute left-2 top-2 z-10 rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white shadow"
+            >
+              Only {{ product.stock }} left
+            </span>
+            <!-- Out-of-stock badge -->
+            <span
+              v-else-if="product.stock != null && product.stock <= 0"
+              class="absolute left-2 top-2 z-10 rounded-full bg-slate-500 px-2 py-0.5 text-[10px] font-bold text-white shadow"
+            >
+              Sold out
+            </span>
+
+            <!-- Image — clicking goes to product detail -->
+            <RouterLink :to="`/products/${product.id}`" class="block">
               <div class="aspect-square w-full overflow-hidden bg-slate-100">
                 <img
                   v-if="product.thumbnail"
                   :src="product.thumbnail"
                   :alt="product.name"
-                  class="h-full w-full object-cover transition-transform group-hover:scale-105"
+                  class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div
-                  v-else
-                  class="flex h-full items-center justify-center text-4xl"
-                >
+                <div v-else class="flex h-full items-center justify-center text-4xl">
                   🛍️
                 </div>
               </div>
             </RouterLink>
-            <div class="p-3">
+
+            <!-- Info -->
+            <div class="flex flex-1 flex-col p-3">
               <RouterLink :to="`/products/${product.id}`">
-                <p
-                  class="line-clamp-2 text-sm font-medium text-slate-800 group-hover:text-brand-600 transition-colors"
-                >
+                <p class="line-clamp-2 text-sm font-semibold leading-snug text-slate-800 transition-colors group-hover:text-brand-600">
                   {{ product.name }}
                 </p>
               </RouterLink>
-              <p class="mt-1 text-sm font-semibold text-brand-600">
+              <p class="mt-1.5 text-base font-extrabold text-slate-900">
                 {{
                   product.price != null
-                    ? "₱" +
-                      parseFloat(product.price).toLocaleString("en-PH", {
-                        maximumFractionDigits: 0,
-                      })
+                    ? "₱" + parseFloat(product.price).toLocaleString("en-PH", { maximumFractionDigits: 0 })
                     : "—"
                 }}
               </p>
+              <!-- Add to Cart — always visible, no overlap conflict -->
               <button
                 type="button"
-                class="mt-2 w-full rounded-lg bg-brand-500 py-2 text-xs font-semibold text-white hover:bg-brand-600 transition-colors disabled:opacity-50"
-                :disabled="cart.loading"
-                @click="addToCart(product)"
+                class="mt-auto mt-3 w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:from-brand-600 hover:to-brand-700 hover:shadow-brand-500/25 hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                :disabled="cart.loading || (product.stock != null && product.stock <= 0)"
+                @click.prevent="addToCart(product)"
               >
-                Add to Cart
+                {{ product.stock != null && product.stock <= 0 ? "Out of Stock" : "Add to Cart" }}
               </button>
             </div>
           </div>

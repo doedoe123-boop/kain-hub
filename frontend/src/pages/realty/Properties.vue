@@ -128,16 +128,16 @@ watch(
 <template>
   <div>
     <!-- Page header -->
-    <div class="bg-gradient-to-br from-teal-600 to-teal-800 py-12 text-white">
+    <div class="py-12 text-white" style="background: #0F2044;">
       <div class="mx-auto max-w-7xl px-4 sm:px-6">
         <RouterLink
           to="/"
-          class="mb-4 inline-flex items-center gap-1 text-sm text-teal-200 hover:text-white transition-colors"
+          class="mb-4 inline-flex items-center gap-1 text-sm text-white/60 hover:text-white transition-colors"
         >
           ← Home
         </RouterLink>
         <h1 class="text-3xl font-bold">Browse Properties</h1>
-        <p class="mt-1 text-teal-100">
+        <p class="mt-1 text-white/70">
           Find your next home, investment, or commercial space.
         </p>
       </div>
@@ -153,8 +153,8 @@ watch(
           class="rounded-full px-4 py-1.5 text-sm font-medium transition-colors"
           :class="
             filters.listing_type === l.value
-              ? 'bg-teal-600 text-white shadow-sm'
-              : 'border border-slate-300 bg-white text-slate-600 hover:border-teal-400 hover:text-teal-700'
+              ? 'bg-emerald-600 text-white shadow-sm'
+              : 'border border-slate-300 bg-white text-slate-600 hover:border-emerald-400 hover:text-emerald-700'
           "
           @click="
             filters.listing_type = l.value;
@@ -178,14 +178,14 @@ watch(
             v-model="filters.search"
             type="search"
             placeholder="Search by title, city, or address…"
-            class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400"
           />
         </div>
 
         <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center">
           <select
             v-model="filters.type"
-            class="col-span-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-auto"
+            class="col-span-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-auto"
           >
             <option v-for="t in propertyTypes" :key="t.value" :value="t.value">
               {{ t.label }}
@@ -197,7 +197,7 @@ watch(
             type="number"
             min="1"
             placeholder="Min bedrooms"
-            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-32"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-32"
           />
 
           <input
@@ -205,7 +205,7 @@ watch(
             type="number"
             min="0"
             placeholder="Min price"
-            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-32"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-32"
           />
 
           <input
@@ -213,7 +213,7 @@ watch(
             type="number"
             min="0"
             placeholder="Max price"
-            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-32"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-32"
           />
 
           <input
@@ -225,7 +225,7 @@ watch(
 
           <button
             type="submit"
-            class="flex items-center justify-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-700"
+            class="flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
           >
             <FunnelIcon class="size-4" />
             Search
@@ -270,7 +270,7 @@ watch(
         <p class="mt-1 text-sm text-slate-400">
           Try adjusting your filters or
           <button
-            class="text-teal-600 underline underline-offset-2"
+            class="text-emerald-600 underline underline-offset-2"
             @click="resetFilters"
           >
             reset all
@@ -295,9 +295,8 @@ watch(
             />
             <div
               v-else
-              class="flex h-full items-center justify-center bg-gradient-to-br from-teal-50 to-slate-100"
-            >
-              <HomeModernIcon class="size-12 text-teal-200" />
+              class="flex h-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+              <HomeModernIcon class="size-12 text-slate-300" />
             </div>
             <span
               class="absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold"
@@ -312,7 +311,7 @@ watch(
 
           <div class="p-4">
             <p
-              class="mb-1 line-clamp-2 font-semibold text-slate-800 group-hover:text-teal-700 transition-colors"
+              class="mb-1 line-clamp-2 font-semibold text-slate-800 group-hover:text-emerald-700 transition-colors"
             >
               {{ property.title }}
             </p>
@@ -334,7 +333,7 @@ watch(
                 >📐 {{ property.floor_area }} sqm</span
               >
             </div>
-            <p class="text-lg font-bold text-teal-700">
+            <p class="text-lg font-bold text-brand-500">
               {{
                 formatPrice(
                   property.price,
@@ -358,7 +357,7 @@ watch(
           class="size-9 rounded-xl border text-sm font-medium transition-colors"
           :class="
             meta.current_page === page
-              ? 'bg-teal-600 text-white border-teal-600'
+              ? 'bg-emerald-600 text-white border-emerald-600'
               : 'bg-white text-slate-600 hover:bg-slate-50'
           "
           @click="load(page)"
