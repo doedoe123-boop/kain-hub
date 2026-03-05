@@ -74,10 +74,10 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
     protected function casts(): array
     {
         return [
-            'email_verified_at'          => 'datetime',
-            'password'                   => 'hashed',
-            'role'                       => UserRole::class,
-            'notification_preferences'   => 'array',
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'role' => UserRole::class,
+            'notification_preferences' => 'array',
         ];
     }
 

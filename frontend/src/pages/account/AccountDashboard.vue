@@ -16,12 +16,15 @@ import { ordersApi } from "@/api/orders";
 const auth = useAuthStore();
 const recentOrders = ref([]);
 const loading = ref(true);
+const error = ref(false);
 
 onMounted(async () => {
   try {
     const { data } = await ordersApi.list();
     const all = data.data ?? data;
     recentOrders.value = all.slice(0, 3);
+  } catch {
+    error.value = true;
   } finally {
     loading.value = false;
   }
@@ -140,6 +143,14 @@ const quickLinks = [
           :key="i"
           class="h-16 animate-pulse rounded-2xl bg-slate-100"
         />
+      </div>
+
+      <!-- Error -->
+      <div
+        v-else-if="error"
+        class="rounded-2xl border border-red-100 bg-red-50 py-8 text-center text-sm text-red-600"
+      >
+        Failed to load recent orders. Please refresh the page.
       </div>
 
       <!-- Empty -->

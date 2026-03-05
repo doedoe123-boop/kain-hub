@@ -1,5 +1,5 @@
 <script setup>
-import { RouterLink, useRoute } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 import {
   ShoppingCartIcon,
   Bars3Icon,
@@ -14,6 +14,12 @@ import { useCartStore } from "@/stores/cart";
 const auth = useAuthStore();
 const cart = useCartStore();
 const route = useRoute();
+const router = useRouter();
+
+async function handleLogout() {
+  await auth.logout();
+  router.push("/");
+}
 const mobileOpen = ref(false);
 const storesFlyout = ref(false);
 
@@ -239,7 +245,7 @@ function isActive(path) {
           <button
             type="button"
             class="rounded-lg px-3 py-2 text-sm font-medium text-white/40 hover:bg-red-500/10 hover:text-red-400 transition-colors"
-            @click="auth.logout"
+            @click="handleLogout"
           >
             Sign out
           </button>

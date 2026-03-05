@@ -26,8 +26,8 @@ class PaymentMethod extends Model
     {
         return [
             'is_default' => 'boolean',
-            'exp_month'  => 'integer',
-            'exp_year'   => 'integer',
+            'exp_month' => 'integer',
+            'exp_year' => 'integer',
         ];
     }
 

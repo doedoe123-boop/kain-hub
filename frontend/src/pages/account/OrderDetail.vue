@@ -12,6 +12,7 @@ const order = ref(null);
 const loading = ref(true);
 const cancelling = ref(false);
 const reordering = ref(false);
+const reorderError = ref(false);
 
 onMounted(async () => {
   try {
@@ -91,12 +92,15 @@ async function cancelOrder() {
 
 async function reorder() {
   reordering.value = true;
+  reorderError.value = false;
 
   try {
     for (const line of order.value?.lines ?? []) {
       await cartApi.addItem("product", line.purchasable_id, line.quantity);
     }
     router.push("/cart");
+  } catch {
+    reorderError.value = true;
   } finally {
     reordering.value = false;
   }
@@ -260,6 +264,9 @@ async function reorder() {
           <ArrowPathIcon class="size-4" />
           {{ reordering ? "Adding to cart…" : "Reorder" }}
         </button>
+        <p v-if="reorderError" class="mt-2 w-full text-xs text-red-600">
+          Failed to add items to cart. Please try again.
+        </p>
       </div>
     </div>
   </div>

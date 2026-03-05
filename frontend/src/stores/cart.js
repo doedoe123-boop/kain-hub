@@ -84,6 +84,10 @@ export const useCartStore = defineStore("cart", () => {
   function toggleDrawer() {
     isOpen.value = !isOpen.value;
   }
+  function reset() {
+    cart.value = null;
+    isOpen.value = false;
+  }
 
   return {
     cart,
@@ -102,5 +106,6 @@ export const useCartStore = defineStore("cart", () => {
     openDrawer,
     closeDrawer,
     toggleDrawer,
+    reset,
   };
 });

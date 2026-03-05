@@ -39,8 +39,8 @@ class LunarSeeder extends Seeder
 
         if (! Currency::whereDefault(true)->exists()) {
             Currency::create([
-                'code' => 'USD',
-                'name' => 'US Dollar',
+                'code' => 'PHP',
+                'name' => 'Philippine Peso',
                 'exchange_rate' => 1,
                 'decimal_places' => 2,
                 'default' => true,

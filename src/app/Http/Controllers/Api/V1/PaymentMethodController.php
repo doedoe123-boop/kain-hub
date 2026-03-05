@@ -58,13 +58,13 @@ class PaymentMethodController extends Controller
             }
 
             return $user->paymentMethods()->create([
-                'paymongo_id'           => $paymongoMethodId,
-                'paymongo_customer_id'  => $customerId,
-                'brand'                 => $pmData['details']['brand'] ?? null,
-                'last4'                 => $pmData['details']['last4'] ?? null,
-                'exp_month'             => $pmData['details']['exp_month'] ?? null,
-                'exp_year'              => $pmData['details']['exp_year'] ?? null,
-                'is_default'            => $isFirstMethod,
+                'paymongo_id' => $paymongoMethodId,
+                'paymongo_customer_id' => $customerId,
+                'brand' => $pmData['details']['brand'] ?? null,
+                'last4' => $pmData['details']['last4'] ?? null,
+                'exp_month' => $pmData['details']['exp_month'] ?? null,
+                'exp_year' => $pmData['details']['exp_year'] ?? null,
+                'is_default' => $isFirstMethod,
             ]);
         });
 

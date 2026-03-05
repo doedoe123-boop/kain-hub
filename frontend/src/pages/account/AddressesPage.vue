@@ -66,8 +66,21 @@ function openEdit(address) {
 }
 
 async function save() {
-  saving.value = true;
   errors.value = {};
+
+  const required = ["line1", "city", "province", "postal_code"];
+  const clientErrors = {};
+  required.forEach((field) => {
+    if (!form.value[field]?.trim()) {
+      clientErrors[field] = ["This field is required."];
+    }
+  });
+  if (Object.keys(clientErrors).length) {
+    errors.value = clientErrors;
+    return;
+  }
+
+  saving.value = true;
 
   try {
     if (editingId.value) {

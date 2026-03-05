@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { authApi } from "@/api/auth";
+import { useCartStore } from "@/stores/cart";
 
 export const useAuthStore = defineStore("auth", () => {
   const user = ref(null);
@@ -42,6 +43,7 @@ export const useAuthStore = defineStore("auth", () => {
     await authApi.logout();
     localStorage.removeItem("api_token");
     user.value = null;
+    useCartStore().reset();
   }
 
   async function forgotPassword(email) {

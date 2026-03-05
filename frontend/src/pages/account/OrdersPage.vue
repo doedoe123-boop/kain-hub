@@ -5,11 +5,14 @@ import { ordersApi } from "@/api/orders";
 
 const orders = ref([]);
 const loading = ref(true);
+const error = ref(false);
 
 onMounted(async () => {
   try {
     const { data } = await ordersApi.list();
     orders.value = data.data ?? data;
+  } catch {
+    error.value = true;
   } finally {
     loading.value = false;
   }
@@ -36,6 +39,13 @@ const statusColors = {
         :key="i"
         class="h-20 animate-pulse rounded-2xl bg-slate-100"
       />
+    </div>
+
+    <div
+      v-else-if="error"
+      class="rounded-2xl border border-red-100 bg-red-50 py-10 text-center text-sm text-red-600"
+    >
+      Failed to load orders. Please refresh the page.
     </div>
 
     <div

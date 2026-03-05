@@ -14,6 +14,7 @@ const router = useRouter();
 const stores = ref([]);
 const meta = ref({});
 const loading = ref(true);
+const error = ref(false);
 const search = ref(route.query.search ?? "");
 const sector = ref(route.query.sector ?? "");
 
@@ -32,6 +33,7 @@ const sectors = [
 
 async function load(page = 1) {
   loading.value = true;
+  error.value = false;
   try {
     const { data } = await storesApi.list({
       search: search.value || undefined,
@@ -40,6 +42,8 @@ async function load(page = 1) {
     });
     stores.value = data.data ?? data;
     meta.value = data.meta ?? {};
+  } catch {
+    error.value = true;
   } finally {
     loading.value = false;
   }
@@ -72,7 +76,7 @@ watch(
     <!-- Page header with integrated search -->
     <div
       class="relative overflow-hidden py-14 text-white"
-      style="background: #0F2044;"
+      style="background: #0f2044"
     >
       <!-- Subtle pattern overlay -->
       <div class="pointer-events-none absolute inset-0 opacity-10">
@@ -174,6 +178,21 @@ watch(
           :key="i"
           class="h-52 animate-pulse rounded-2xl bg-slate-100"
         />
+      </div>
+
+      <!-- Error -->
+      <div
+        v-else-if="error"
+        class="rounded-2xl border border-red-100 bg-red-50 py-14 text-center text-sm text-red-600"
+      >
+        Failed to load stores. Please try again.
+        <button
+          type="button"
+          class="mt-3 block mx-auto text-red-700 underline hover:no-underline"
+          @click="load()"
+        >
+          Retry
+        </button>
       </div>
 
       <!-- Empty -->

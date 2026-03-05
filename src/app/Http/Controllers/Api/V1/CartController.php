@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\AddCartLineRequest;
+use App\Http\Requests\Api\V1\SetCartAddressRequest;
+use App\Http\Requests\Api\V1\SetShippingOptionRequest;
+use App\Http\Requests\Api\V1\UpdateCartLineRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\CartSession;
 use Lunar\Models\Cart;
@@ -43,14 +46,9 @@ class CartController extends Controller
      * POST /api/v1/cart/lines
      * Add a purchasable item to the cart.
      */
-    public function addLine(Request $request): JsonResponse
+    public function addLine(AddCartLineRequest $request): JsonResponse
     {
-        $data = $request->validate([
-            'purchasable_type' => ['required', 'string', 'in:'.implode(',', array_keys(self::PURCHASABLE_TYPES))],
-            'purchasable_id' => ['required', 'integer'],
-            'quantity' => ['required', 'integer', 'min:1', 'max:100'],
-            'meta' => ['nullable', 'array'],
-        ]);
+        $data = $request->validated();
 
         $modelClass = self::PURCHASABLE_TYPES[$data['purchasable_type']];
         $purchasable = $modelClass::findOrFail($data['purchasable_id']);
@@ -74,11 +72,9 @@ class CartController extends Controller
      * PATCH /api/v1/cart/lines/{lineId}
      * Update the quantity of an existing cart line.
      */
-    public function updateLine(Request $request, int $lineId): JsonResponse
+    public function updateLine(UpdateCartLineRequest $request, int $lineId): JsonResponse
     {
-        $data = $request->validate([
-            'quantity' => ['required', 'integer', 'min:1', 'max:100'],
-        ]);
+        $data = $request->validated();
 
         $cart = CartSession::manager();
         $cart = $cart->updateLine($lineId, $data['quantity']);
@@ -141,9 +137,9 @@ class CartController extends Controller
      * POST /api/v1/cart/shipping-option
      * Set the chosen shipping option on the cart.
      */
-    public function setShippingOption(Request $request): JsonResponse
+    public function setShippingOption(SetShippingOptionRequest $request): JsonResponse
     {
-        $data = $request->validate(['shipping_rate_id' => ['required', 'string']]);
+        $data = $request->validated();
         $options = CartSession::getShippingOptions();
 
         $option = $options->first(
@@ -164,24 +160,10 @@ class CartController extends Controller
      * POST /api/v1/cart/address
      * Set or replace the shipping address on the cart.
      */
-    public function setAddress(Request $request): JsonResponse
+    public function setAddress(SetCartAddressRequest $request): JsonResponse
     {
-        $request->validate([
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'line_one' => ['required', 'string', 'max:255'],
-            'city' => ['required', 'string', 'max:255'],
-            'state' => ['required', 'string', 'max:255'],
-            'postcode' => ['required', 'string', 'max:20'],
-            'country' => ['required', 'string', 'size:2'],
-            'phone' => ['nullable', 'string', 'max:30'],
-        ]);
-
         $cart = CartSession::manager();
-        $cart->setShippingAddress($request->only([
-            'first_name', 'last_name', 'line_one',
-            'city', 'state', 'postcode', 'country', 'phone',
-        ]));
+        $cart->setShippingAddress($request->validated());
 
         return response()->json(['message' => 'Address saved.']);
     }

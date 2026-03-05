@@ -15,14 +15,14 @@ class UpdateAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'label'       => ['nullable', 'string', 'max:50'],
-            'line1'       => ['required', 'string', 'max:255'],
-            'line2'       => ['nullable', 'string', 'max:255'],
-            'barangay'    => ['nullable', 'string', 'max:100'],
-            'city'        => ['required', 'string', 'max:100'],
-            'province'    => ['required', 'string', 'max:100'],
+            'label' => ['nullable', 'string', 'max:50'],
+            'line1' => ['required', 'string', 'max:255'],
+            'line2' => ['nullable', 'string', 'max:255'],
+            'barangay' => ['nullable', 'string', 'max:100'],
+            'city' => ['required', 'string', 'max:100'],
+            'province' => ['required', 'string', 'max:100'],
             'postal_code' => ['required', 'string', 'max:10'],
-            'is_default'  => ['boolean'],
+            'is_default' => ['boolean'],
         ];
     }
 }

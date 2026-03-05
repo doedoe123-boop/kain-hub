@@ -19,6 +19,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Lunar\Shipping\ShippingPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -43,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Admin/Widgets'), for: 'App\\Filament\\Admin\\Widgets')
             ->widgets([])
+            ->plugin(ShippingPlugin::make())
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
             ->middleware([

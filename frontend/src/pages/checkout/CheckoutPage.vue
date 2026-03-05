@@ -2,12 +2,14 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useCartStore } from "@/stores/cart";
+import { useAuthStore } from "@/stores/auth";
 import { cartApi } from "@/api/cart";
 import { ordersApi } from "@/api/orders";
 import { addressesApi } from "@/api/addresses";
 
 const router = useRouter();
 const cart = useCartStore();
+const auth = useAuthStore();
 
 const shippingOptions = ref([]);
 const selectedShipping = ref(null);
@@ -37,7 +39,9 @@ onMounted(async () => {
     shippingRes.status === "fulfilled" ? shippingRes.value.data : [];
 
   if (addressRes.status === "fulfilled") {
-    const def = (addressRes.value.data ?? []).find((a) => a.is_default);
+    const addresses =
+      addressRes.value.data?.data ?? addressRes.value.data ?? [];
+    const def = addresses.find((a) => a.is_default) ?? addresses[0];
 
     if (def) {
       address.value.line_one = def.line1 ?? "";
@@ -45,6 +49,14 @@ onMounted(async () => {
       address.value.state = def.province ?? "";
       address.value.postcode = def.postal_code ?? "";
     }
+  }
+
+  // Pre-fill name and phone from the authenticated user profile
+  if (auth.user) {
+    const parts = (auth.user.name ?? "").trim().split(/\s+/);
+    address.value.first_name = parts[0] ?? "";
+    address.value.last_name = parts.slice(1).join(" ") ?? "";
+    address.value.phone = auth.user.phone ?? "";
   }
 });
 

@@ -40,9 +40,9 @@ class UserController extends Controller
     public function updateSettings(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'notification_preferences'             => ['required', 'array'],
+            'notification_preferences' => ['required', 'array'],
             'notification_preferences.order_updates' => ['boolean'],
-            'notification_preferences.promotions'    => ['boolean'],
+            'notification_preferences.promotions' => ['boolean'],
         ]);
 
         $user = $request->user();
