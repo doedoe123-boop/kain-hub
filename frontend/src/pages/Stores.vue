@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, nextTick } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import {
   MagnifyingGlassIcon,
@@ -18,6 +18,7 @@ const error = ref(false);
 const search = ref(route.query.search ?? "");
 const sector = ref(route.query.sector ?? "");
 const collectionId = ref(route.query.collection_id ?? "");
+const searchInputRef = ref(null);
 
 const sectorLabels = {
   ecommerce: "E-Commerce",
@@ -67,7 +68,12 @@ function setSector(value) {
   onSearch();
 }
 
-onMounted(() => load());
+onMounted(() => {
+  load();
+  if (route.query.focus) {
+    nextTick(() => searchInputRef.value?.focus());
+  }
+});
 watch(
   () => route.query,
   (q) => {
@@ -141,6 +147,7 @@ watch(
               class="absolute left-3.5 top-1/2 size-4.5 -translate-y-1/2 text-slate-400"
             />
             <input
+              ref="searchInputRef"
               v-model="search"
               type="search"
               placeholder="Search stores by name…"

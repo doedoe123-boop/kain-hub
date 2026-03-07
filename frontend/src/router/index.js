@@ -44,6 +44,11 @@ const routes = [
         name: "properties.show",
         component: () => import("@/pages/realty/PropertyDetail.vue"),
       },
+      {
+        path: "agent/:slug",
+        name: "agent.show",
+        component: () => import("@/pages/realty/AgentDetail.vue"),
+      },
       // ─── Lipat Bahay / Moving Service ────────────────────────────────
       {
         path: "movers",

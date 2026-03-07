@@ -7,21 +7,10 @@ const router = useRouter();
 const route = useRoute();
 const active = ref(route.query.collection_id ?? "");
 
-// Map category slug → emoji icon; unknown slugs fall back to 🏷️
-const ICON_MAP = {
-  electronics: "📱",
-  fashion: "👗",
-  food: "🛒",
-  "home-living": "🛋️",
-  beauty: "💄",
-  sports: "⚽",
-  gadgets: "💻",
-  books: "📚",
-};
-
 const FIXED_START = [{ id: "", name: "All", slug: "", icon: "🏪" }];
 const FIXED_END = [
   { id: "properties", name: "Properties", slug: "properties", icon: "🏡" },
+  { id: "movers", name: "Lipat Bahay", slug: "movers", icon: "🚚" },
 ];
 
 const dynamicCategories = ref([]);
@@ -34,7 +23,7 @@ onMounted(async () => {
       id: c.id,
       name: c.name,
       slug: c.slug ?? "",
-      icon: ICON_MAP[c.slug] ?? "🏷️",
+      icon: c.icon ?? "🏷️",
     }));
   } catch {
     // silently fall back to empty dynamic list — fixed items still show
@@ -55,6 +44,11 @@ function select(cat) {
     router.push("/properties");
     return;
   }
+  if (cat.id === "movers") {
+    active.value = "movers";
+    router.push("/movers");
+    return;
+  }
   active.value = cat.id;
   router.push({
     path: "/stores",
@@ -66,26 +60,28 @@ function select(cat) {
 <template>
   <div class="border-b border-slate-100 bg-white shadow-sm">
     <div class="mx-auto max-w-7xl px-4 sm:px-6">
+      <!-- Skeleton -->
       <div
         v-if="loading"
-        class="flex items-center gap-2 overflow-x-auto py-2.5 scrollbar-none"
+        class="flex items-center gap-1.5 overflow-x-auto py-2 scrollbar-none"
       >
         <div
-          v-for="i in 6"
+          v-for="i in 8"
           :key="i"
-          class="h-7 w-20 shrink-0 animate-pulse rounded-lg bg-slate-100"
+          class="h-7 w-20 shrink-0 animate-pulse rounded-full bg-slate-100"
         />
       </div>
 
+      <!-- Category pills -->
       <div
         v-else
-        class="flex items-center gap-2 overflow-x-auto py-2.5 scrollbar-none"
+        class="flex items-center gap-1.5 overflow-x-auto py-2 scrollbar-none"
       >
         <button
           v-for="cat in categories"
           :key="cat.id"
           type="button"
-          class="flex shrink-0 items-center gap-1.5 rounded-lg px-5 py-3 text-xs font-semibold whitespace-nowrap transition-all"
+          class="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-all"
           :class="
             active === cat.id
               ? 'bg-navy-900 text-white shadow-sm'
@@ -93,7 +89,7 @@ function select(cat) {
           "
           @click="select(cat)"
         >
-          <span class="text-sm leading-none">{{ cat.icon }}</span>
+          <span class="text-xs leading-none">{{ cat.icon }}</span>
           {{ cat.name }}
         </button>
       </div>

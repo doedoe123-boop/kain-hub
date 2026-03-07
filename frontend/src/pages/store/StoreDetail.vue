@@ -65,7 +65,9 @@ async function addToCart(product) {
       <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <!-- Store info bar -->
         <div class="relative -mt-10 mb-6 flex items-end gap-4">
-          <div class="size-20 shrink-0 rounded-2xl bg-slate-300 ring-4 ring-white shadow-md" />
+          <div
+            class="size-20 shrink-0 rounded-2xl bg-slate-300 ring-4 ring-white shadow-md"
+          />
           <div class="mb-2 space-y-2">
             <div class="h-6 w-40 rounded-lg bg-slate-200" />
             <div class="h-4 w-24 rounded-full bg-slate-100" />
@@ -79,7 +81,11 @@ async function addToCart(product) {
         <!-- Product grid -->
         <div class="h-6 w-24 rounded-lg bg-slate-200 mb-4" />
         <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          <div v-for="i in 8" :key="i" class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-100">
+          <div
+            v-for="i in 8"
+            :key="i"
+            class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-100"
+          >
             <div class="aspect-square w-full rounded-t-2xl bg-slate-100" />
             <div class="p-3 space-y-2">
               <div class="h-4 w-3/4 rounded bg-slate-100" />
@@ -103,8 +109,8 @@ async function addToCart(product) {
       <!-- Banner -->
       <div class="relative h-48 w-full overflow-hidden sm:h-56">
         <img
-          v-if="store.banner"
-          :src="store.banner"
+          v-if="store.banner_url"
+          :src="store.banner_url"
           :alt="store.name"
           class="h-full w-full object-cover"
         />
@@ -201,7 +207,11 @@ async function addToCart(product) {
           >
             <!-- Low-stock badge -->
             <span
-              v-if="product.stock != null && product.stock <= 10 && product.stock > 0"
+              v-if="
+                product.stock != null &&
+                product.stock <= 10 &&
+                product.stock > 0
+              "
               class="absolute left-2 top-2 z-10 rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-bold text-white shadow"
             >
               Only {{ product.stock }} left
@@ -223,7 +233,10 @@ async function addToCart(product) {
                   :alt="product.name"
                   class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
-                <div v-else class="flex h-full items-center justify-center text-4xl">
+                <div
+                  v-else
+                  class="flex h-full items-center justify-center text-4xl"
+                >
                   🛍️
                 </div>
               </div>
@@ -232,14 +245,19 @@ async function addToCart(product) {
             <!-- Info -->
             <div class="flex flex-1 flex-col p-3">
               <RouterLink :to="`/products/${product.id}`">
-                <p class="line-clamp-2 text-sm font-semibold leading-snug text-slate-800 transition-colors group-hover:text-brand-600">
+                <p
+                  class="line-clamp-2 text-sm font-semibold leading-snug text-slate-800 transition-colors group-hover:text-brand-600"
+                >
                   {{ product.name }}
                 </p>
               </RouterLink>
               <p class="mt-1.5 text-base font-extrabold text-slate-900">
                 {{
                   product.price != null
-                    ? "₱" + parseFloat(product.price).toLocaleString("en-PH", { maximumFractionDigits: 0 })
+                    ? "₱" +
+                      parseFloat(product.price).toLocaleString("en-PH", {
+                        maximumFractionDigits: 0,
+                      })
                     : "—"
                 }}
               </p>
@@ -247,10 +265,16 @@ async function addToCart(product) {
               <button
                 type="button"
                 class="mt-auto mt-3 w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:from-brand-600 hover:to-brand-700 hover:shadow-brand-500/25 hover:shadow-md active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
-                :disabled="cart.loading || (product.stock != null && product.stock <= 0)"
+                :disabled="
+                  cart.loading || (product.stock != null && product.stock <= 0)
+                "
                 @click.prevent="addToCart(product)"
               >
-                {{ product.stock != null && product.stock <= 0 ? "Out of Stock" : "Add to Cart" }}
+                {{
+                  product.stock != null && product.stock <= 0
+                    ? "Out of Stock"
+                    : "Add to Cart"
+                }}
               </button>
             </div>
           </div>

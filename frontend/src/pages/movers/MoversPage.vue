@@ -51,15 +51,64 @@ onMounted(() => fetchMovers());
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-slate-50">
     <!-- Header -->
-    <div class="bg-blue-600 py-12 text-white">
-      <div class="mx-auto max-w-7xl px-4">
-        <div class="flex items-center gap-3">
-          <TruckIcon class="h-10 w-10" />
+    <div
+      class="relative overflow-hidden py-14 text-white"
+      style="background: #0f2044"
+    >
+      <!-- Subtle pattern overlay -->
+      <div class="pointer-events-none absolute inset-0 opacity-10">
+        <svg class="size-full" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern
+              id="movers-grid"
+              width="32"
+              height="32"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 32 0 L 0 0 0 32"
+                fill="none"
+                stroke="white"
+                stroke-width="0.5"
+              />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#movers-grid)" />
+        </svg>
+      </div>
+      <div class="relative mx-auto max-w-7xl px-4 sm:px-6">
+        <RouterLink
+          to="/"
+          class="mb-5 inline-flex items-center gap-1.5 text-sm font-medium text-white/60 hover:text-white transition-colors"
+        >
+          <svg
+            class="size-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m15 19-7-7 7-7"
+            />
+          </svg>
+          Home
+        </RouterLink>
+        <div class="flex items-center gap-4">
+          <span
+            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-violet-500/20 ring-1 ring-violet-400/30"
+          >
+            <TruckIcon class="h-6 w-6 text-violet-300" />
+          </span>
           <div>
-            <h1 class="text-3xl font-bold">Lipat Bahay — Moving Services</h1>
-            <p class="mt-1 text-blue-100">
+            <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
+              Lipat Bahay
+            </h1>
+            <p class="mt-1 text-white/70 sm:text-lg">
               Find trusted moving companies near you
             </p>
           </div>
@@ -68,27 +117,31 @@ onMounted(() => fetchMovers());
     </div>
 
     <!-- Filters -->
-    <div class="border-b bg-white shadow-sm">
-      <div class="mx-auto max-w-7xl px-4 py-4">
+    <div class="border-b border-slate-100 bg-white shadow-sm">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 py-4">
         <form class="flex flex-wrap gap-3" @submit.prevent="applyFilters">
-          <div class="flex items-center gap-2 rounded-lg border px-3 py-2">
-            <MagnifyingGlassIcon class="h-4 w-4 text-gray-400" />
+          <div
+            class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all"
+          >
+            <MagnifyingGlassIcon class="h-4 w-4 text-slate-400 shrink-0" />
             <input
               v-model="filters.city"
               type="text"
               placeholder="City..."
-              class="w-36 text-sm outline-none"
+              autocomplete="off"
+              class="w-36 bg-transparent text-sm text-slate-700 placeholder-slate-400 outline-none focus:outline-none"
             />
           </div>
           <input
             v-model="filters.province"
             type="text"
             placeholder="Province..."
-            class="rounded-lg border px-3 py-2 text-sm outline-none"
+            autocomplete="off"
+            class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 placeholder-slate-400 outline-none focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 transition-all"
           />
           <button
             type="submit"
-            class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            class="rounded-xl bg-emerald-600 px-5 py-2 text-sm font-bold text-white hover:bg-emerald-500 transition-all"
           >
             Search
           </button>
@@ -105,17 +158,21 @@ onMounted(() => fetchMovers());
         <div
           v-for="i in 6"
           :key="i"
-          class="h-48 animate-pulse rounded-xl bg-gray-200"
+          class="h-48 animate-pulse rounded-2xl bg-slate-100"
         ></div>
       </div>
 
       <div
         v-else-if="movers.length === 0"
-        class="py-20 text-center text-gray-500"
+        class="rounded-2xl border border-dashed border-slate-200 bg-white py-20 text-center"
       >
-        <TruckIcon class="mx-auto mb-4 h-16 w-16 text-gray-300" />
-        <p class="text-lg font-medium">No moving companies found</p>
-        <p class="mt-1 text-sm">Try adjusting your search filters</p>
+        <TruckIcon class="mx-auto mb-4 h-16 w-16 text-slate-300" />
+        <p class="text-lg font-medium text-slate-600">
+          No moving companies found
+        </p>
+        <p class="mt-1 text-sm text-slate-400">
+          Try adjusting your search filters
+        </p>
       </div>
 
       <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -123,34 +180,39 @@ onMounted(() => fetchMovers());
           v-for="mover in movers"
           :key="mover.id"
           :to="{ name: 'movers.show', params: { slug: mover.slug } }"
-          class="group rounded-xl border bg-white p-6 shadow-sm transition hover:shadow-md"
+          class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
         >
-          <div class="flex items-start gap-4">
-            <div
-              class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600"
-            >
-              <TruckIcon class="h-7 w-7" />
-            </div>
-            <div class="min-w-0">
-              <h3
-                class="truncate font-semibold text-gray-900 group-hover:text-blue-600"
+          <div class="p-5">
+            <div class="flex items-start gap-4">
+              <div
+                class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-violet-50 ring-1 ring-violet-200"
               >
-                {{ mover.name }}
-              </h3>
-              <p class="mt-1 text-sm text-gray-500">
-                {{ mover.city
-                }}<span v-if="mover.province">, {{ mover.province }}</span>
-              </p>
-              <p
-                v-if="mover.description"
-                class="mt-2 line-clamp-2 text-sm text-gray-600"
-              >
-                {{ mover.description }}
-              </p>
+                <TruckIcon class="h-7 w-7 text-violet-600" />
+              </div>
+              <div class="min-w-0">
+                <h3
+                  class="truncate font-semibold text-slate-800 group-hover:text-emerald-600 transition-colors"
+                >
+                  {{ mover.name }}
+                </h3>
+                <p class="mt-1 text-sm text-slate-500">
+                  {{ mover.city
+                  }}<span v-if="mover.province">, {{ mover.province }}</span>
+                </p>
+                <p
+                  v-if="mover.description"
+                  class="mt-2 line-clamp-2 text-sm text-slate-600"
+                >
+                  {{ mover.description }}
+                </p>
+              </div>
             </div>
           </div>
-          <div class="mt-4 flex items-center justify-between">
-            <span class="text-sm font-medium text-blue-600"
+          <div
+            class="mt-auto flex items-center justify-between border-t border-slate-100 px-5 py-3"
+          >
+            <span
+              class="text-sm font-semibold text-emerald-600 group-hover:text-emerald-500"
               >View Details →</span
             >
           </div>
