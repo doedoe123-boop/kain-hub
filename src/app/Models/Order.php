@@ -74,14 +74,6 @@ class Order extends LunarOrder
         return $this->belongsTo(Store::class);
     }
 
-    /**
-     * Return the customer who placed this order.
-     */
-    public function customer(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
     // ── Scopes ─────────────────────────────────────────────────────────
 
     /**

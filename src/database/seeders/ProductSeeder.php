@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Store;
+use App\Support\MediaSeederHelper;
 use Illuminate\Database\Seeder;
 use Lunar\FieldTypes\Number;
 use Lunar\FieldTypes\TranslatedText;
@@ -135,6 +136,9 @@ class ProductSeeder extends Seeder
             'compare_price' => $data['compare_price'],
             'min_quantity' => 1,
         ]);
+
+        $keyword = MediaSeederHelper::keywordForProductType($data['type']);
+        MediaSeederHelper::attachImages($product, $keyword, 'images', 3);
     }
 
     /**

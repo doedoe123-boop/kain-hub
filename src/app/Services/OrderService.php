@@ -171,7 +171,7 @@ class OrderService
      */
     private function notifyCustomer(Order $order): void
     {
-        $customer = $order->customer;
+        $customer = $order->user;
 
         if (! $customer) {
             return;

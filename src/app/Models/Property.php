@@ -6,12 +6,15 @@ use App\ListingType;
 use App\PropertyStatus;
 use App\PropertyType;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * @property int $id
@@ -50,11 +53,12 @@ use Illuminate\Support\Str;
  * @property ?\Illuminate\Support\Carbon $published_at
  * @property int $views_count
  */
-class Property extends Model
+class Property extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\PropertyFactory> */
     use HasFactory;
 
+    use InteractsWithMedia;
     use SoftDeletes;
 
     /** @var list<string> */
@@ -111,7 +115,6 @@ class Property extends Model
             'floor_area' => 'decimal:2',
             'lot_area' => 'decimal:2',
             'features' => 'array',
-            'images' => 'array',
             'floor_plans' => 'array',
             'documents' => 'array',
             'nearby_places' => 'array',
@@ -119,6 +122,45 @@ class Property extends Model
             'published_at' => 'datetime',
             'views_count' => 'integer',
         ];
+    }
+
+    // ── Accessors ─────────────────────────────────────────────────────
+
+    /**
+     * Return image URLs from the Spatie media library when loaded,
+     * falling back to the legacy JSON column value.
+     *
+     * @return Attribute<list<string>, list<string>|string>
+     */
+    protected function images(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                if ($this->relationLoaded('media')) {
+                    $urls = $this->getMedia('images')
+                        ->map(fn ($m) => $m->getFullUrl())
+                        ->values()
+                        ->toArray();
+
+                    if (! empty($urls)) {
+                        return $urls;
+                    }
+                }
+
+                return json_decode($value ?? '[]', true) ?? [];
+            },
+            set: fn ($value) => is_array($value) ? json_encode($value) : $value,
+        );
+    }
+
+    // ── Media ──────────────────────────────────────────────────────────
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images')
+            ->useFallbackUrl('/images/placeholder-property.jpg');
+
+        $this->addMediaCollection('floor_plans');
     }
 
     // ── Boot ───────────────────────────────────────────────────────────

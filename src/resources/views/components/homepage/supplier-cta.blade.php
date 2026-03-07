@@ -29,7 +29,7 @@
             </h2>
             
             <p class="text-lg sm:text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto mb-10 font-medium">
-                Tap into the Philippines' most trusted B2B network. Free to register, no hidden fees, and highly targeted buyer exposure.
+                Tap into the Philippines' most trusted multi-sector marketplace. Free to register, no hidden fees, and targeted customer exposure.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">

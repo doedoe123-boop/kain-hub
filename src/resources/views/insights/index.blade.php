@@ -25,7 +25,7 @@
                 </h1>
 
                 <p class="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl mx-auto md:mx-0">
-                    Data-driven intelligence on Philippine marketplace trends. Analyze industry performance, monitor regional supply chains, and leverage B2B macroeconomic data to scale securely.
+                    Data-driven intelligence on Philippine marketplace trends. Analyze industry performance, monitor regional activity, and leverage marketplace data to grow your business.
                 </p>
             </div>
         </div>

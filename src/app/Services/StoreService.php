@@ -123,7 +123,8 @@ class StoreService
         }
 
         if (! empty($filters['search'])) {
-            $query->where('name', 'like', '%'.$filters['search'].'%');
+            $like = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $query->where('name', $like, '%'.$filters['search'].'%');
         }
 
         if (! empty($filters['collection_id'])) {

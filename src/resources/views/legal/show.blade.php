@@ -84,9 +84,35 @@
                 {{-- Rich Document Content --}}
                 <div class="flex-1 min-w-0">
                     <div class="bg-white dark:bg-slate-800/40 rounded-3xl border border-slate-200 dark:border-slate-700/50 p-8 sm:p-12 lg:p-16 shadow-sm">
-                        <div class="prose prose-slate dark:prose-invert prose-lg max-w-none text-slate-600 dark:text-slate-300 font-medium">
+                        <div class="legal-content font-medium leading-relaxed text-slate-700 dark:text-slate-300">
                             {!! $page->content !!}
                         </div>
+                        
+                        <style>
+                            /* Forced overrides for legal content to fix caching issues */
+                            .legal-content p, 
+                            .legal-content ul, 
+                            .legal-content ol, 
+                            .legal-content li {
+                                color: inherit !important;
+                            }
+                            .dark .legal-content p,
+                            .dark .legal-content ul,
+                            .dark .legal-content ol,
+                            .dark .legal-content li {
+                                color: #e2e8f0 !important; /* Forces bright slate-200 in dark mode */
+                            }
+                            
+                            .legal-content h2 {
+                                color: #0f172a !important;
+                                margin-top: 3rem; margin-bottom: 1rem;
+                                border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem;
+                            }
+                            .dark .legal-content h2 { color: #ffffff !important; border-bottom-color: rgba(51, 65, 85, 0.5) !important; }
+                            
+                            .legal-content h3 { color: #1e293b !important; margin-top: 2rem; margin-bottom: 0.75rem; }
+                            .dark .legal-content h3 { color: #f8fafc !important; }
+                        </style>
                     </div>
 
                     {{-- Back + contact --}}

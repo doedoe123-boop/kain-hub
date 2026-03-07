@@ -101,7 +101,7 @@
                                 <x-heroicon-o-archive-box class="w-10 h-10 text-slate-400 dark:text-slate-500" />
                             </div>
                             <h3 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2">Product Catalog Integration Network</h3>
-                            <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">This supplier's extensive inventory and specialized B2B service offerings are currently being localized and will be listed here shortly.</p>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">This seller's inventory and service offerings are currently being set up and will be listed here shortly.</p>
                             
                             <button disabled class="mt-8 px-8 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-bold text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 cursor-not-allowed">
                                 View Full Inventory (Coming Soon)
@@ -121,7 +121,7 @@
                         
                         <div class="relative z-10 text-center">
                             <h3 class="text-xl font-bold text-white mb-2">Interested in negotiating?</h3>
-                            <p class="text-sm text-white/80 leading-relaxed mb-6 font-medium">Initiate secure B2B contact to discuss high-volume orders, corporate pricing, or bespoke logistics.</p>
+                            <p class="text-sm text-white/80 leading-relaxed mb-6 font-medium">Initiate direct contact to discuss orders, pricing, or custom arrangements.</p>
                             <button disabled class="w-full inline-flex items-center justify-center px-6 py-4 text-sm font-extrabold rounded-xl text-{{ $themeColor }}-900 bg-white hover:bg-slate-50 opacity-90 cursor-not-allowed transition-all">
                                 <x-heroicon-s-envelope class="w-5 h-5 mr-2" />
                                 Initiate Secure Inquiry

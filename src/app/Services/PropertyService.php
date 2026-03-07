@@ -28,19 +28,18 @@ class PropertyService
     public function browse(array $params = []): LengthAwarePaginator
     {
         $query = Property::query()
-            ->with('store:id,name,slug,logo')
+            ->with(['store:id,name,slug,logo', 'media'])
             ->where('status', PropertyStatus::Active)
             ->whereNotNull('published_at')
             ->latest('published_at');
 
         if (! empty($params['search'])) {
             $search = $params['search'];
-            // LIKE is case-insensitive by default in both SQLite (tests) and
-            // PostgreSQL (production) for ASCII characters.
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('city', 'like', "%{$search}%")
-                    ->orWhere('address_line', 'like', "%{$search}%");
+            $like = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $query->where(function ($q) use ($search, $like) {
+                $q->where('title', $like, "%{$search}%")
+                    ->orWhere('city', $like, "%{$search}%")
+                    ->orWhere('address_line', $like, "%{$search}%");
             });
         }
 
@@ -65,7 +64,8 @@ class PropertyService
         }
 
         if (! empty($params['city'])) {
-            $query->where('city', 'like', "%{$params['city']}%");
+            $like = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $query->where('city', $like, "%{$params['city']}%");
         }
 
         if (! empty($params['featured'])) {
@@ -83,6 +83,7 @@ class PropertyService
     public function featured(int $limit = 4): Collection
     {
         return Property::query()
+            ->with('media')
             ->where('status', PropertyStatus::Active)
             ->whereNotNull('published_at')
             ->orderByDesc('is_featured')
@@ -104,7 +105,7 @@ class PropertyService
 
         $property->increment('views_count');
 
-        return $property->fresh(['store']);
+        return $property->fresh(['store', 'media']);
     }
 
     /**
@@ -115,6 +116,7 @@ class PropertyService
     public function browseForStore(Store $store, array $params = []): LengthAwarePaginator
     {
         $query = Property::query()
+            ->with('media')
             ->where('store_id', $store->id)
             ->where('status', PropertyStatus::Active)
             ->whereNotNull('published_at')
@@ -122,9 +124,10 @@ class PropertyService
 
         if (! empty($params['search'])) {
             $search = $params['search'];
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('city', 'like', "%{$search}%");
+            $like = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $query->where(function ($q) use ($search, $like) {
+                $q->where('title', $like, "%{$search}%")
+                    ->orWhere('city', $like, "%{$search}%");
             });
         }
 

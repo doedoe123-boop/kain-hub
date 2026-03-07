@@ -25,7 +25,7 @@
                         <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-500 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                     </span>
-                    <span class="text-xs font-bold text-slate-800 dark:text-slate-300 tracking-wide uppercase">The Philippines' Premium B2B Platform</span>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-300 tracking-wide uppercase">The Philippines' Multi-Sector Marketplace</span>
                 </div>
 
                 {{-- Headline --}}
@@ -210,7 +210,7 @@ document.addEventListener('alpine:init', () => {
         isAnimating: false,
         cities: [
             { id: 'manila', name: 'Manila Primary Hub', subtitle: 'National Distribution Center', revenue: '₱1.2M', inquiries: '243 Active', pending: 'Logistics processing', recent1: 'TechCorp Solutions', type1: 'Bulk IT Equipment', val1: '₱450,000', recent2: 'City Grocers', type2: 'FMCG Distribution', val2: 'Processing' },
-            { id: 'iloilo', name: 'Iloilo Agri-Center', subtitle: 'Visayas Agricultural Hub', revenue: '₱350k', inquiries: '85 Active', pending: 'Farm-to-B2B routing', recent1: 'Panay Farmers Coop.', type1: 'Raw Agricultural', val1: '₱85,000', recent2: 'Western Seafoods', type2: 'Cold Chain Supply', val2: 'Manifested' },
+            { id: 'iloilo', name: 'Iloilo Agri-Center', subtitle: 'Visayas Agricultural Hub', revenue: '₱350k', inquiries: '85 Active', pending: 'Farm-to-market routing', recent1: 'Panay Farmers Coop.', type1: 'Raw Agricultural', val1: '₱85,000', recent2: 'Western Seafoods', type2: 'Cold Chain Supply', val2: 'Manifested' },
             { id: 'cebu', name: 'Cebu Trans-Hub', subtitle: 'Central Logistics Node', revenue: '₱890k', inquiries: '156 Active', pending: 'Maritime freight processing', recent1: 'Island Retailers', type1: 'Consumer Goods', val1: '₱210,000', recent2: 'Mactan Manufacturing', type2: 'Industrial Supplies', val2: 'In Transit' },
             { id: 'davao', name: 'Davao Exchange', subtitle: 'Mindanao Export Gateway', revenue: '₱620k', inquiries: '112 Active', pending: 'Export clearance in progress', recent1: 'Mindanao Plantations', type1: 'Bulk Fruit Export', val1: '₱320,000', recent2: 'Southern Builders', type2: 'Construction Materials', val2: 'Delivered' }
         ],

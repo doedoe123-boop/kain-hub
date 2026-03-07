@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Property;
 use App\Models\Store;
+use App\Support\MediaSeederHelper;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
@@ -36,7 +37,7 @@ class PropertyListingSeeder extends Seeder
             }
 
             foreach ($listings as $data) {
-                Property::create(array_merge(
+                $property = Property::create(array_merge(
                     [
                         'store_id' => $store->id,
                         'slug' => Str::slug($data['title']).'-'.Str::random(6),
@@ -44,6 +45,12 @@ class PropertyListingSeeder extends Seeder
                     ],
                     $data,
                 ));
+
+                $keyword = MediaSeederHelper::keywordForPropertyType(
+                    $data['property_type'] ?? 'house',
+                );
+
+                MediaSeederHelper::attachImages($property, $keyword, 'images', 4);
             }
         }
     }

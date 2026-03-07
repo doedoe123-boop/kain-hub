@@ -75,7 +75,7 @@
                         @endphp
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight mb-3">Targeted Exposure</h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Reach targeted B2B buyers across {{ $sectorsList }}. One unified storefront adapts seamlessly to different market segments.
+                            Reach targeted customers across {{ $sectorsList }}. One unified storefront adapts seamlessly to different market segments.
                         </p>
                     </div>
                 </div>

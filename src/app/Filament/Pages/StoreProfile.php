@@ -44,6 +44,7 @@ class StoreProfile extends Page implements HasForms
             'tagline' => $store->tagline,
             'description' => $store->description,
             'logo' => $store->logo,
+            'banner' => $store->banner,
             'phone' => $store->phone,
             'website' => $store->website,
             'address' => $store->address ?? [],
@@ -88,6 +89,21 @@ class StoreProfile extends Page implements HasForms
                             ->maxSize(2048)
                             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
                             ->helperText('Recommended: square image, at least 256×256 px. Max 2 MB.'),
+
+                        Forms\Components\FileUpload::make('banner')
+                            ->label('Store Banner / Cover Photo')
+                            ->image()
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('stores/banners')
+                            ->maxSize(5120)
+                            ->minImageWidth(800)
+                            ->minImageHeight(200)
+                            ->maxImageWidth(3840)
+                            ->maxImageHeight(1080)
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                            ->helperText('Recommended: 1200×300 px (4:1 landscape). Min 800×200 px, max 5 MB. Displayed at the top of your store page.')
+                            ->columnSpanFull(),
 
                         Forms\Components\TextInput::make('phone')
                             ->label('Business Phone')
@@ -187,6 +203,7 @@ class StoreProfile extends Page implements HasForms
             'tagline' => $data['tagline'] ?? null,
             'description' => $data['description'] ?? null,
             'logo' => $data['logo'] ?? $store->logo,
+            'banner' => $data['banner'] ?? $store->banner,
             'phone' => $data['phone'] ?? null,
             'website' => $data['website'] ?? null,
             'address' => $data['address'] ?? $store->address,

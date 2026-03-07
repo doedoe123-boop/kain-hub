@@ -51,7 +51,7 @@
                         Marketplace Feature Incoming
                     </span>
                     <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4 text-transparent bg-clip-text bg-gradient-to-b from-white to-white/80">Hot Wholesale Deals Are Coming!</h2>
-                    <p class="text-lg text-white/90 max-w-2xl mx-auto font-medium leading-relaxed">Verified suppliers will soon be able to post targeted volume discounts, flash sales, and clearance lots specifically designed for the B2B market.</p>
+                    <p class="text-lg text-white/90 max-w-2xl mx-auto font-medium leading-relaxed">Verified sellers will soon be able to post targeted volume discounts, flash sales, and clearance deals designed for everyday shoppers and businesses alike.</p>
                 </div>
             </div>
 

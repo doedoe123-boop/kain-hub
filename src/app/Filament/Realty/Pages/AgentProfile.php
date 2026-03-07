@@ -54,11 +54,15 @@ class AgentProfile extends Page implements HasForms
                             ->placeholder('Tell potential clients about yourself, your experience, and what makes you different...')
                             ->columnSpanFull(),
 
-                        Forms\Components\TextInput::make('agent_photo')
-                            ->label('Profile Photo URL')
-                            ->url()
-                            ->maxLength(500)
-                            ->placeholder('https://...'),
+                        Forms\Components\FileUpload::make('agent_photo')
+                            ->label('Profile Photo')
+                            ->image()
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('stores/agents')
+                            ->maxSize(2048)
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                            ->helperText('Recommended: square professional headshot, at least 256×256 px. Max 2 MB.'),
 
                         Forms\Components\TextInput::make('prc_license_number')
                             ->label('PRC License Number')

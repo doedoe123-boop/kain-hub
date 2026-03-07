@@ -22,6 +22,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?string $login_token
  * @property ?string $description
  * @property ?string $logo
+ * @property ?string $banner
  * @property ?array $address
  * @property ?string $id_type
  * @property ?string $id_number
@@ -75,6 +76,7 @@ class Store extends Model
         'login_token',
         'description',
         'logo',
+        'banner',
         'address',
         'id_type',
         'id_number',
@@ -100,6 +102,9 @@ class Store extends Model
         'suspension_reason',
         'setup_completed_at',
     ];
+
+    /** @var list<string> */
+    protected $appends = ['logo_url', 'banner_url', 'agent_photo_url'];
 
     /**
      * @return array<string, string>
@@ -303,6 +308,57 @@ class Store extends Model
         }
 
         return asset('storage/'.$this->logo);
+    }
+
+    /**
+     * Return a public URL for the store banner, or null if unset.
+     *
+     * Handles both legacy http URLs and storage-relative paths.
+     */
+    public function bannerUrl(): ?string
+    {
+        if (! $this->banner) {
+            return null;
+        }
+
+        if (str_starts_with($this->banner, 'http')) {
+            return $this->banner;
+        }
+
+        return asset('storage/'.$this->banner);
+    }
+
+    /**
+     * Return a public URL for the agent's photo, or null if unset.
+     *
+     * Handles both legacy http URLs and storage-relative paths.
+     */
+    public function agentPhotoUrl(): ?string
+    {
+        if (! $this->agent_photo) {
+            return null;
+        }
+
+        if (str_starts_with($this->agent_photo, 'http')) {
+            return $this->agent_photo;
+        }
+
+        return asset('storage/'.$this->agent_photo);
+    }
+
+    public function getLogoUrlAttribute(): ?string
+    {
+        return $this->logoUrl();
+    }
+
+    public function getBannerUrlAttribute(): ?string
+    {
+        return $this->bannerUrl();
+    }
+
+    public function getAgentPhotoUrlAttribute(): ?string
+    {
+        return $this->agentPhotoUrl();
     }
 
     /**

@@ -48,7 +48,7 @@ class LegalPageSeeder extends Seeder
 <p>By accessing or using NegosyoHub ("Platform"), you agree to be bound by these Terms &amp; Conditions. If you do not agree to these terms, please do not use the Platform.</p>
 
 <h2>2. Platform Description</h2>
-<p>NegosyoHub is a B2B marketplace that connects verified Filipino suppliers with buyers across various industry sectors including Food &amp; Beverage, Construction, Technology, Healthcare, Logistics, Real Estate, Agriculture, and Chemicals.</p>
+<p>NegosyoHub is a multi-sector marketplace that connects verified Filipino sellers with customers across various sectors including E-Commerce, Real Estate, Moving Services (Lipat Bahay), and Rentals (Paupahan).</p>
 
 <h2>3. Eligibility</h2>
 <p>You must be at least 18 years old and a registered business entity in the Philippines to use NegosyoHub as a supplier. Buyer accounts are open to any individual or organization seeking to procure goods or services.</p>

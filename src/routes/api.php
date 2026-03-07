@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AddressController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\HomepageStatsController;
 use App\Http\Controllers\Api\V1\MoverController;
 use App\Http\Controllers\Api\V1\MovingBookingController;
@@ -43,6 +44,7 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
     // ── Public browse (no auth required) ─────────────────────────────────
     Route::middleware('throttle:60,1')->group(function () {
+        Route::get('/search', GlobalSearchController::class)->name('search');
         Route::get('/homepage-stats', HomepageStatsController::class)->name('homepage.stats');
         Route::get('/stores', [StoreController::class, 'index'])->name('stores.index');
         Route::get('/stores/{store:slug}', [StoreController::class, 'show'])->name('stores.show');

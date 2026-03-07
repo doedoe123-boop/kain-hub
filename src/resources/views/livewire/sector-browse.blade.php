@@ -21,7 +21,7 @@
                 </h1>
                 
                 <p class="mt-5 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
-                    NegosyoHub connects verified B2B suppliers across {{ count($sectors) }} industry sectors in the Philippines.
+                    NegosyoHub connects verified sellers across {{ count($sectors) }} industry sectors in the Philippines.
                     Each sector has customized onboarding to ensure regulatory compliance.
                 </p>
                 
@@ -156,7 +156,7 @@
                     </div>
                     <h3 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">Can't find your specific industry?</h3>
                     <p class="mt-4 text-slate-400 leading-relaxed max-w-lg mx-auto">
-                        NegosyoHub is continuously expanding. Register your business profile and we'll notify you when specialized B2B categories open.
+                        NegosyoHub is continuously expanding. Register your business profile and we'll notify you when new marketplace categories open.
                     </p>
                     <a href="{{ route('register.sector') }}" class="mt-8 inline-flex items-center justify-center px-8 py-3.5 text-sm font-bold text-slate-900 bg-white hover:bg-slate-100 rounded-xl shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-white/20 transition-all duration-300 transform hover:-translate-y-0.5">
                         Start General Registration

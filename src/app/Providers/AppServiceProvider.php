@@ -9,8 +9,10 @@ use App\Http\Middleware\EnsureStoreSetupComplete;
 use App\Http\Responses\LunarLogoutResponse;
 use App\Listeners\RecordLoginHistory;
 use App\Models\MovingBooking;
+use App\Models\PropertyInquiry;
 use App\Models\RentalAgreement;
 use App\Observers\MovingBookingObserver;
+use App\Observers\PropertyInquiryObserver;
 use App\Observers\RentalAgreementObserver;
 use Filament\Http\Responses\Auth\Contracts\LogoutResponse;
 use Illuminate\Auth\Events\Failed;
@@ -117,6 +119,9 @@ class AppServiceProvider extends ServiceProvider
 
         // Moving booking observer: notifies moving company on new booking, customer on status change
         MovingBooking::observe(MovingBookingObserver::class);
+
+        // Property inquiry observer: notifies agent on new inquiry, customer on status change
+        PropertyInquiry::observe(PropertyInquiryObserver::class);
     }
 
     /**

@@ -15,7 +15,7 @@ class FaqSeeder extends Seeder
         $faqs = [
             [
                 'question' => 'What is NegosyoHub?',
-                'answer' => '<p>NegosyoHub is a multi-sector B2B marketplace that connects verified suppliers with buyers across the Philippines. From food service to agriculture to construction, our platform streamlines procurement with built-in compliance and secure transactions.</p>',
+                'answer' => '<p>NegosyoHub is a multi-sector Filipino marketplace that connects verified sellers with customers across the Philippines. From online stores and real estate to moving services and rentals, our platform makes it easy to find and transact with trusted local businesses.</p>',
                 'sort_order' => 1,
             ],
             [
