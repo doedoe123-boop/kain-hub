@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { ExclamationTriangleIcon } from "@heroicons/vue/24/solid";
 import { useCartStore } from "@/stores/cart";
 import { useAuthStore } from "@/stores/auth";
 import { cartApi } from "@/api/cart";
@@ -10,6 +11,9 @@ import { addressesApi } from "@/api/addresses";
 const router = useRouter();
 const cart = useCartStore();
 const auth = useAuthStore();
+
+// Guard: redirect to cart if empty
+const cartReady = ref(false);
 
 const shippingOptions = ref([]);
 const selectedShipping = ref(null);
@@ -21,14 +25,35 @@ const address = ref({
   state: "",
   postcode: "",
   country: "PH",
-  phone: "",
+  contact_phone: "",
+  contact_email: "",
 });
 const step = ref("address"); // address | shipping | payment
 const loading = ref(false);
 const error = ref(null);
+const showLeaveModal = ref(false);
+
+function goBack() {
+  if (step.value === "shipping") {
+    step.value = "address";
+  } else if (step.value === "payment") {
+    step.value = "shipping";
+  }
+}
+
+function confirmLeave() {
+  showLeaveModal.value = false;
+  router.push("/cart");
+}
 
 onMounted(async () => {
   await cart.fetch();
+
+  if (!cart.lineCount) {
+    router.replace("/cart");
+    return;
+  }
+  cartReady.value = true;
 
   const addressRes = await addressesApi.list().catch(() => null);
 
@@ -49,7 +74,8 @@ onMounted(async () => {
     const parts = (auth.user.name ?? "").trim().split(/\s+/);
     address.value.first_name = parts[0] ?? "";
     address.value.last_name = parts.slice(1).join(" ") ?? "";
-    address.value.phone = auth.user.phone ?? "";
+    address.value.contact_phone = auth.user.phone ?? "";
+    address.value.contact_email = auth.user.email ?? "";
   }
 });
 
@@ -108,7 +134,7 @@ async function placeOrder() {
 </script>
 
 <template>
-  <div>
+  <div v-if="cartReady">
     <!-- Step progress stepper -->
     <nav aria-label="Checkout steps" class="mb-8 flex items-center gap-0">
       <template
@@ -249,16 +275,36 @@ async function placeOrder() {
               >
               <input
                 id="addr-phone"
-                v-model="address.phone"
+                v-model="address.contact_phone"
                 type="tel"
                 class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-400"
               />
             </div>
-            <div class="col-span-full">
+            <div>
+              <label
+                for="addr-email"
+                class="mb-1 block text-xs font-medium text-slate-600"
+                >Email</label
+              >
+              <input
+                id="addr-email"
+                v-model="address.contact_email"
+                type="email"
+                class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-400"
+              />
+            </div>
+            <div class="col-span-full flex gap-3">
+              <button
+                type="button"
+                class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
+                @click="showLeaveModal = true"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
                 :disabled="loading"
-                class="w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 py-3 text-sm font-bold text-white hover:from-brand-600 hover:to-brand-700 disabled:opacity-50 transition-all"
+                class="flex-1 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 py-3 text-sm font-bold text-white transition-all hover:from-brand-600 hover:to-brand-700 disabled:opacity-50"
               >
                 Continue to Shipping
               </button>
@@ -304,14 +350,23 @@ async function placeOrder() {
               }}</span>
             </label>
           </div>
-          <button
-            type="button"
-            :disabled="!selectedShipping || loading"
-            class="mt-4 w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 py-3 text-sm font-bold text-white hover:from-brand-600 hover:to-brand-700 disabled:opacity-50 transition-all"
-            @click="selectShipping"
-          >
-            Continue to Payment
-          </button>
+          <div class="mt-4 flex gap-3">
+            <button
+              type="button"
+              class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
+              @click="goBack"
+            >
+              ← Back
+            </button>
+            <button
+              type="button"
+              :disabled="!selectedShipping || loading"
+              class="flex-1 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 py-3 text-sm font-bold text-white transition-all hover:from-brand-600 hover:to-brand-700 disabled:opacity-50"
+              @click="selectShipping"
+            >
+              Continue to Payment
+            </button>
+          </div>
         </section>
 
         <!-- Step: Payment -->
@@ -323,14 +378,23 @@ async function placeOrder() {
           <p class="mb-6 text-sm text-slate-500">
             You will be redirected to PayPal to complete your payment securely.
           </p>
-          <button
-            type="button"
-            :disabled="loading"
-            class="w-full rounded-xl bg-yellow-400 py-3 text-sm font-bold text-slate-900 hover:bg-yellow-300 disabled:opacity-50 transition-colors"
-            @click="placeOrder"
-          >
-            {{ loading ? "Redirecting…" : "Pay with PayPal" }}
-          </button>
+          <div class="flex gap-3">
+            <button
+              type="button"
+              class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
+              @click="goBack"
+            >
+              ← Back
+            </button>
+            <button
+              type="button"
+              :disabled="loading"
+              class="flex-1 rounded-xl bg-yellow-400 py-3 text-sm font-bold text-slate-900 transition-colors hover:bg-yellow-300 disabled:opacity-50"
+              @click="placeOrder"
+            >
+              {{ loading ? "Redirecting…" : "Pay with PayPal" }}
+            </button>
+          </div>
         </section>
       </div>
 
@@ -362,4 +426,45 @@ async function placeOrder() {
       </aside>
     </div>
   </div>
+
+  <!-- Leave checkout warning modal -->
+  <Teleport to="body">
+    <div
+      v-if="showLeaveModal"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      @click.self="showLeaveModal = false"
+    >
+      <div
+        class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+        @click.stop
+      >
+        <div class="mb-4 flex items-center gap-3">
+          <div
+            class="flex size-10 items-center justify-center rounded-full bg-yellow-100"
+          >
+            <ExclamationTriangleIcon class="size-5 text-yellow-600" />
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">Leave Checkout?</h3>
+        </div>
+        <p class="mb-6 text-sm text-slate-600">
+          Your items will stay in your cart, but any address and shipping
+          selections will need to be re-entered.
+        </p>
+        <div class="flex justify-end gap-3">
+          <button
+            class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50"
+            @click="showLeaveModal = false"
+          >
+            Continue Checkout
+          </button>
+          <button
+            class="rounded-xl bg-brand-600 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-brand-700"
+            @click="confirmLeave"
+          >
+            Leave
+          </button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>

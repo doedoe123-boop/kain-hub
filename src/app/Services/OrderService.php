@@ -62,6 +62,7 @@ class OrderService
                 $order->update([
                     'store_id' => $store->id,
                     'status' => OrderStatus::Pending->value,
+                    'placed_at' => now(),
                 ]);
 
                 // See /skills/commission-calculation.md

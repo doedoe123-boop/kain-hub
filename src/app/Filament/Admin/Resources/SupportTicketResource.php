@@ -183,7 +183,7 @@ class SupportTicketResource extends Resource
                             ->dateTime(),
                         Infolists\Components\TextEntry::make('resolved_at')
                             ->dateTime()
-                            ->default('—'),
+                            ->placeholder('—'),
                     ])->columns(3)
                     ->collapsed(),
             ]);

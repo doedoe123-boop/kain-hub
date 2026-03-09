@@ -31,9 +31,15 @@ class OrderController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        return response()->json(
-            $this->orderService->listForUser($request->user())
-        );
+        $paginator = $this->orderService->listForUser($request->user());
+
+        $paginator->getCollection()->transform(function (Order $order) {
+            $data = $order->toArray();
+
+            return $this->formatOrderPrices($order, $data);
+        });
+
+        return response()->json($paginator);
     }
 
     /**
@@ -45,8 +51,33 @@ class OrderController extends Controller
 
         $order->load(['store', 'lines', 'addresses']);
 
+        // Eager-load product media only for non-shipping lines
+        // (shipping lines use ShippingOption which is not an Eloquent model).
+        $productLines = $order->lines->filter(
+            fn ($line) => $line->type !== 'shipping'
+        );
+        if ($productLines->isNotEmpty()) {
+            $productLines->load('purchasable.product.media');
+        }
+
+        $orderData = $order->toArray();
+        $orderData = $this->formatOrderPrices($order, $orderData);
+        $orderData['lines'] = $order->lines->map(function ($line) {
+            $data = $line->toArray();
+            $data['thumbnail'] = $line->relationLoaded('purchasable')
+                ? ($line->purchasable?->product?->getFirstMediaUrl('images') ?: null)
+                : null;
+            $data['unit_price'] = self::priceToArray($line->unit_price);
+            $data['sub_total'] = self::priceToArray($line->sub_total);
+            $data['total'] = self::priceToArray($line->total);
+            $data['discount_total'] = self::priceToArray($line->discount_total);
+            $data['tax_total'] = self::priceToArray($line->tax_total);
+
+            return $data;
+        })->all();
+
         return response()->json([
-            'order' => $order,
+            'order' => $orderData,
             'summary' => $this->orderService->summarize($order),
         ]);
     }
@@ -184,5 +215,39 @@ class OrderController extends Controller
             'order' => $order,
             'summary' => $this->orderService->summarize($order),
         ]);
+    }
+
+    /**
+     * Convert a Lunar Price DataType into a frontend-friendly array.
+     *
+     * @return array{value: int, formatted: string}|null
+     */
+    private static function priceToArray(mixed $price): ?array
+    {
+        if (! $price instanceof \Lunar\DataTypes\Price) {
+            return null;
+        }
+
+        return [
+            'value' => $price->value,
+            'formatted' => '₱'.number_format($price->decimal, 2),
+        ];
+    }
+
+    /**
+     * Replace Lunar Price cast fields with {value, formatted} arrays.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function formatOrderPrices(Order $order, array $data): array
+    {
+        $data['sub_total'] = self::priceToArray($order->sub_total);
+        $data['discount_total'] = self::priceToArray($order->discount_total);
+        $data['shipping_total'] = self::priceToArray($order->shipping_total);
+        $data['tax_total'] = self::priceToArray($order->tax_total);
+        $data['total'] = self::priceToArray($order->total);
+
+        return $data;
     }
 }

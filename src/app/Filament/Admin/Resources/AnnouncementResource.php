@@ -124,7 +124,7 @@ class AnnouncementResource extends Resource
                             ->dateTime(),
                         Infolists\Components\TextEntry::make('expires_at')
                             ->dateTime()
-                            ->default('Never'),
+                            ->placeholder('Never'),
                         Infolists\Components\TextEntry::make('created_at')
                             ->dateTime(),
                     ])->columns(3),

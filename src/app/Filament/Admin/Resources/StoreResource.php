@@ -217,7 +217,7 @@ class StoreResource extends Resource
                         Infolists\Components\TextEntry::make('suspended_at')
                             ->label('Suspended At')
                             ->dateTime()
-                            ->default('—'),
+                            ->placeholder('—'),
                     ])->columns(2)
                     ->icon('heroicon-o-exclamation-triangle')
                     ->iconColor('danger')

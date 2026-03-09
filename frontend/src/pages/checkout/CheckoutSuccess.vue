@@ -94,13 +94,22 @@ onMounted(async () => {
         <span class="text-3xl text-red-500">!</span>
       </div>
       <h1 class="text-2xl font-bold text-gray-900">Payment Failed</h1>
-      <p class="mt-2 text-gray-500">{{ errorMessage }}</p>
-      <div class="mt-8">
+      <p class="mt-2 max-w-md text-gray-500">{{ errorMessage }}</p>
+      <p class="mt-1 text-sm text-gray-400">
+        Your cart items are still saved. You can try placing the order again.
+      </p>
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">
         <RouterLink
           to="/checkout"
           class="rounded-xl bg-brand-500 px-6 py-3 text-sm font-semibold text-white hover:bg-brand-600 transition-colors"
         >
           Try Again
+        </RouterLink>
+        <RouterLink
+          to="/cart"
+          class="rounded-xl border px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Return to Cart
         </RouterLink>
       </div>
     </template>

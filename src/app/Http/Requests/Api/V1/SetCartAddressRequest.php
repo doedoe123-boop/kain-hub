@@ -22,7 +22,8 @@ class SetCartAddressRequest extends FormRequest
             'state' => ['required', 'string', 'max:255'],
             'postcode' => ['required', 'string', 'max:20'],
             'country' => ['required', 'string', 'size:2'],
-            'phone' => ['nullable', 'string', 'max:30'],
+            'contact_phone' => ['nullable', 'string', 'max:30'],
+            'contact_email' => ['nullable', 'string', 'email', 'max:255'],
         ];
     }
 }

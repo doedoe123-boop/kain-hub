@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Widgets;
 
+use App\Filament\Admin\Resources\SupportTicketResource;
 use App\Models\SupportTicket;
 use App\TicketCategory;
 use App\TicketPriority;
@@ -63,7 +64,7 @@ class LatestTicketsWidget extends TableWidget
             ->paginated(false)
             ->actions([
                 Tables\Actions\Action::make('view')
-                    ->url(fn (SupportTicket $record): string => route('filament.admin.resources.tickets.view', $record))
+                    ->url(fn (SupportTicket $record): string => SupportTicketResource::getUrl('view', ['record' => $record]))
                     ->icon('heroicon-o-eye'),
             ]);
     }

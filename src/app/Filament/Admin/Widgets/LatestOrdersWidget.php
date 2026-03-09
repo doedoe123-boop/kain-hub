@@ -41,8 +41,8 @@ class LatestOrdersWidget extends TableWidget
 
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->formatStateUsing(fn (OrderStatus $state): string => $state->label())
-                    ->color(fn (OrderStatus $state): string => $state->color()),
+                    ->formatStateUsing(fn (string $state): string => OrderStatus::tryFrom($state)?->label() ?? ucfirst($state))
+                    ->color(fn (string $state): string => OrderStatus::tryFrom($state)?->color() ?? 'gray'),
 
                 Tables\Columns\TextColumn::make('placed_at')
                     ->label('Placed')

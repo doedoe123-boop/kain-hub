@@ -58,39 +58,58 @@ return [
     | make sense for the store you're building.
     |
     */
-    'draft_status' => 'awaiting-payment',
+    'draft_status' => 'pending',
 
     'statuses' => [
 
-        'awaiting-payment' => [
-            'label' => 'Awaiting Payment',
-            'color' => '#848a8c',
-            'mailers' => [],
-            'notifications' => [],
+        'pending' => [
+            'label' => 'Pending',
+            'color' => '#F59E0B',
             'favourite' => true,
         ],
 
-        'payment-offline' => [
-            'label' => 'Payment Offline',
-            'color' => '#0A81D7',
-            'mailers' => [],
-            'notifications' => [],
+        'confirmed' => [
+            'label' => 'Confirmed',
+            'color' => '#0EA5E9',
             'favourite' => true,
         ],
 
-        'payment-received' => [
-            'label' => 'Payment Received',
-            'color' => '#6a67ce',
-            'mailers' => [],
-            'notifications' => [],
+        'preparing' => [
+            'label' => 'Preparing',
+            'color' => '#8B5CF6',
             'favourite' => true,
         ],
 
-        'dispatched' => [
-            'label' => 'Dispatched',
-            'mailers' => [],
-            'notifications' => [],
+        'ready' => [
+            'label' => 'Ready for Pickup',
+            'color' => '#10B981',
             'favourite' => true,
+        ],
+
+        'delivered' => [
+            'label' => 'Delivered',
+            'color' => '#22C55E',
+            'favourite' => true,
+        ],
+
+        'cancelled' => [
+            'label' => 'Cancelled',
+            'color' => '#EF4444',
+        ],
+
+        'payment_failed' => [
+            'label' => 'Payment Failed',
+            'color' => '#DC2626',
+        ],
+
+        'refund_pending' => [
+            'label' => 'Refund Pending',
+            'color' => '#F97316',
+        ],
+
+        'refunded' => [
+            'label' => 'Refunded',
+            'color' => '#64748B',
         ],
 
     ],

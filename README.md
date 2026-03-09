@@ -14,13 +14,13 @@ A multi-sector marketplace SaaS built with **Laravel 12**, **Lunar PHP**, **Fila
 ## Getting Started
 
 ```bash
-git clone <your-repo-url> kain-hub
-cd kain-hub
-cp src/.env.example src/.env
+git clone git@github.com:doedoe123-boop/negosyohub.git
+cd negosyohub
 make setup
 ```
 
-Open **http://localhost:8080** in your browser.
+Open **http://localhost:8080** in your browser for marketplace.
+Open **http://localhost:5173** for (storefront).
 
 ---
 
@@ -50,22 +50,6 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml down
 ```bash
 make up ENV=prod
 ```
-
----
-
-## URLs
-
-| Service    | URL                                      |
-| ---------- | ---------------------------------------- |
-| App        | http://localhost:8080                    |
-| Admin      | http://localhost:8080/moon/portal/…      |
-| Store      | http://localhost:8080/store/dashboard/…  |
-| Realty     | http://localhost:8080/realty/dashboard/… |
-| Vite (HMR) | http://localhost:5173                    |
-| MailHog    | http://localhost:8025                    |
-| PostgreSQL | localhost:5433                           |
-
----
 
 ## Common Commands
 
