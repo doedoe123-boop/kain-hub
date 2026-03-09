@@ -2,7 +2,7 @@
 
 > Multi-Sector Marketplace SaaS — Laravel 12 · Lunar PHP 1.3 · Filament v3 · Vue 3 · PostgreSQL
 
-Last updated: **March 2, 2026**
+Last updated: **March 9, 2026**
 
 ---
 
@@ -42,26 +42,42 @@ Foundation: user system, multi-tenant store architecture, authentication.
 
 Admin dashboard, support, legal, content management.
 
-| #   | Feature                                                                               | Status |
-| --- | ------------------------------------------------------------------------------------- | ------ |
-| 1   | Admin dashboard — platform stats widget (stores, users, orders, tickets)              | ✅     |
-| 2   | Admin dashboard — sector distribution chart                                           | ✅     |
-| 3   | Admin dashboard — store status chart                                                  | ✅     |
-| 4   | Admin dashboard — recent tickets table                                                | ✅     |
-| 5   | Store management resource (list, view, edit, approve, suspend, reinstate, KYC review) | ✅     |
-| 6   | KYC document review with signed URL download/preview                                  | ✅     |
-| 7   | Support ticket system (CRUD, categories, priorities, assignment, resolution)          | ✅     |
-| 8   | Announcement system (type, audience, scheduling, expiry)                              | ✅     |
-| 9   | FAQ management                                                                        | ✅     |
-| 10  | Legal pages (Terms, Privacy — rich text, published flag, versioning)                  | ✅     |
-| 11  | Sector management (create/edit sectors with required documents)                       | ✅     |
-| 12  | Data lifecycle automation (purge rejected docs 30d, soft-deletes 90d)                 | ✅     |
+| #   | Feature                                                                                | Status |
+| --- | -------------------------------------------------------------------------------------- | ------ |
+| 1   | Admin dashboard — platform stats widget (stores, customers, orders, revenue)           | ✅     |
+| 2   | Admin dashboard — revenue overview (store earnings, payouts, active orders)            | ✅     |
+| 3   | Admin dashboard — sector distribution chart (doughnut)                                 | ✅     |
+| 4   | Admin dashboard — store status chart (doughnut)                                        | ✅     |
+| 5   | Admin dashboard — sector performance chart (bar: orders per sector)                    | ✅     |
+| 6   | Admin dashboard — order trend chart (30-day line chart)                                | ✅     |
+| 7   | Admin dashboard — recent store registrations table                                     | ✅     |
+| 8   | Admin dashboard — recent customers table                                               | ✅     |
+| 9   | Admin dashboard — marketing insights widget (campaigns, promotions, coupons, featured) | ✅     |
+| 10  | Admin dashboard — latest orders table                                                  | ✅     |
+| 11  | Admin dashboard — latest tickets table                                                 | ✅     |
+| 12  | Store management resource (list, view, edit, approve, suspend, reinstate, KYC review)  | ✅     |
+| 13  | KYC document review with signed URL download/preview                                   | ✅     |
+| 14  | Support ticket system (CRUD, categories, priorities, assignment, resolution)           | ✅     |
+| 15  | Announcement system (type, audience, scheduling, expiry)                               | ✅     |
+| 16  | FAQ management                                                                         | ✅     |
+| 17  | Legal pages (Terms, Privacy — rich text, published flag, versioning)                   | ✅     |
+| 18  | Sector management (create/edit sectors with required documents)                        | ✅     |
+| 19  | Data lifecycle automation (purge rejected docs 30d, soft-deletes 90d)                  | ✅     |
+| 20  | E-commerce admin resources (channels, currencies, customer groups, languages)          | ✅     |
+| 21  | Tax management admin resources (tax classes, tax rates, tax zones)                     | ✅     |
+| 22  | Shipping management (table-rate shipping under admin panel)                            | ✅     |
+| 23  | Payout generation system (PayoutService, PayoutLine, GeneratePayoutsCommand)           | ✅     |
+| 24  | Marketing module — Campaign management with relation managers                          | ✅     |
+| 25  | Marketing module — Advertisement management (placement, creative, status)              | ✅     |
+| 26  | Marketing module — Promotion management (percentage/fixed discount)                    | ✅     |
+| 27  | Marketing module — Coupon management (scope: global/sector/store)                      | ✅     |
+| 28  | Marketing module — Featured listing management (polymorphic targets)                   | ✅     |
 
 ---
 
 ## Phase 3 — Sector-Specific Features ✅ COMPLETE
 
-Per-sector feature buildout for Real Estate and E-Commerce.
+Per-sector feature buildout for Real Estate, E-Commerce, and Moving Services.
 
 ### Real Estate Sector (31 features)
 
@@ -119,9 +135,24 @@ Per-sector feature buildout for Real Estate and E-Commerce.
 | 14  | Staff management within Lunar panel                                                    | ✅     |
 | 15  | Lunar collections, discounts, shipping, taxes, media, search (configured)              | ✅     |
 
+### LipatBahay / Moving Services Sector (10 features)
+
+| #   | Feature                                                                | Status |
+| --- | ---------------------------------------------------------------------- | ------ |
+| 1   | MovingBooking model (pickup/delivery addresses, schedule, pricing)     | ✅     |
+| 2   | MovingAddOn model (optional add-on services with pricing)              | ✅     |
+| 3   | MovingReview model (customer reviews for movers)                       | ✅     |
+| 4   | MovingBookingStatus enum (lifecycle states)                            | ✅     |
+| 5   | MovingBookingService (business logic)                                  | ✅     |
+| 6   | LipatBahay Filament panel (MovingBookingResource, MovingAddOnResource) | ✅     |
+| 7   | MovingReviewResource in LipatBahay panel                               | ✅     |
+| 8   | SendMovingReminderJob (automated reminders)                            | ✅     |
+| 9   | Mover browsing frontend (search by city/province, mover profiles)      | ✅     |
+| 10  | Booking flow frontend (add-ons, schedule, address, payment)            | ✅     |
+
 ---
 
-## Phase 4 — Backend Hardening & Operations ✅ COMPLETE (100%)
+## Phase 4 — Backend Hardening & Operations ✅ COMPLETE
 
 Close all backend gaps so admin & store panels are production-ready before any storefront work.
 
@@ -131,7 +162,7 @@ Close all backend gaps so admin & store panels are production-ready before any s
 | --- | --------------------------------------- | -------- | ------ | -------------------------------------------------------------------------------------- |
 | 1   | **UserResource**                        | Critical | ✅     | List, view, edit, disable/enable, login history relation manager                       |
 | 2   | **OrderResource (Admin)**               | Critical | ✅     | Admin-wide order list, store filter, status, commission breakdown                      |
-| 3   | **PayoutResource (Admin)**              | Critical | ✅     | Create/manage payouts, mark processed/paid                                             |
+| 3   | **PayoutResource (Admin)**              | Critical | ✅     | Create/manage payouts, mark processed/paid, lines relation manager                     |
 | 4   | **Revenue/Commission Dashboard Widget** | Critical | ✅     | RevenueOverviewWidget + LatestOrdersWidget on admin dashboard                          |
 | 5   | **Store RelationManagers**              | High     | ✅     | OrdersRelationManager, PayoutsRelationManager, StaffRelationManager on StoreResource   |
 | 6   | **Store Reject Action**                 | High     | ✅     | `StoreService::reject()` + rejection email + reject action on StoreResource            |
@@ -166,7 +197,7 @@ Close all backend gaps so admin & store panels are production-ready before any s
 | 20  | **Missing model scopes**          | Medium   | ✅     | `scopeForStore()`, `scopePending()` on Order model                          |
 | 21  | **Missing model relationships**   | Medium   | ✅     | `User::orders()`, `User::loginHistory()`, `User::supportTickets()` in place |
 | 22  | **Missing factories**             | Low      | ✅     | OrderFactory, PayoutFactory, LoginHistoryFactory all created                |
-| 23  | **Comprehensive test coverage**   | Medium   | ✅     | 255 tests, 546 assertions — all passing                                     |
+| 23  | **Comprehensive test coverage**   | Medium   | ✅     | 387 tests, 847 assertions — all passing                                     |
 
 ### 4E — Nice-to-Have Enhancements
 
@@ -175,7 +206,7 @@ Close all backend gaps so admin & store panels are production-ready before any s
 | 24  | Activity Log resource (admin)           | Low      | ✅     | `ActivityLogResource` in admin panel                      |
 | 25  | Login History resource (admin)          | Low      | ✅     | `LoginHistoryResource` + relation manager on UserResource |
 | 26  | Bulk approve stores action              | Low      | ❌     |                                                           |
-| 27  | Announcement auto-expire job            | Low      | ❌     |                                                           |
+| 27  | Announcement auto-expire job            | Low      | ✅     | `ExpireAnnouncementsJob` scheduled                        |
 | 28  | FaqResource & SectorResource View pages | Low      | ✅     | Both have dedicated View pages                            |
 | 29  | Staff role/permission granularity       | Medium   | ❌     |                                                           |
 | 30  | Property clone/duplicate action         | Low      | ❌     |                                                           |
@@ -199,98 +230,133 @@ Close all backend gaps so admin & store panels are production-ready before any s
 
 ---
 
-## Phase 5 — Customer Storefront (Vue 3 + Inertia)
+## Phase 5 — Customer Storefront (Vue 3 SPA) 🔶 ~85% COMPLETE
 
-Customer-facing frontend. Depends on Phase 4 being complete.
+Customer-facing frontend built with Vue 3 + Pinia + Vue Router + Tailwind CSS.
 
-### 5A — E-Commerce Storefront
+### 5A — E-Commerce Storefront ✅ COMPLETE
 
-| #   | Feature                                 | Description                                                 |
-| --- | --------------------------------------- | ----------------------------------------------------------- |
-| 1   | Product browsing & search API           | `GET /api/stores/{store}/products` with filters, pagination |
-| 2   | Store listing page                      | Browse all approved stores by sector                        |
-| 3   | Store detail page                       | Store info, products grid, reviews                          |
-| 4   | Product detail page                     | Images, variants, pricing, reviews, add to cart             |
-| 5   | Cart management (API + UI)              | Add, update quantity, remove items, cart sidebar/page       |
-| 6   | Single-store cart constraint            | Clear cart or warn if switching stores                      |
-| 7   | Checkout flow                           | Address, delivery method, order summary                     |
-| 8   | Payment integration (Stripe / PayMongo) | Payment processing, webhooks, receipt                       |
-| 9   | Order confirmation page                 | Summary, estimated delivery, tracking number                |
-| 10  | Customer order history                  | List orders, view order details, track status               |
-| 11  | Customer review submission              | Rate & review products + stores after delivery              |
-| 12  | Customer account/profile pages          | Edit name, email, phone, password, addresses                |
-| 13  | Deals & offers page                     | Active promotions from `/deals` route                       |
-| 14  | Market insights page                    | Content from `/insights` route                              |
+| #   | Feature                        | Status | Notes                                                                            |
+| --- | ------------------------------ | ------ | -------------------------------------------------------------------------------- |
+| 1   | Product browsing & search API  | ✅     | `GET /api/v1/products` + `GET /api/v1/stores/:slug/products` with filters        |
+| 2   | Store listing page             | ✅     | `Stores.vue` — search + sector filter dropdown + pagination                      |
+| 3   | Store detail page              | ✅     | `StoreDetail.vue` — banner, store info, products grid with add-to-cart           |
+| 4   | Product detail page            | ✅     | `ProductDetail.vue` — gallery, variant selector, stock labels, pricing, Buy Now  |
+| 5   | Cart management (API + UI)     | ✅     | `CartPage.vue` + `CartDrawer.vue` — qty controls, subtotals, delete, empty state |
+| 6   | Single-store cart constraint   | ✅     | Backend enforced in order placement pipeline                                     |
+| 7   | Checkout flow                  | ✅     | `CheckoutPage.vue` — 3-step wizard: address → shipping → payment                 |
+| 8   | Payment integration (PayPal)   | ✅     | PayPal via `paypalApi.createOrder()` / `captureOrder()`, sandbox + live          |
+| 9   | Order confirmation page        | ✅     | `CheckoutSuccess.vue` — captures PayPal order, displays order ID + next steps    |
+| 10  | Customer order history         | ✅     | `OrdersPage.vue` + `OrderDetail.vue` — list orders, view details, track status   |
+| 11  | Customer review submission     | ❌     | Display only — no submission UI for product/store reviews yet                    |
+| 12  | Customer account/profile pages | ✅     | Profile, addresses, payment methods, change password, settings, account deletion |
+| 13  | Deals & offers page            | ❌     | Not yet implemented                                                              |
+| 14  | Market insights page           | ❌     | Not yet implemented                                                              |
 
-### 5B — Real Estate Storefront
+### 5B — Real Estate Storefront 🔶 PARTIAL
 
-| #   | Feature                        | Description                                               |
-| --- | ------------------------------ | --------------------------------------------------------- |
-| 15  | Property search/browse page    | Filter by type, price, location, bedrooms, listing type   |
-| 16  | Property detail page           | Gallery, specs, floor plans, documents, neighborhood, map |
-| 17  | Mortgage calculator frontend   | Interactive calculator using store's default settings     |
-| 18  | Property inquiry form          | Visitor submits inquiry from listing page                 |
-| 19  | Open house listing + RSVP form | Public open house calendar with RSVP submission           |
-| 20  | Agent profile public page      | Agent bio, certifications, listing portfolio              |
-| 21  | Development/project pages      | Browse developments with linked available units           |
-| 22  | Property comparison tool       | Side-by-side property comparison                          |
-| 23  | Saved search management        | Save/manage property search criteria (authenticated)      |
-| 24  | Saved search notifications job | Scheduled job: notify users when matching listings appear |
-| 25  | Map/geolocation view           | Interactive map with property pins (lat/lng data exists)  |
-| 26  | Property analytics tracker     | Middleware/service to record actual views and clicks      |
+| #   | Feature                        | Status | Notes                                                                             |
+| --- | ------------------------------ | ------ | --------------------------------------------------------------------------------- |
+| 15  | Property search/browse page    | ✅     | `Properties.vue` — filters: type, listing, price range, bedrooms, city, search    |
+| 16  | Property detail page           | ✅     | `PropertyDetail.vue` — gallery, specs, floor area, pricing, inquiry form          |
+| 17  | Mortgage calculator frontend   | ✅     | Pag-IBIG calculator integrated in PropertyDetail                                  |
+| 18  | Property inquiry form          | ✅     | In PropertyDetail — name, email, phone, message → `propertiesApi.submitInquiry()` |
+| 19  | Open house listing + RSVP form | ❌     | Backend API exists, no frontend UI                                                |
+| 20  | Agent profile public page      | ✅     | `AgentDetail.vue` — profile, verified badge, contact info, property listings      |
+| 21  | Development/project pages      | ❌     | Backend models exist, no frontend pages                                           |
+| 22  | Property comparison tool       | ❌     | Not yet implemented                                                               |
+| 23  | Saved search management        | ❌     | Backend model exists, no frontend UI                                              |
+| 24  | Saved search notifications job | ❌     | Not yet implemented                                                               |
+| 25  | Map/geolocation view           | ❌     | Lat/lng data stored, no map UI                                                    |
+| 26  | Property analytics tracker     | ❌     | Backend model exists, no frontend middleware                                      |
 
-### 5C — Shared Storefront
+### 5C — Shared Storefront 🔶 PARTIAL
 
-| #   | Feature                     | Description                                            |
-| --- | --------------------------- | ------------------------------------------------------ |
-| 27  | Email verification flow     | Enforce email verification for customers               |
-| 28  | Password reset flow         | Forgot password controller + routes                    |
-| 29  | Customer dashboard          | Unified account area (orders, saved searches, reviews) |
-| 30  | FAQ public page             | Display active FAQs with search                        |
-| 31  | Notification preferences    | Push/email settings per user                           |
-| 32  | Multi-city support (future) | City-based store/property filtering                    |
+| #   | Feature                     | Status | Notes                                                                     |
+| --- | --------------------------- | ------ | ------------------------------------------------------------------------- |
+| 27  | Email verification flow     | ❌     | Not enforced on customer registration                                     |
+| 28  | Password reset flow         | ✅     | `ForgotPassword.vue` + `ResetPassword.vue` with API integration           |
+| 29  | Customer dashboard          | ✅     | `AccountDashboard.vue` — recent orders, quick-link cards to account pages |
+| 30  | FAQ public page             | ❌     | No standalone FAQ page (backend FAQs exist via FaqResource)               |
+| 31  | Notification preferences    | ✅     | `SettingsPage.vue` — toggles for order updates and promotions             |
+| 32  | Multi-city support (future) | ❌     | Not yet implemented                                                       |
+
+### 5D — LipatBahay / Moving Services Storefront ✅ COMPLETE
+
+| #   | Feature                   | Status | Notes                                                                       |
+| --- | ------------------------- | ------ | --------------------------------------------------------------------------- |
+| 33  | Mover browsing page       | ✅     | `MoversPage.vue` — city/province filters, mover cards, pagination           |
+| 34  | Mover detail page         | ✅     | `MoverDetail.vue` — profile, add-ons with pricing, booking form             |
+| 35  | Moving booking flow       | ✅     | Pickup/delivery addresses, schedule, add-ons, contact info, payment         |
+| 36  | Moving booking management | ✅     | `MovingBookingsPage.vue` + `MovingBookingDetail.vue` — list, status, cancel |
+| 37  | Moving review submission  | ✅     | Review form on completed bookings in MovingBookingDetail                    |
 
 ---
 
 ## Phase 6 — Operations & Scale (Future)
 
-| #   | Feature                                       | Description                                                 |
-| --- | --------------------------------------------- | ----------------------------------------------------------- |
-| 1   | Stripe Connect automatic payouts              | Direct bank transfers to store owners                       |
-| 2   | Delivery/rider assignment system              | Rider management + order delivery tracking                  |
-| 3   | Promo codes & marketplace-level discounts     | Platform-wide promotions beyond Lunar's per-store discounts |
-| 4   | Analytics dashboards (store owners)           | Detailed sales, traffic, conversion analytics               |
-| 5   | Multi-language support                        | i18n for Filipino, Cebuano, English                         |
-| 6   | Mobile app (API-first)                        | React Native or Flutter using existing API                  |
-| 7   | Webhook system for integrations               | Third-party integration support                             |
-| 8   | Advanced search (Laravel Scout + Meilisearch) | Full-text search across products and properties             |
+| #   | Feature                                       | Status | Notes                                                            |
+| --- | --------------------------------------------- | ------ | ---------------------------------------------------------------- |
+| 1   | Stripe Connect automatic payouts              | ❌     | PayPal integrated; Stripe not yet added                          |
+| 2   | Delivery/rider assignment system              | ❌     |                                                                  |
+| 3   | Promo codes & marketplace-level discounts     | 🔶     | Coupon model + admin resource exist; not yet applied at checkout |
+| 4   | Analytics dashboards (store owners)           | ✅     | Financial widgets + review dashboards on store panel             |
+| 5   | Multi-language support                        | ❌     | English only                                                     |
+| 6   | Mobile app (API-first)                        | ❌     | API exists; no native app                                        |
+| 7   | Webhook system for integrations               | ❌     |                                                                  |
+| 8   | Advanced search (Laravel Scout + Meilisearch) | ❌     | Scout installed but not configured with Meilisearch              |
+
+---
+
+## Phase 7 — CI/CD & DevOps ✅ COMPLETE
+
+| #   | Feature                                               | Status | Notes                                                        |
+| --- | ----------------------------------------------------- | ------ | ------------------------------------------------------------ |
+| 1   | GitHub Actions CI pipeline (Pint + Pest + build)      | ✅     | `.github/workflows/php.yml` — PostgreSQL 16 + Redis services |
+| 2   | Parallel test execution                               | ✅     | `--parallel --recreate-databases` across multiple processes  |
+| 3   | Composer + Node module caching                        | ✅     | `actions/cache@v3` for vendor/ and node_modules/             |
+| 4   | Docker security scan (Checkov + Trivy)                | ✅     | SARIF uploads to GitHub Security tab                         |
+| 5   | Dockerfile healthcheck                                | ✅     | `HEALTHCHECK` instruction in `docker/php/Dockerfile`         |
+| 6   | GitHub Issue templates (bug report + feature request) | ✅     | `.github/ISSUE_TEMPLATE/` with structured forms              |
+| 7   | Repository documentation (README, CONTRIBUTING, etc)  | ✅     | README, CONTRIBUTING, LICENSE (Apache 2.0), SECURITY, DESIGN |
+| 8   | CommonMark XSS vulnerability patched                  | ✅     | `league/commonmark` 2.8.0 → 2.8.1                            |
+| 9   | Secure token storage (sessionStorage)                 | ✅     | Migrated from localStorage to sessionStorage for API tokens  |
 
 ---
 
 ## Test Suite Status
 
-| Metric          | Count          |
-| --------------- | -------------- |
-| **Total Tests** | 255            |
-| **Assertions**  | 546            |
-| **Status**      | ✅ ALL PASSING |
+| Metric          | Count           |
+| --------------- | --------------- |
+| **Total Tests** | 387             |
+| **Assertions**  | 847             |
+| **Duration**    | ~19s (parallel) |
+| **Status**      | ✅ ALL PASSING  |
 
 ---
 
 ## Architecture Summary
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    NegosyoHub Platform                   │
-├──────────┬──────────────┬──────────────┬────────────────┤
-│  Admin   │  Lunar/Store │   Realty     │  Storefront    │
-│  Panel   │  Panel       │   Panel      │  (Phase 5)     │
-│  ✅ P2   │  ✅ P3       │   ✅ P3      │  🔜 P5        │
-├──────────┴──────────────┴──────────────┴────────────────┤
-│  Phase 4: Backend Hardening & Operations ✅ 100% DONE       │
-│  All items complete — ready for Phase 5                     │
-├─────────────────────────────────────────────────────────┤
-│  Phase 1: Core Platform ✅                               │
-│  (Users, stores, auth, multi-tenant, subdomain login)    │
-└─────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────┐
+│                     NegosyoHub Platform                    │
+├───────────┬──────────────┬────────────┬───────────────────┤
+│  Admin    │  Store/Lunar │  Realty    │  LipatBahay       │
+│  Panel    │  Panel       │  Panel     │  Panel            │
+│  ✅ P2    │  ✅ P3       │  ✅ P3     │  ✅ P3            │
+│  27 res   │  5 resources │  6 res     │  3 resources      │
+│  11 wdgt  │              │            │                   │
+├───────────┴──────────────┴────────────┴───────────────────┤
+│  Storefront (Vue 3 SPA) — Phase 5 🔶 ~85%               │
+│  E-Commerce ✅ · Realty 🔶 · Moving ✅ · Account ✅     │
+├───────────────────────────────────────────────────────────┤
+│  Backend Hardening — Phase 4 ✅ 100%                     │
+│  12 services · 32 models · 23 enums · 387 tests          │
+├───────────────────────────────────────────────────────────┤
+│  CI/CD & DevOps — Phase 7 ✅                             │
+│  GitHub Actions · Docker scanning · Security patching     │
+├───────────────────────────────────────────────────────────┤
+│  Core Platform — Phase 1 ✅                               │
+│  Users · Stores · Auth · Multi-tenant · Subdomain login   │
+└───────────────────────────────────────────────────────────┘
 ```
