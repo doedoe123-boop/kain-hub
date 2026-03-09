@@ -14,7 +14,7 @@ services:
       DB_PORT: 5432
       DB_DATABASE: marketplace
       DB_USERNAME: laravel
-      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD env var is required}
+      DB_PASSWORD: ${DB_PASSWORD}
     volumes:
       - ./src:/var/www
     networks:
@@ -29,12 +29,70 @@ services:
     restart: always
     environment:
       POSTGRES_USER: laravel
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD env var is required}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: marketplace
     volumes:
       - dbdata:/var/lib/postgresql/data
     networks:
       - app-network
+
+  queue:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: laravel_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    command:
+      [
+        "php",
+        "artisan",
+        "queue:work",
+        "--sleep=3",
+        "--tries=3",
+        "--max-time=3600",
+      ]
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: marketplace
+      DB_USERNAME: laravel
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./src:/var/www
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_started
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: laravel_scheduler
+    restart: unless-stopped
+    working_dir: /var/www
+    command: ["php", "artisan", "schedule:work"]
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: marketplace
+      DB_USERNAME: laravel
+      DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./src:/var/www
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_started
 
   nginx:
     image: nginx:latest

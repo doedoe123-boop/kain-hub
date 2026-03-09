@@ -118,6 +118,12 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
             Route::post('/orders/{order}/intent', [PaymentController::class, 'intent'])->name('orders.intent');
         });
 
+        // PayPal payment flow (throttled like order placement)
+        Route::middleware('throttle:10,1')->prefix('paypal')->group(function () {
+            Route::post('/create-order', [PaymentController::class, 'paypalCreateOrder'])->name('paypal.create-order');
+            Route::post('/capture-order', [PaymentController::class, 'paypalCaptureOrder'])->name('paypal.capture-order');
+        });
+
         // Moving bookings (Lipat Bahay)
         Route::get('/moving-bookings', [MovingBookingController::class, 'index'])->name('moving-bookings.index');
         Route::get('/moving-bookings/{movingBooking}', [MovingBookingController::class, 'show'])->name('moving-bookings.show');

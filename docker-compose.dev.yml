@@ -70,6 +70,26 @@ services:
     networks:
       - app-network
 
+  queue:
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_PASSWORD: secret
+    volumes:
+      - ./src:/var/www
+      - ./skills:/var/www/skills
+      - ./agent:/var/www/agent
+
+  scheduler:
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_PASSWORD: secret
+    volumes:
+      - ./src:/var/www
+      - ./skills:/var/www/skills
+      - ./agent:/var/www/agent
+
   mailhog:
     image: mailhog/mailhog
     container_name: mailhog

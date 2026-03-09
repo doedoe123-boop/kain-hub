@@ -4,7 +4,7 @@ import { useRouter } from "vue-router";
 import { useCartStore } from "@/stores/cart";
 import { useAuthStore } from "@/stores/auth";
 import { cartApi } from "@/api/cart";
-import { ordersApi } from "@/api/orders";
+import { paypalApi } from "@/api/paypal";
 import { addressesApi } from "@/api/addresses";
 
 const router = useRouter();
@@ -33,8 +33,7 @@ onMounted(async () => {
   const addressRes = await addressesApi.list().catch(() => null);
 
   if (addressRes) {
-    const addresses =
-      addressRes.data?.data ?? addressRes.data ?? [];
+    const addresses = addressRes.data?.data ?? addressRes.data ?? [];
     const def = addresses.find((a) => a.is_default) ?? addresses[0];
 
     if (def) {
@@ -89,17 +88,16 @@ async function placeOrder() {
   loading.value = true;
   error.value = null;
   try {
-    const { data } = await ordersApi.place({
-      store_id: cart.storeId,
-    });
-    // PayPal redirect URL comes back from the API
-    if (data.redirect_url) {
-      window.location.href = data.redirect_url;
+    // Step 1: Create PayPal order from current cart
+    const { data } = await paypalApi.createOrder();
+
+    if (data.approve_url) {
+      // Save store_id so we can use it after PayPal redirect
+      sessionStorage.setItem("paypal_store_id", cart.storeId);
+      // Redirect customer to PayPal for approval
+      window.location.href = data.approve_url;
     } else {
-      router.push({
-        name: "checkout.success",
-        query: { order: data.order_id },
-      });
+      error.value = "Failed to initiate PayPal payment. Please try again.";
     }
   } catch (e) {
     error.value = e.response?.data?.message ?? "Failed to place order.";

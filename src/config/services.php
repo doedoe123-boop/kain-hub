@@ -54,6 +54,7 @@ return [
         'env' => env('PAYPAL_ENV', 'sandbox'),
         'client_id' => env('PAYPAL_CLIENT_ID'),
         'secret' => env('PAYPAL_SECRET'),
+        'frontend_url' => env('FRONTEND_URL', 'http://localhost:5173'),
     ],
 
 ];

@@ -139,6 +139,18 @@ tinker:
 queue:
 	$(APP) php artisan queue:work --no-interaction
 
+## Restart the queue worker container (picks up code changes)
+queue-restart:
+	$(DC) restart queue
+
+## Tail queue worker logs
+queue-logs:
+	$(DC) logs -f queue
+
+## Tail scheduler logs
+scheduler-logs:
+	$(DC) logs -f scheduler
+
 ## Clear all caches
 cache-clear:
 	$(APP) php artisan config:clear

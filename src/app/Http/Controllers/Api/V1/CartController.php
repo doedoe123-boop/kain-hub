@@ -172,6 +172,7 @@ class CartController extends Controller
 
         $cart = CartSession::manager();
         $cart->setShippingAddress($data);
+        $cart->setBillingAddress($data);
 
         return response()->json(['message' => 'Address saved.']);
     }
