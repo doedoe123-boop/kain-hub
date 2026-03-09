@@ -45,5 +45,8 @@ COPY --chown=www:www ./src /var/www
 
 USER www
 
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
+    CMD php -v || exit 1
+
 EXPOSE 9000
 CMD ["php-fpm"]
