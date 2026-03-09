@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\TaxZoneResource\Pages;
+namespace App\Filament\Admin\Resources\TaxZoneResource\Pages;
 
-use App\Filament\Resources\TaxZoneResource;
+use App\Filament\Admin\Resources\TaxZoneResource;
 use Filament\Actions;
 use Lunar\Admin\Support\Pages\BaseEditRecord;
 

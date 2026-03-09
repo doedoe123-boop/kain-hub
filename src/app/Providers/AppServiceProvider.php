@@ -2,9 +2,6 @@
 
 namespace App\Providers;
 
-use App\Filament\Resources\TaxZoneResource\Pages\CreateTaxZone;
-use App\Filament\Resources\TaxZoneResource\Pages\EditTaxZone;
-use App\Filament\Resources\TaxZoneResource\Pages\ListTaxZones;
 use App\Http\Middleware\EnsureStoreSetupComplete;
 use App\Http\Responses\LunarLogoutResponse;
 use App\Listeners\RecordLoginHistory;
@@ -19,9 +16,15 @@ use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Lunar\Admin\Filament\Resources\ChannelResource as LunarChannelResource;
+use Lunar\Admin\Filament\Resources\CurrencyResource as LunarCurrencyResource;
+use Lunar\Admin\Filament\Resources\CustomerGroupResource as LunarCustomerGroupResource;
+use Lunar\Admin\Filament\Resources\LanguageResource as LunarLanguageResource;
 use Lunar\Admin\Filament\Resources\OrderResource as LunarOrderResource;
 use Lunar\Admin\Filament\Resources\ProductResource as LunarProductResource;
 use Lunar\Admin\Filament\Resources\StaffResource;
+use Lunar\Admin\Filament\Resources\TaxClassResource as LunarTaxClassResource;
+use Lunar\Admin\Filament\Resources\TaxRateResource as LunarTaxRateResource;
 use Lunar\Admin\Filament\Resources\TaxZoneResource as LunarTaxZoneResource;
 use Lunar\Admin\LunarPanelManager;
 use Lunar\Admin\Support\Facades\LunarPanel;
@@ -35,10 +38,17 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Remove Lunar defaults we override with scoped versions
+        // or move to the admin panel under the E-commerce group
         $this->excludeLunarResources([
             StaffResource::class,
             LunarOrderResource::class,
             LunarProductResource::class,
+            LunarChannelResource::class,
+            LunarCurrencyResource::class,
+            LunarCustomerGroupResource::class,
+            LunarLanguageResource::class,
+            LunarTaxClassResource::class,
+            LunarTaxRateResource::class,
             LunarTaxZoneResource::class,
         ]);
 
@@ -64,11 +74,6 @@ class AppServiceProvider extends ServiceProvider
                 in: app_path('Filament/Widgets'),
                 for: 'App\\Filament\\Widgets'
             )
-            ->livewireComponents([
-                ListTaxZones::class,
-                CreateTaxZone::class,
-                EditTaxZone::class,
-            ])
             ->authMiddleware([EnsureStoreSetupComplete::class])
         )->disableTwoFactorAuth()->register();
     }

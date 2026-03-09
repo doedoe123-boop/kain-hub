@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Admin\Resources;
 
-use App\Filament\Resources\TaxZoneResource\Pages;
+use App\Filament\Admin\Resources\TaxZoneResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Components\Component;
 use Illuminate\Database\Eloquent\Collection;
@@ -12,6 +12,14 @@ use Lunar\Models\Country;
 
 class TaxZoneResource extends BaseTaxZoneResource
 {
+    protected static ?string $permission = null;
+
+    protected static ?string $cluster = null;
+
+    protected static ?string $navigationGroup = 'E-commerce';
+
+    protected static ?int $navigationSort = 16;
+
     /**
      * Override the broken Lunar method that calls ->first()->id without a null guard.
      * When a tax zone has no country linked yet, ->first() returns null and crashes.
@@ -45,8 +53,8 @@ class TaxZoneResource extends BaseTaxZoneResource
     {
         return [
             'index' => Pages\ListTaxZones::route('/'),
-            'edit' => Pages\EditTaxZone::route('/{record}/edit'),
             'create' => Pages\CreateTaxZone::route('/create'),
+            'edit' => Pages\EditTaxZone::route('/{record}/edit'),
         ];
     }
 }
