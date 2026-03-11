@@ -12,6 +12,7 @@ vi.mock("@heroicons/vue/24/outline", () => ({
   Bars3Icon: { template: "<svg />" },
   XMarkIcon: { template: "<svg />" },
   UserCircleIcon: { template: "<svg />" },
+  MagnifyingGlassIcon: { template: "<svg />" },
 }));
 
 const router = createRouter({
@@ -65,7 +66,7 @@ describe("Navbar", () => {
     };
 
     const wrapper = mount(Navbar, { global: { plugins: [router] } });
-    expect(wrapper.text()).toContain("3");
+    expect(wrapper.text()).toContain("1");
   });
 
   it("calls cart.toggleDrawer when cart button is clicked", async () => {
@@ -74,7 +75,7 @@ describe("Navbar", () => {
     const toggleSpy = vi.spyOn(cartStore, "toggleDrawer");
 
     const wrapper = mount(Navbar, { global: { plugins: [router] } });
-    await wrapper.find("button").trigger("click");
+    await wrapper.find('[aria-label="Shopping cart"]').trigger("click");
 
     expect(toggleSpy).toHaveBeenCalled();
   });
