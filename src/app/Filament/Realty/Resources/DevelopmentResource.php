@@ -6,6 +6,7 @@ use App\Filament\Realty\Resources\DevelopmentResource\Pages;
 use App\Filament\Realty\Resources\DevelopmentResource\RelationManagers;
 use App\Models\Development;
 use Filament\Forms;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -197,10 +198,13 @@ class DevelopmentResource extends Resource
                         Forms\Components\Tabs\Tab::make('Media')
                             ->icon('heroicon-o-photo')
                             ->schema([
-                                Forms\Components\TextInput::make('logo')
-                                    ->label('Logo URL')
-                                    ->url()
-                                    ->maxLength(500),
+                                SpatieMediaLibraryFileUpload::make('logo')
+                                    ->label('Logo')
+                                    ->collection('logo')
+                                    ->image()
+                                    ->imagePreviewHeight('120')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'])
+                                    ->maxSize(2048),
 
                                 Forms\Components\TextInput::make('website_url')
                                     ->label('Website')
@@ -212,20 +216,16 @@ class DevelopmentResource extends Resource
                                     ->url()
                                     ->maxLength(500),
 
-                                Forms\Components\Repeater::make('images')
-                                    ->schema([
-                                        Forms\Components\TextInput::make('url')
-                                            ->label('Image URL')
-                                            ->url()
-                                            ->required(),
-                                        Forms\Components\TextInput::make('alt')
-                                            ->label('Alt Text')
-                                            ->maxLength(255),
-                                    ])
-                                    ->columns(2)
-                                    ->collapsible()
-                                    ->defaultItems(0)
-                                    ->addActionLabel('Add Image')
+                                SpatieMediaLibraryFileUpload::make('images')
+                                    ->label('Images')
+                                    ->collection('images')
+                                    ->multiple()
+                                    ->reorderable()
+                                    ->image()
+                                    ->imagePreviewHeight('120')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                                    ->maxSize(5120)
+                                    ->panelLayout('grid')
                                     ->columnSpanFull(),
                             ])->columns(2),
 

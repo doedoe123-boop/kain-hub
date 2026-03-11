@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * A real estate development (building, subdivision, township)
@@ -43,11 +45,12 @@ use Illuminate\Support\Str;
  * @property bool $is_featured
  * @property ?\Illuminate\Support\Carbon $published_at
  */
-class Development extends Model
+class Development extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\DevelopmentFactory> */
     use HasFactory;
 
+    use InteractsWithMedia;
     use SoftDeletes;
 
     /** @var list<string> */
@@ -94,6 +97,16 @@ class Development extends Model
             'is_featured' => 'boolean',
             'published_at' => 'datetime',
         ];
+    }
+
+    // ── Media ──────────────────────────────────────────────────────────
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('logo')
+            ->singleFile();
+
+        $this->addMediaCollection('images');
     }
 
     // ── Boot ───────────────────────────────────────────────────────────

@@ -12,6 +12,7 @@ use App\PropertyType;
 use App\SectorTemplate;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
@@ -294,14 +295,13 @@ class PropertyResource extends Resource
                         Forms\Components\Tabs\Tab::make('Media')
                             ->icon('heroicon-o-photo')
                             ->schema([
-                                FileUpload::make('images')
+                                SpatieMediaLibraryFileUpload::make('images')
                                     ->label('Property Images')
+                                    ->collection('images')
                                     ->multiple()
                                     ->reorderable()
                                     ->image()
                                     ->imagePreviewHeight('120')
-                                    ->disk('public')
-                                    ->directory('properties/images')
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/gif'])
                                     ->maxSize(5120)
                                     ->panelLayout('grid')
