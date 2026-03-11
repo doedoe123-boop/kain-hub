@@ -8,6 +8,7 @@ import { useCartStore } from "@/stores/cart";
 vi.mock("@heroicons/vue/24/outline", () => ({
   XMarkIcon: { template: "<svg />" },
   TrashIcon: { template: "<svg />" },
+  ShoppingBagIcon: { template: "<svg />" },
 }));
 
 vi.mock("@/api/cart", () => ({

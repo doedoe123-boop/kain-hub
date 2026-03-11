@@ -37,7 +37,7 @@ describe("storesApi", () => {
     client.get = vi.fn().mockResolvedValue({ data: { data: [] } });
 
     await storesApi.list({ search: "pizza" });
-    expect(client.get).toHaveBeenCalledWith("/api/stores", {
+    expect(client.get).toHaveBeenCalledWith("/api/v1/stores", {
       params: { search: "pizza" },
     });
   });
@@ -48,7 +48,7 @@ describe("storesApi", () => {
     client.get = vi.fn().mockResolvedValue({ data: {} });
 
     await storesApi.show("pizza-house");
-    expect(client.get).toHaveBeenCalledWith("/api/stores/pizza-house");
+    expect(client.get).toHaveBeenCalledWith("/api/v1/stores/pizza-house");
   });
 });
 
@@ -59,7 +59,7 @@ describe("ordersApi", () => {
     client.get = vi.fn().mockResolvedValue({ data: [] });
 
     await ordersApi.list();
-    expect(client.get).toHaveBeenCalledWith("/api/orders", { params: {} });
+    expect(client.get).toHaveBeenCalledWith("/api/v1/orders", { params: {} });
   });
 
   it("place calls POST /api/orders", async () => {
@@ -68,7 +68,7 @@ describe("ordersApi", () => {
     client.post = vi.fn().mockResolvedValue({ data: { order_id: 99 } });
 
     await ordersApi.place({ payment_method: "paypal" });
-    expect(client.post).toHaveBeenCalledWith("/api/orders", {
+    expect(client.post).toHaveBeenCalledWith("/api/v1/orders", {
       payment_method: "paypal",
     });
   });

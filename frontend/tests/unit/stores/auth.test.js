@@ -63,12 +63,12 @@ describe("Auth Store", () => {
     await auth.login({ email: "maria@example.com", password: "secret" });
 
     expect(auth.user.name).toBe("Maria");
-    expect(localStorage.getItem("api_token")).toBe("tok_123");
+    expect(sessionStorage.getItem("api_token")).toBe("tok_123");
   });
 
   it("logout — clears user and token", async () => {
     authApi.authApi.logout.mockResolvedValue({});
-    localStorage.setItem("api_token", "tok_old");
+    sessionStorage.setItem("api_token", "tok_old");
 
     const auth = useAuthStore();
     auth.user = { id: 1, name: "Juan" };
@@ -76,7 +76,7 @@ describe("Auth Store", () => {
     await auth.logout();
 
     expect(auth.user).toBeNull();
-    expect(localStorage.getItem("api_token")).toBeNull();
+    expect(sessionStorage.getItem("api_token")).toBeNull();
   });
 
   it("isCustomer — true when role is customer", () => {
