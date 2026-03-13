@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\PaymentMethodController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\PromotionController;
 use App\Http\Controllers\Api\V1\PropertyController;
+use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\StoreController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Webhooks\PayMongoController;
@@ -76,10 +77,14 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
         Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
         Route::get('/featured-listings', [FeaturedListingController::class, 'index'])->name('featured-listings.index');
+
+        // Reviews (public, read-only)
+        Route::get('/products/{product}/reviews', [ReviewController::class, 'productIndex'])->name('products.reviews.index');
+        Route::get('/properties/{property:slug}/reviews', [ReviewController::class, 'propertyIndex'])->name('properties.reviews.index');
     });
 
     // ── Authenticated customer endpoints ──────────────────────────────────────────────
-    Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
+    Route::middleware(['auth:sanctum', 'throttle:180,1'])->group(function () {
         // Auth
         Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
         Route::get('/user', [AuthController::class, 'user'])->name('auth.user');
@@ -89,6 +94,14 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::patch('/user/password', [UserController::class, 'changePassword'])->name('user.password');
         Route::patch('/user/settings', [UserController::class, 'updateSettings'])->name('user.settings');
         Route::delete('/user', [UserController::class, 'destroy'])->name('user.destroy');
+
+        // User inquiries (cross-sector dashboard)
+        Route::get('/user/inquiries', [UserController::class, 'inquiries'])->name('user.inquiries');
+
+        // User notifications
+        Route::get('/user/notifications', [UserController::class, 'notifications'])->name('user.notifications');
+        Route::patch('/user/notifications/{id}/read', [UserController::class, 'markNotificationRead'])->name('user.notifications.read');
+        Route::post('/user/notifications/read-all', [UserController::class, 'markAllNotificationsRead'])->name('user.notifications.readAll');
 
         // Delivery addresses
         Route::get('/user/addresses', [AddressController::class, 'index'])->name('addresses.index');
@@ -145,6 +158,15 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::middleware('throttle:5,1')->group(function () {
             Route::post('/moving-bookings', [MovingBookingController::class, 'store'])->name('moving-bookings.store');
             Route::post('/moving-bookings/{movingBooking}/review', [MovingReviewController::class, 'store'])->name('moving-bookings.review.store');
+
+            // Product & property reviews
+            Route::post('/products/{product}/reviews', [ReviewController::class, 'productStore'])->name('products.reviews.store');
+            Route::post('/properties/{property:slug}/reviews', [ReviewController::class, 'propertyStore'])->name('properties.reviews.store');
+        });
+
+        // Quick inquiry — own bucket so dashboard page-loads don't eat the limit
+        Route::middleware('throttle:5,1,quick-inquiry')->group(function () {
+            Route::post('/properties/{property:slug}/quick-inquiry', [PropertyController::class, 'quickInquiry'])->name('properties.quick-inquiry');
         });
         Route::middleware('throttle:30,1')->group(function () {
             Route::patch('/moving-bookings/{movingBooking}/status', [MovingBookingController::class, 'updateStatus'])->name('moving-bookings.status');

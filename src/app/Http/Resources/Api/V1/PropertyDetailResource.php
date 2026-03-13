@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Api\V1;
 
 use App\Models\Property;
+use App\Models\PropertyInquiry;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -66,12 +67,31 @@ class PropertyDetailResource extends JsonResource
             // Rich data
             'features' => $this->features,
             'nearby_places' => $this->nearby_places,
+            'direction_steps' => $this->direction_steps,
+            'house_rules' => $this->house_rules,
+            'utility_inclusions' => $this->utility_inclusions,
+            'safety_features' => $this->safety_features,
 
             // Flags & stats
             'is_featured' => $this->is_featured,
             'views_count' => $this->views_count,
             'average_rating' => $this->average_rating,
             'review_count' => $this->review_count,
+            'reviews' => $this->testimonials()
+                ->where('is_published', true)
+                ->latest()
+                ->limit(10)
+                ->get()
+                ->map(fn ($t) => [
+                    'id' => $t->id,
+                    'name' => $t->client_name,
+                    'rating' => $t->rating,
+                    'title' => $t->title,
+                    'content' => $t->content,
+                    'verified' => false,
+                    'date' => $t->created_at?->diffForHumans() ?? 'Recently',
+                ])
+                ->toArray(),
             'published_at' => $this->published_at?->toIso8601String(),
 
             // Development
@@ -94,6 +114,15 @@ class PropertyDetailResource extends JsonResource
                 'phone' => $this->store->phone,
                 'sector_template' => $this->store->sector_template,
             ]),
+
+            // Inquiry awareness (authenticated users only)
+            'has_inquired' => $this->when(
+                $request->user() !== null,
+                fn () => PropertyInquiry::query()
+                    ->where('property_id', $this->id)
+                    ->where('user_id', $request->user()->id)
+                    ->exists(),
+            ),
         ];
     }
 }

@@ -16,7 +16,10 @@ import {
 } from "@heroicons/vue/24/outline";
 import { StarIcon as StarSolid } from "@heroicons/vue/24/solid";
 import { productsApi } from "@/api/products";
+import { reviewsApi } from "@/api/reviews";
 import { useCartStore } from "@/stores/cart";
+import PhotoLightbox from "@/components/PhotoLightbox.vue";
+import ReviewForm from "@/components/ReviewForm.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -29,6 +32,13 @@ const selectedVariantId = ref(null);
 const quantity = ref(1);
 const selectedImage = ref(0);
 const addedToCart = ref(false);
+const lightboxOpen = ref(false);
+const lightboxIndex = ref(0);
+
+function openLightbox(index = 0) {
+  lightboxIndex.value = index;
+  lightboxOpen.value = true;
+}
 
 const activeTab = ref('specs');
 
@@ -105,6 +115,19 @@ async function buyNow() {
   cart.closeDrawer();
   router.push({ name: "checkout.index" });
 }
+
+const reviewFormRef = ref(null);
+
+async function submitProductReview(payload) {
+  try {
+    await reviewsApi.submitForProduct(product.value.id, payload);
+    reviewFormRef.value?.onSuccess();
+  } catch (e) {
+    reviewFormRef.value?.onError(
+      e.response?.data?.message ?? "Failed to submit review. Please try again."
+    );
+  }
+}
 </script>
 
 <template>
@@ -168,13 +191,14 @@ async function buyNow() {
           <div>
             <!-- Main image -->
             <div
-              class="relative aspect-square overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm"
+              class="relative aspect-square overflow-hidden rounded-2xl bg-white border border-slate-100 shadow-sm cursor-pointer group"
+              @click="images[selectedImage] && openLightbox(selectedImage)"
             >
               <img
                 v-if="images[selectedImage]"
                 :src="images[selectedImage]"
                 :alt="product.name"
-                class="h-full w-full object-cover transition-all duration-500 hover:scale-105 cursor-crosshair"
+                class="h-full w-full object-cover transition-all duration-500 group-hover:scale-105"
               />
               <div
                 v-else
@@ -182,10 +206,12 @@ async function buyNow() {
               >
                 🛍️
               </div>
-              
-              <!-- Zoom icon overlay -->
-              <div v-if="images[selectedImage]" class="absolute bottom-4 right-4 bg-white/90 p-2.5 rounded-full shadow-md text-slate-700 pointer-events-none backdrop-blur-sm">
-                <MagnifyingGlassPlusIcon class="size-5" />
+
+              <!-- Zoom hint overlay -->
+              <div v-if="images[selectedImage]" class="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/10 transition-colors">
+                <div class="rounded-full bg-white/90 p-3 shadow-lg text-slate-700 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+                  <MagnifyingGlassPlusIcon class="size-6" />
+                </div>
               </div>
             </div>
 
@@ -203,7 +229,7 @@ async function buyNow() {
                     ? 'border-brand-500 ring-2 ring-brand-500/20'
                     : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-300'
                 "
-                @click="selectedImage = i"
+                @click="selectedImage = i; openLightbox(i)"
               >
                 <img :src="img" class="h-full w-full object-cover" />
               </button>
@@ -448,48 +474,14 @@ async function buyNow() {
             
             <!-- Reviews Tab -->
             <div v-show="activeTab === 'reviews'" class="max-w-4xl">
-              <h3 class="text-xl font-bold text-[#0F2044] mb-6">Customer Reviews</h3>
-              
-              <!-- Review Summary -->
-              <div v-if="product.reviews?.length" class="flex flex-col sm:flex-row items-center gap-8 mb-8 pb-8 border-b border-slate-100">
-                <div class="text-center shrink-0">
-                  <div class="text-5xl font-black text-[#0F2044]">{{ product.average_rating ? product.average_rating.toFixed(1) : '0.0' }}</div>
-                  <div class="flex text-amber-400 justify-center mt-2">
-                    <StarSolid class="size-4" v-for="n in Math.round(product.average_rating || 0)" :key="'s-'+n" />
-                    <StarIcon class="size-4" v-for="n in (5 - Math.round(product.average_rating || 0))" :key="'e-'+n" />
-                  </div>
-                  <p class="text-xs text-slate-400 mt-2">{{ product.review_count }} Reviews</p>
-                </div>
-              </div>
-              
-              <!-- Individual Reviews list -->
-              <div v-if="product.reviews?.length" class="space-y-6">
-                <div v-for="review in product.reviews" :key="review.id" class="border-t border-slate-100 pt-6 first:border-0 first:pt-0">
-                  <div class="flex justify-between items-center mb-2">
-                    <div class="flex items-center gap-3">
-                      <div class="flex text-amber-400">
-                        <StarSolid v-for="n in review.rating" :key="n" class="size-3.5" />
-                        <StarIcon v-for="n in (5 - review.rating)" :key="'empty-'+n" class="size-3.5" />
-                      </div>
-                      <span class="text-sm font-bold text-[#0F2044]">{{ review.name }}</span>
-                    </div>
-                    <span class="text-xs text-slate-400">{{ review.date }}</span>
-                  </div>
-                  
-                  <div v-if="review.verified" class="flex items-center gap-1.5 mb-3">
-                    <CheckBadgeIcon class="size-4 text-[#059669]" />
-                    <span class="text-xs text-[#059669] font-bold tracking-wide uppercase">Verified Buyer</span>
-                  </div>
-                  
-                  <p class="text-sm text-slate-600 leading-relaxed">
-                    {{ review.content }}
-                  </p>
-                </div>
-              </div>
-              <div v-else class="text-center py-10 rounded-xl bg-slate-50 border border-slate-100">
-                <p class="text-slate-500 font-medium">No reviews yet.</p>
-                <p class="text-sm text-slate-400 mt-1">Be the first to review this product!</p>
-              </div>
+              <ReviewForm
+                ref="reviewFormRef"
+                :review-count="product.review_count ?? 0"
+                :average-rating="product.average_rating"
+                :reviews="product.reviews ?? []"
+                item-label="product"
+                @submit="submitProductReview"
+              />
             </div>
 
             <!-- Shipping Tab -->
@@ -546,6 +538,15 @@ async function buyNow() {
       </button>
     </div>
   </div>
+
+  <!-- Photo Lightbox -->
+  <PhotoLightbox
+    v-if="lightboxOpen && images.length"
+    :images="images"
+    :start-index="lightboxIndex"
+    :alt="product?.name ?? 'Product photo'"
+    @close="lightboxOpen = false"
+  />
 </template>
 
 <style scoped>

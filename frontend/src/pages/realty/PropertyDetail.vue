@@ -19,22 +19,49 @@ import {
   GlobeAltIcon,
   BuildingOffice2Icon,
   StarIcon,
+  MapIcon,
+  HeartIcon,
+  ChatBubbleLeftIcon,
 } from "@heroicons/vue/24/outline";
 import { StarIcon as StarSolid } from "@heroicons/vue/24/solid";
 import { propertiesApi } from "@/api/properties";
+import { reviewsApi } from "@/api/reviews";
+import { useAuthStore } from "@/stores/auth";
+import PhotoLightbox from "@/components/PhotoLightbox.vue";
+import ReviewForm from "@/components/ReviewForm.vue";
 
 const route = useRoute();
+const auth = useAuthStore();
 const property = ref(null);
 const loading = ref(true);
 const error = ref(null);
 const selectedImage = ref(0);
 const showAllImages = ref(false);
+const lightboxOpen = ref(false);
+const lightboxIndex = ref(0);
+
+function openLightbox(index = 0) {
+  lightboxIndex.value = index;
+  lightboxOpen.value = true;
+}
 
 // Inquiry form state
 const inquiry = ref({ name: "", email: "", phone: "", message: "" });
 const inquirySubmitting = ref(false);
 const inquirySuccess = ref(false);
 const inquiryError = ref(null);
+const quickMessage = ref("");
+const showQuickMessage = ref(false);
+const inquirySuccessMessage = ref("");
+const hasInquired = ref(false);
+
+const defaultMessage = computed(() => {
+  if (!property.value || !auth.user) return "";
+  const name = auth.user.name;
+  const contactName =
+    property.value.store?.agent_name || (isRental.value ? "landlord" : "agent");
+  return `Hi ${contactName}, I'm ${name} and I'm interested in your listing "${property.value.title}". I'd love to schedule a viewing or learn more about this property. Looking forward to hearing from you!`;
+});
 
 const listingBadgeClass = {
   for_sale: "bg-emerald-100 text-emerald-700 ring-emerald-200",
@@ -48,6 +75,9 @@ onMounted(async () => {
     const { data } = await propertiesApi.show(route.params.slug);
     // JsonResource wraps in { data: { ... } }
     property.value = data.data ?? data;
+    if (property.value.has_inquired) {
+      hasInquired.value = true;
+    }
   } catch (e) {
     error.value =
       e.response?.status === 404
@@ -133,6 +163,9 @@ async function submitInquiry() {
   try {
     await propertiesApi.submitInquiry(route.params.slug, inquiry.value);
     inquirySuccess.value = true;
+    inquirySuccessMessage.value = isRental.value
+      ? "The landlord will be in touch with you shortly."
+      : "The agent will be in touch with you shortly.";
     inquiry.value = { name: "", email: "", phone: "", message: "" };
   } catch {
     inquiryError.value = "Failed to send inquiry. Please try again.";
@@ -141,8 +174,41 @@ async function submitInquiry() {
   }
 }
 
+async function submitQuickInquiry() {
+  inquiryError.value = null;
+  inquirySubmitting.value = true;
+  try {
+    const { data } = await propertiesApi.quickInquiry(route.params.slug, {
+      message: quickMessage.value || null,
+    });
+    inquirySuccess.value = true;
+    inquirySuccessMessage.value =
+      data.message ?? "Your interest has been sent!";
+    quickMessage.value = "";
+    showQuickMessage.value = false;
+    hasInquired.value = true;
+  } catch {
+    inquiryError.value = "Failed to send your interest. Please try again.";
+  } finally {
+    inquirySubmitting.value = false;
+  }
+}
+
 function copyLink() {
   navigator.clipboard.writeText(window.location.href);
+}
+
+const propertyReviewFormRef = ref(null);
+
+async function submitPropertyReview(payload) {
+  try {
+    await reviewsApi.submitForProperty(route.params.slug, payload);
+    propertyReviewFormRef.value?.onSuccess();
+  } catch (e) {
+    propertyReviewFormRef.value?.onError(
+      e.response?.data?.message ?? "Failed to submit review. Please try again.",
+    );
+  }
 }
 </script>
 
@@ -201,7 +267,8 @@ function copyLink() {
           >
             <!-- Primary image -->
             <div
-              class="relative overflow-hidden rounded-3xl bg-slate-800 shadow-sm"
+              class="relative overflow-hidden rounded-3xl bg-slate-800 shadow-sm cursor-pointer"
+              @click="hasGallery && openLightbox(selectedImage)"
             >
               <img
                 v-if="hasGallery"
@@ -240,7 +307,7 @@ function copyLink() {
               <button
                 v-if="images.length > 1"
                 class="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm transition-colors hover:bg-black/80"
-                @click="showAllImages = !showAllImages"
+                @click.stop="openLightbox(0)"
               >
                 📷 View all {{ images.length }} photos
               </button>
@@ -260,7 +327,10 @@ function copyLink() {
                     ? 'ring-emerald-400'
                     : 'ring-transparent hover:ring-white/30'
                 "
-                @click="selectedImage = i + 1"
+                @click="
+                  selectedImage = i + 1;
+                  openLightbox(i + 1);
+                "
               >
                 <img
                   :src="img"
@@ -270,6 +340,7 @@ function copyLink() {
                 <div
                   v-if="i === 3 && images.length > 5"
                   class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] text-lg font-bold text-white tracking-wide"
+                  @click.stop="openLightbox(i + 1)"
                 >
                   +{{ images.length - 5 }}
                 </div>
@@ -297,7 +368,10 @@ function copyLink() {
                   ? 'border-emerald-400 opacity-100'
                   : 'border-transparent opacity-50 hover:opacity-75'
               "
-              @click="selectedImage = i"
+              @click="
+                selectedImage = i;
+                openLightbox(i);
+              "
             >
               <img :src="img" class="h-full w-full object-cover" />
             </button>
@@ -802,6 +876,174 @@ function copyLink() {
               </ul>
             </section>
 
+            <!-- ═══ PAANO PUMUNTA (How to Get There) ══════════════════ -->
+            <section v-if="property.direction_steps?.length">
+              <h2
+                class="mb-4 flex items-center gap-2 text-lg font-bold text-slate-900"
+              >
+                <MapIcon class="size-5 text-emerald-600" />
+                Paano Pumunta (How to Get There)
+              </h2>
+              <div class="relative ml-4 border-l-2 border-emerald-200 pl-6">
+                <div
+                  v-for="(step, i) in property.direction_steps"
+                  :key="i"
+                  class="relative mb-6 last:mb-0"
+                >
+                  <!-- Step number dot -->
+                  <div
+                    class="absolute -left-[33px] flex size-6 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-white ring-4 ring-white"
+                  >
+                    {{ i + 1 }}
+                  </div>
+
+                  <div
+                    class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm"
+                  >
+                    <!-- Transport mode badge -->
+                    <div class="mb-1 flex items-center gap-2">
+                      <span
+                        v-if="step.transport_mode"
+                        class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600"
+                      >
+                        {{
+                          {
+                            walk: "Walk",
+                            tricycle: "Tricycle",
+                            jeepney: "Jeepney",
+                            bus: "Bus",
+                            drive: "Drive",
+                            grab: "Grab / Taxi",
+                          }[step.transport_mode] || step.transport_mode
+                        }}
+                      </span>
+                      <span
+                        v-if="step.landmark"
+                        class="inline-flex items-center gap-1 text-xs text-slate-400"
+                      >
+                        <MapPinIcon class="size-3.5 shrink-0" />
+                        {{ step.landmark }}
+                      </span>
+                    </div>
+
+                    <p class="text-sm font-medium text-slate-700">
+                      {{ step.instruction }}
+                    </p>
+
+                    <!-- Direction photo -->
+                    <img
+                      v-if="step.photo"
+                      :src="
+                        step.photo.startsWith('http')
+                          ? step.photo
+                          : `/storage/${step.photo}`
+                      "
+                      :alt="`Direction step ${i + 1}`"
+                      class="mt-3 h-40 w-full rounded-lg object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- ═══ RENTAL INFO SECTIONS ══════════════════════════════ -->
+
+            <!-- Utility Inclusions -->
+            <section v-if="property.utility_inclusions?.length">
+              <h2 class="mb-3 text-lg font-bold text-slate-900">
+                Utility Inclusions
+              </h2>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="util in property.utility_inclusions"
+                  :key="util"
+                  class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 ring-1 ring-emerald-200/60"
+                >
+                  <CheckCircleIcon class="size-4" />
+                  {{
+                    {
+                      water: "Water",
+                      electricity: "Electricity",
+                      wifi: "WiFi / Internet",
+                      cable_tv: "Cable TV",
+                      gas: "Cooking Gas",
+                      trash: "Trash Collection",
+                      laundry: "Shared Laundry",
+                      parking: "Parking Space",
+                    }[util] || util
+                  }}
+                </span>
+              </div>
+            </section>
+
+            <!-- House Rules -->
+            <section v-if="property.house_rules?.length">
+              <h2 class="mb-3 text-lg font-bold text-slate-900">House Rules</h2>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="rule in property.house_rules"
+                  :key="rule"
+                  class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-700 ring-1 ring-amber-200/60"
+                >
+                  <ExclamationCircleIcon class="size-4" />
+                  {{
+                    {
+                      no_pets: "No Pets",
+                      pets_allowed: "Pets Allowed",
+                      no_smoking: "No Smoking",
+                      no_overnight_guests: "No Overnight Guests",
+                      guests_allowed: "Guests Allowed",
+                      curfew: "Curfew (10 PM – 6 AM)",
+                      no_cooking: "No Cooking in Room",
+                      cooking_allowed: "Cooking Allowed",
+                      quiet_hours: "Quiet Hours",
+                      id_required: "Valid ID Required",
+                    }[rule] || rule
+                  }}
+                </span>
+              </div>
+            </section>
+
+            <!-- Safety & Security -->
+            <section v-if="property.safety_features?.length">
+              <h2 class="mb-3 text-lg font-bold text-slate-900">
+                Safety & Security
+              </h2>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="feat in property.safety_features"
+                  :key="feat"
+                  class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 ring-1 ring-blue-200/60"
+                >
+                  <ShieldCheckIcon class="size-4" />
+                  {{
+                    {
+                      cctv: "CCTV",
+                      security_guard: "Security Guard",
+                      gated: "Gated Compound",
+                      well_lit: "Well-Lit",
+                      fire_extinguisher: "Fire Extinguisher",
+                      smoke_detector: "Smoke Detector",
+                      flood_free: "Flood-Free",
+                      backup_power: "Backup Power",
+                    }[feat] || feat
+                  }}
+                </span>
+              </div>
+            </section>
+
+            <!-- ═══ Reviews & Testimonials ═════════════════════════════ -->
+            <section class="border-t border-slate-100 pt-8">
+              <ReviewForm
+                ref="propertyReviewFormRef"
+                :review-count="property.review_count ?? 0"
+                :average-rating="property.average_rating ?? null"
+                :reviews="property.reviews ?? []"
+                :item-label="isRental ? 'rental' : 'property'"
+                @submit="submitPropertyReview"
+              />
+            </section>
+
             <!-- Share row -->
             <div class="flex items-center gap-3 border-t border-slate-100 pt-6">
               <span class="text-xs font-semibold text-slate-400"
@@ -908,11 +1150,9 @@ function copyLink() {
                 </a>
               </div>
 
-              <!-- Inquiry Form -->
+              <!-- Inquiry Section -->
               <div class="flex flex-col gap-4">
-                <h3 class="font-bold text-[#0F2044]">Send an Inquiry</h3>
-
-                <!-- Success -->
+                <!-- Success (shared by both flows) -->
                 <div
                   v-if="inquirySuccess"
                   class="flex flex-col items-center gap-2 rounded-2xl bg-[#059669]/10 p-6 text-center ring-1 ring-[#059669]/20"
@@ -922,50 +1162,79 @@ function copyLink() {
                     Inquiry sent successfully!
                   </p>
                   <p class="text-xs text-slate-500">
-                    {{
-                      isRental
-                        ? "The landlord will be in touch with you shortly."
-                        : "The agent will be in touch with you shortly."
-                    }}
+                    {{ inquirySuccessMessage }}
                   </p>
                   <button
                     class="mt-2 text-xs font-semibold text-[#059669] hover:underline"
                     @click="inquirySuccess = false"
                   >
-                    Send another message
+                    Send another inquiry
                   </button>
                 </div>
 
-                <!-- Form -->
-                <form
-                  v-else
-                  class="flex flex-col gap-3"
-                  @submit.prevent="submitInquiry"
-                >
-                  <input
-                    v-model="inquiry.name"
-                    required
-                    type="text"
-                    placeholder="Full Name *"
-                    class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
-                  />
-                  <input
-                    v-model="inquiry.email"
-                    required
-                    type="email"
-                    placeholder="Email Address *"
-                    class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
-                  />
-                  <input
-                    v-model="inquiry.phone"
-                    type="tel"
-                    placeholder="Phone Number"
-                    class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
-                  />
+                <!-- Quick Inquiry (logged-in users) -->
+                <template v-else-if="auth.isLoggedIn">
+                  <h3 class="font-bold text-[#0F2044]">Interested?</h3>
+
+                  <!-- Already-inquired label -->
+                  <div
+                    v-if="hasInquired"
+                    class="flex items-center gap-2 rounded-xl bg-amber-50 p-3 text-xs font-medium text-amber-700 ring-1 ring-amber-200"
+                  >
+                    <CheckCircleIcon class="size-4 shrink-0" />
+                    You've already sent an inquiry for this listing.
+                  </div>
+
+                  <p class="text-xs text-slate-500">
+                    Express your interest instantly — your contact details will
+                    be shared with the
+                    {{ isRental ? "landlord" : "agent" }} automatically.
+                  </p>
+
+                  <div
+                    class="flex items-center gap-3 rounded-xl bg-slate-50 p-3"
+                  >
+                    <div
+                      class="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-bold text-brand-700"
+                    >
+                      {{ auth.user?.name?.charAt(0)?.toUpperCase() }}
+                    </div>
+                    <div class="min-w-0 text-sm">
+                      <p class="truncate font-medium text-slate-800">
+                        {{ auth.user?.name }}
+                      </p>
+                      <p class="truncate text-xs text-slate-500">
+                        {{ auth.user?.email }}
+                        <span v-if="auth.user?.phone">
+                          · {{ auth.user?.phone }}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Auto-generated message preview -->
+                  <div
+                    v-if="!showQuickMessage"
+                    class="rounded-xl bg-slate-50 px-4 py-3 text-xs leading-relaxed text-slate-500 italic"
+                  >
+                    "{{ defaultMessage }}"
+                  </div>
+
+                  <!-- Custom message toggle -->
+                  <button
+                    v-if="!showQuickMessage"
+                    type="button"
+                    class="flex items-center gap-1.5 self-start text-xs font-medium text-slate-500 transition-colors hover:text-slate-700"
+                    @click="showQuickMessage = true"
+                  >
+                    <ChatBubbleLeftIcon class="size-3.5" />
+                    Write your own message instead
+                  </button>
                   <textarea
-                    v-model="inquiry.message"
-                    rows="3"
-                    placeholder="I'm interested in this property. Please contact me for a viewing."
+                    v-if="showQuickMessage"
+                    v-model="quickMessage"
+                    rows="2"
+                    placeholder="I'd like to schedule a viewing…"
                     class="w-full resize-none rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
                   />
 
@@ -978,9 +1247,10 @@ function copyLink() {
                   </div>
 
                   <button
-                    type="submit"
+                    type="button"
                     :disabled="inquirySubmitting"
-                    class="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#059669] py-4 text-sm font-bold text-white shadow-lg shadow-[#059669]/25 transition-all hover:bg-[#047857] hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+                    class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#059669] py-4 text-sm font-bold text-white shadow-lg shadow-[#059669]/25 transition-all hover:bg-[#047857] hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+                    @click="submitQuickInquiry"
                   >
                     <span
                       v-if="inquirySubmitting"
@@ -1007,16 +1277,114 @@ function copyLink() {
                       </svg>
                       Sending…
                     </span>
-                    <span v-else>Submit Inquiry</span>
+                    <template v-else>
+                      <HeartIcon class="size-4.5" />
+                      I'm Interested
+                    </template>
                   </button>
 
                   <p
-                    class="mt-2 flex items-center justify-center gap-1.5 text-[11px] text-slate-400 font-medium"
+                    class="flex items-center justify-center gap-1.5 text-[11px] font-medium text-slate-400"
                   >
                     <LockClosedIcon class="size-3.5 shrink-0" />
                     Your data is protected and never shared.
                   </p>
-                </form>
+                </template>
+
+                <!-- Manual Inquiry Form (guests) -->
+                <template v-else>
+                  <h3 class="font-bold text-[#0F2044]">Send an Inquiry</h3>
+
+                  <form
+                    class="flex flex-col gap-3"
+                    @submit.prevent="submitInquiry"
+                  >
+                    <input
+                      v-model="inquiry.name"
+                      required
+                      type="text"
+                      placeholder="Full Name *"
+                      class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                    />
+                    <input
+                      v-model="inquiry.email"
+                      required
+                      type="email"
+                      placeholder="Email Address *"
+                      class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                    />
+                    <input
+                      v-model="inquiry.phone"
+                      type="tel"
+                      placeholder="Phone Number"
+                      class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                    />
+                    <textarea
+                      v-model="inquiry.message"
+                      rows="3"
+                      placeholder="I'm interested in this property. Please contact me for a viewing."
+                      class="w-full resize-none rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                    />
+
+                    <div
+                      v-if="inquiryError"
+                      class="flex items-center gap-2 rounded-xl bg-red-50 p-3 text-xs text-red-600 ring-1 ring-red-100"
+                    >
+                      <ExclamationCircleIcon class="size-4 shrink-0" />
+                      {{ inquiryError }}
+                    </div>
+
+                    <button
+                      type="submit"
+                      :disabled="inquirySubmitting"
+                      class="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-[#059669] py-4 text-sm font-bold text-white shadow-lg shadow-[#059669]/25 transition-all hover:bg-[#047857] hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+                    >
+                      <span
+                        v-if="inquirySubmitting"
+                        class="flex items-center gap-2"
+                      >
+                        <svg
+                          class="size-5 animate-spin text-white"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            class="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            stroke-width="4"
+                          ></circle>
+                          <path
+                            class="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Sending…
+                      </span>
+                      <span v-else>Submit Inquiry</span>
+                    </button>
+
+                    <p
+                      class="mt-2 flex items-center justify-center gap-1.5 text-[11px] font-medium text-slate-400"
+                    >
+                      <LockClosedIcon class="size-3.5 shrink-0" />
+                      Your data is protected and never shared.
+                    </p>
+                  </form>
+
+                  <p class="text-center text-xs text-slate-400">
+                    <RouterLink
+                      to="/login"
+                      class="font-semibold text-brand-600 hover:underline"
+                    >
+                      Log in
+                    </RouterLink>
+                    to inquire instantly with one click.
+                  </p>
+                </template>
               </div>
             </div>
 
@@ -1068,5 +1436,14 @@ function copyLink() {
         </div>
       </div>
     </template>
+
+    <!-- Photo Lightbox -->
+    <PhotoLightbox
+      v-if="lightboxOpen && images.length"
+      :images="images"
+      :start-index="lightboxIndex"
+      :alt="property?.title ?? 'Property photo'"
+      @close="lightboxOpen = false"
+    />
   </div>
 </template>

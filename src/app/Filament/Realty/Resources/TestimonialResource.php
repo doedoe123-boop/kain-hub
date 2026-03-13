@@ -84,6 +84,12 @@ class TestimonialResource extends Resource
                             ->native(false)
                             ->placeholder('General store review'),
 
+                        Forms\Components\TextInput::make('title')
+                            ->label('Review Title')
+                            ->nullable()
+                            ->maxLength(255)
+                            ->columnSpanFull(),
+
                         Forms\Components\Textarea::make('content')
                             ->required()
                             ->maxLength(2000)
@@ -117,6 +123,11 @@ class TestimonialResource extends Resource
                 Tables\Columns\TextColumn::make('rating')
                     ->formatStateUsing(fn (int $state): string => str_repeat('★', $state).str_repeat('☆', 5 - $state))
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('title')
+                    ->limit(30)
+                    ->placeholder('None')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('content')
                     ->limit(50)
