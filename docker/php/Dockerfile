@@ -1,12 +1,12 @@
 # Using a specific version is better for stability
-FROM php:8.4-fpm-bullseye
+FROM php:8.4-fpm-bookworm
 
 # Professional Metadata
 LABEL org.opencontainers.image.source=https://github.com/doedoe123-boop/negosyohub
 LABEL org.opencontainers.image.description="Production container for Negosyohub"
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install system dependencies and apply all security patches
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     git \
     unzip \
     libpq-dev \
