@@ -37,6 +37,7 @@ class Testimonial extends Model
         'client_email',
         'client_photo',
         'rating',
+        'title',
         'content',
         'agent_reply',
         'replied_at',

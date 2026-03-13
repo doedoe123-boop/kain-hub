@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
@@ -47,6 +48,10 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property ?array $floor_plans
  * @property ?array $documents
  * @property ?array $nearby_places
+ * @property ?array $direction_steps
+ * @property ?array $house_rules
+ * @property ?array $utility_inclusions
+ * @property ?array $safety_features
  * @property ?string $video_url
  * @property ?string $virtual_tour_url
  * @property bool $is_featured
@@ -100,6 +105,10 @@ class Property extends Model implements HasMedia
         'floor_plans',
         'documents',
         'nearby_places',
+        'direction_steps',
+        'house_rules',
+        'utility_inclusions',
+        'safety_features',
         'video_url',
         'virtual_tour_url',
         'is_featured',
@@ -123,6 +132,10 @@ class Property extends Model implements HasMedia
             'floor_plans' => 'array',
             'documents' => 'array',
             'nearby_places' => 'array',
+            'direction_steps' => 'array',
+            'house_rules' => 'array',
+            'utility_inclusions' => 'array',
+            'safety_features' => 'array',
             'is_featured' => 'boolean',
             'published_at' => 'datetime',
             'views_count' => 'integer',

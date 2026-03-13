@@ -19,9 +19,13 @@ import {
   GlobeAltIcon,
   BuildingOffice2Icon,
   StarIcon,
+  MapIcon,
 } from "@heroicons/vue/24/outline";
 import { StarIcon as StarSolid } from "@heroicons/vue/24/solid";
 import { propertiesApi } from "@/api/properties";
+import { reviewsApi } from "@/api/reviews";
+import PhotoLightbox from "@/components/PhotoLightbox.vue";
+import ReviewForm from "@/components/ReviewForm.vue";
 
 const route = useRoute();
 const property = ref(null);
@@ -29,6 +33,13 @@ const loading = ref(true);
 const error = ref(null);
 const selectedImage = ref(0);
 const showAllImages = ref(false);
+const lightboxOpen = ref(false);
+const lightboxIndex = ref(0);
+
+function openLightbox(index = 0) {
+  lightboxIndex.value = index;
+  lightboxOpen.value = true;
+}
 
 // Inquiry form state
 const inquiry = ref({ name: "", email: "", phone: "", message: "" });
@@ -144,6 +155,19 @@ async function submitInquiry() {
 function copyLink() {
   navigator.clipboard.writeText(window.location.href);
 }
+
+const propertyReviewFormRef = ref(null);
+
+async function submitPropertyReview(payload) {
+  try {
+    await reviewsApi.submitForProperty(route.params.slug, payload);
+    propertyReviewFormRef.value?.onSuccess();
+  } catch (e) {
+    propertyReviewFormRef.value?.onError(
+      e.response?.data?.message ?? "Failed to submit review. Please try again.",
+    );
+  }
+}
 </script>
 
 <template>
@@ -201,7 +225,8 @@ function copyLink() {
           >
             <!-- Primary image -->
             <div
-              class="relative overflow-hidden rounded-3xl bg-slate-800 shadow-sm"
+              class="relative overflow-hidden rounded-3xl bg-slate-800 shadow-sm cursor-pointer"
+              @click="hasGallery && openLightbox(selectedImage)"
             >
               <img
                 v-if="hasGallery"
@@ -240,7 +265,7 @@ function copyLink() {
               <button
                 v-if="images.length > 1"
                 class="absolute bottom-3 right-3 flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm transition-colors hover:bg-black/80"
-                @click="showAllImages = !showAllImages"
+                @click.stop="openLightbox(0)"
               >
                 📷 View all {{ images.length }} photos
               </button>
@@ -260,7 +285,10 @@ function copyLink() {
                     ? 'ring-emerald-400'
                     : 'ring-transparent hover:ring-white/30'
                 "
-                @click="selectedImage = i + 1"
+                @click="
+                  selectedImage = i + 1;
+                  openLightbox(i + 1);
+                "
               >
                 <img
                   :src="img"
@@ -270,6 +298,7 @@ function copyLink() {
                 <div
                   v-if="i === 3 && images.length > 5"
                   class="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px] text-lg font-bold text-white tracking-wide"
+                  @click.stop="openLightbox(i + 1)"
                 >
                   +{{ images.length - 5 }}
                 </div>
@@ -297,7 +326,10 @@ function copyLink() {
                   ? 'border-emerald-400 opacity-100'
                   : 'border-transparent opacity-50 hover:opacity-75'
               "
-              @click="selectedImage = i"
+              @click="
+                selectedImage = i;
+                openLightbox(i);
+              "
             >
               <img :src="img" class="h-full w-full object-cover" />
             </button>
@@ -802,6 +834,174 @@ function copyLink() {
               </ul>
             </section>
 
+            <!-- ═══ PAANO PUMUNTA (How to Get There) ══════════════════ -->
+            <section v-if="property.direction_steps?.length">
+              <h2
+                class="mb-4 flex items-center gap-2 text-lg font-bold text-slate-900"
+              >
+                <MapIcon class="size-5 text-emerald-600" />
+                Paano Pumunta (How to Get There)
+              </h2>
+              <div class="relative ml-4 border-l-2 border-emerald-200 pl-6">
+                <div
+                  v-for="(step, i) in property.direction_steps"
+                  :key="i"
+                  class="relative mb-6 last:mb-0"
+                >
+                  <!-- Step number dot -->
+                  <div
+                    class="absolute -left-[33px] flex size-6 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-white ring-4 ring-white"
+                  >
+                    {{ i + 1 }}
+                  </div>
+
+                  <div
+                    class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm"
+                  >
+                    <!-- Transport mode badge -->
+                    <div class="mb-1 flex items-center gap-2">
+                      <span
+                        v-if="step.transport_mode"
+                        class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600"
+                      >
+                        {{
+                          {
+                            walk: "Walk",
+                            tricycle: "Tricycle",
+                            jeepney: "Jeepney",
+                            bus: "Bus",
+                            drive: "Drive",
+                            grab: "Grab / Taxi",
+                          }[step.transport_mode] || step.transport_mode
+                        }}
+                      </span>
+                      <span
+                        v-if="step.landmark"
+                        class="inline-flex items-center gap-1 text-xs text-slate-400"
+                      >
+                        <MapPinIcon class="size-3.5 shrink-0" />
+                        {{ step.landmark }}
+                      </span>
+                    </div>
+
+                    <p class="text-sm font-medium text-slate-700">
+                      {{ step.instruction }}
+                    </p>
+
+                    <!-- Direction photo -->
+                    <img
+                      v-if="step.photo"
+                      :src="
+                        step.photo.startsWith('http')
+                          ? step.photo
+                          : `/storage/${step.photo}`
+                      "
+                      :alt="`Direction step ${i + 1}`"
+                      class="mt-3 h-40 w-full rounded-lg object-cover"
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- ═══ RENTAL INFO SECTIONS ══════════════════════════════ -->
+
+            <!-- Utility Inclusions -->
+            <section v-if="property.utility_inclusions?.length">
+              <h2 class="mb-3 text-lg font-bold text-slate-900">
+                Utility Inclusions
+              </h2>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="util in property.utility_inclusions"
+                  :key="util"
+                  class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 ring-1 ring-emerald-200/60"
+                >
+                  <CheckCircleIcon class="size-4" />
+                  {{
+                    {
+                      water: "Water",
+                      electricity: "Electricity",
+                      wifi: "WiFi / Internet",
+                      cable_tv: "Cable TV",
+                      gas: "Cooking Gas",
+                      trash: "Trash Collection",
+                      laundry: "Shared Laundry",
+                      parking: "Parking Space",
+                    }[util] || util
+                  }}
+                </span>
+              </div>
+            </section>
+
+            <!-- House Rules -->
+            <section v-if="property.house_rules?.length">
+              <h2 class="mb-3 text-lg font-bold text-slate-900">House Rules</h2>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="rule in property.house_rules"
+                  :key="rule"
+                  class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-700 ring-1 ring-amber-200/60"
+                >
+                  <ExclamationCircleIcon class="size-4" />
+                  {{
+                    {
+                      no_pets: "No Pets",
+                      pets_allowed: "Pets Allowed",
+                      no_smoking: "No Smoking",
+                      no_overnight_guests: "No Overnight Guests",
+                      guests_allowed: "Guests Allowed",
+                      curfew: "Curfew (10 PM – 6 AM)",
+                      no_cooking: "No Cooking in Room",
+                      cooking_allowed: "Cooking Allowed",
+                      quiet_hours: "Quiet Hours",
+                      id_required: "Valid ID Required",
+                    }[rule] || rule
+                  }}
+                </span>
+              </div>
+            </section>
+
+            <!-- Safety & Security -->
+            <section v-if="property.safety_features?.length">
+              <h2 class="mb-3 text-lg font-bold text-slate-900">
+                Safety & Security
+              </h2>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="feat in property.safety_features"
+                  :key="feat"
+                  class="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 ring-1 ring-blue-200/60"
+                >
+                  <ShieldCheckIcon class="size-4" />
+                  {{
+                    {
+                      cctv: "CCTV",
+                      security_guard: "Security Guard",
+                      gated: "Gated Compound",
+                      well_lit: "Well-Lit",
+                      fire_extinguisher: "Fire Extinguisher",
+                      smoke_detector: "Smoke Detector",
+                      flood_free: "Flood-Free",
+                      backup_power: "Backup Power",
+                    }[feat] || feat
+                  }}
+                </span>
+              </div>
+            </section>
+
+            <!-- ═══ Reviews & Testimonials ═════════════════════════════ -->
+            <section class="border-t border-slate-100 pt-8">
+              <ReviewForm
+                ref="propertyReviewFormRef"
+                :review-count="property.review_count ?? 0"
+                :average-rating="property.average_rating ?? null"
+                :reviews="property.reviews ?? []"
+                :item-label="isRental ? 'rental' : 'property'"
+                @submit="submitPropertyReview"
+              />
+            </section>
+
             <!-- Share row -->
             <div class="flex items-center gap-3 border-t border-slate-100 pt-6">
               <span class="text-xs font-semibold text-slate-400"
@@ -1068,5 +1268,14 @@ function copyLink() {
         </div>
       </div>
     </template>
+
+    <!-- Photo Lightbox -->
+    <PhotoLightbox
+      v-if="lightboxOpen && images.length"
+      :images="images"
+      :start-index="lightboxIndex"
+      :alt="property?.title ?? 'Property photo'"
+      @close="lightboxOpen = false"
+    />
   </div>
 </template>

@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\V1\PaymentMethodController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\PromotionController;
 use App\Http\Controllers\Api\V1\PropertyController;
+use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\StoreController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Webhooks\PayMongoController;
@@ -76,6 +77,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
         Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
         Route::get('/featured-listings', [FeaturedListingController::class, 'index'])->name('featured-listings.index');
+
+        // Reviews (public, read-only)
+        Route::get('/products/{product}/reviews', [ReviewController::class, 'productIndex'])->name('products.reviews.index');
+        Route::get('/properties/{property:slug}/reviews', [ReviewController::class, 'propertyIndex'])->name('properties.reviews.index');
     });
 
     // ── Authenticated customer endpoints ──────────────────────────────────────────────
@@ -145,6 +150,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::middleware('throttle:5,1')->group(function () {
             Route::post('/moving-bookings', [MovingBookingController::class, 'store'])->name('moving-bookings.store');
             Route::post('/moving-bookings/{movingBooking}/review', [MovingReviewController::class, 'store'])->name('moving-bookings.review.store');
+
+            // Product & property reviews
+            Route::post('/products/{product}/reviews', [ReviewController::class, 'productStore'])->name('products.reviews.store');
+            Route::post('/properties/{property:slug}/reviews', [ReviewController::class, 'propertyStore'])->name('properties.reviews.store');
         });
         Route::middleware('throttle:30,1')->group(function () {
             Route::patch('/moving-bookings/{movingBooking}/status', [MovingBookingController::class, 'updateStatus'])->name('moving-bookings.status');

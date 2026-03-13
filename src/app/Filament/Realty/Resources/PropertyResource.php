@@ -442,6 +442,122 @@ class PropertyResource extends Resource
                                     ->columnSpanFull(),
                             ]),
 
+                        // ── Paano Pumunta (Directions) Tab ─────────────
+                        Forms\Components\Tabs\Tab::make('Paano Pumunta')
+                            ->icon('heroicon-o-map')
+                            ->visible(fn (): bool => auth()->user()?->getStoreForPanel()?->template() === SectorTemplate::Rental)
+                            ->schema([
+                                Forms\Components\Placeholder::make('directions_help')
+                                    ->label('')
+                                    ->content('Add step-by-step directions to help tenants find your property. Include landmarks, turns, and photos so they don\'t need to rely on GPS alone.')
+                                    ->columnSpanFull(),
+
+                                Forms\Components\Repeater::make('direction_steps')
+                                    ->label('Direction Steps')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('instruction')
+                                            ->label('Instruction')
+                                            ->required()
+                                            ->maxLength(500)
+                                            ->placeholder('e.g. From SM City, ride a tricycle going to Brgy. San Roque')
+                                            ->columnSpanFull(),
+                                        Forms\Components\TextInput::make('landmark')
+                                            ->label('Landmark')
+                                            ->maxLength(255)
+                                            ->placeholder('e.g. Aling Nena\'s Sari-Sari Store'),
+                                        Forms\Components\Select::make('transport_mode')
+                                            ->label('Transport')
+                                            ->options([
+                                                'walk' => '🚶 Walk',
+                                                'tricycle' => '🛺 Tricycle',
+                                                'jeepney' => '🚌 Jeepney',
+                                                'bus' => '🚍 Bus',
+                                                'mrt' => '🚇 MRT / LRT',
+                                                'drive' => '🚗 Drive',
+                                                'grab' => '📱 Grab / Taxi',
+                                            ])
+                                            ->native(false),
+                                        FileUpload::make('photo')
+                                            ->label('Photo (optional)')
+                                            ->image()
+                                            ->disk('public')
+                                            ->directory('properties/directions')
+                                            ->maxSize(2048)
+                                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp']),
+                                    ])
+                                    ->columns(3)
+                                    ->orderable()
+                                    ->collapsible()
+                                    ->defaultItems(0)
+                                    ->addActionLabel('Add Direction Step')
+                                    ->columnSpanFull(),
+                            ]),
+
+                        // ── Rental Info Tab ────────────────────────────
+                        Forms\Components\Tabs\Tab::make('Rental Info')
+                            ->icon('heroicon-o-clipboard-document-list')
+                            ->visible(fn (): bool => auth()->user()?->getStoreForPanel()?->template() === SectorTemplate::Rental)
+                            ->schema([
+                                Forms\Components\Section::make('Utility Inclusions')
+                                    ->description('Let tenants know which utilities are included in the rent.')
+                                    ->schema([
+                                        Forms\Components\CheckboxList::make('utility_inclusions')
+                                            ->label('')
+                                            ->options([
+                                                'water' => '💧 Water',
+                                                'electricity' => '⚡ Electricity',
+                                                'wifi' => '📶 WiFi / Internet',
+                                                'cable_tv' => '📺 Cable TV',
+                                                'gas' => '🔥 Cooking Gas',
+                                                'trash' => '🗑️ Trash Collection',
+                                                'laundry' => '👕 Shared Laundry',
+                                                'parking' => '🅿️ Parking Space',
+                                            ])
+                                            ->columns(2)
+                                            ->columnSpanFull(),
+                                    ]),
+
+                                Forms\Components\Section::make('House Rules')
+                                    ->description('Set expectations for potential tenants.')
+                                    ->schema([
+                                        Forms\Components\CheckboxList::make('house_rules')
+                                            ->label('')
+                                            ->options([
+                                                'no_pets' => '🐾 No Pets Allowed',
+                                                'pets_allowed' => '🐕 Pets Allowed',
+                                                'no_smoking' => '🚭 No Smoking Inside',
+                                                'no_overnight_guests' => '🚫 No Overnight Guests',
+                                                'guests_allowed' => '👥 Visitors / Guests Allowed',
+                                                'curfew' => '🕐 Curfew (10 PM – 6 AM)',
+                                                'no_cooking' => '🍳 No Cooking in Room',
+                                                'cooking_allowed' => '🍲 Cooking Allowed',
+                                                'quiet_hours' => '🔇 Quiet Hours (10 PM – 6 AM)',
+                                                'id_required' => '🪪 Valid ID Required',
+                                            ])
+                                            ->columns(2)
+                                            ->columnSpanFull(),
+                                    ]),
+
+                                Forms\Components\Section::make('Safety & Security')
+                                    ->description('Highlight safety features to build tenant confidence.')
+                                    ->schema([
+                                        Forms\Components\CheckboxList::make('safety_features')
+                                            ->label('')
+                                            ->options([
+                                                'cctv' => '📹 CCTV Cameras',
+                                                'security_guard' => '💂 Security Guard',
+                                                'gated' => '🚧 Gated Compound',
+                                                'well_lit' => '💡 Well-Lit Pathways',
+                                                'fire_extinguisher' => '🧯 Fire Extinguisher',
+                                                'smoke_detector' => '🔔 Smoke Detector',
+                                                'flood_free' => '🌊 Flood-Free Area',
+                                                'backup_power' => '🔋 Backup Generator / Power',
+                                            ])
+                                            ->columns(2)
+                                            ->columnSpanFull(),
+                                    ]),
+                            ]),
+
                         // ── Publishing Tab ─────────────────────────────
                         Forms\Components\Tabs\Tab::make('Publishing')
                             ->icon('heroicon-o-globe-alt')
