@@ -10,6 +10,7 @@ import {
   KeyIcon,
   Cog6ToothIcon,
   TruckIcon,
+  DocumentTextIcon,
 } from "@heroicons/vue/24/outline";
 import { useAuthStore } from "@/stores/auth";
 
@@ -20,6 +21,7 @@ const navItems = [
   { label: "Overview", to: "/account", icon: HomeIcon, exact: true },
   { label: "My Orders", to: "/account/orders", icon: ShoppingBagIcon },
   { label: "My Inquiries", to: "/account/inquiries", icon: HeartIcon },
+  { label: "Agreements", to: "/account/agreements", icon: DocumentTextIcon },
   { label: "Moving", to: "/account/moving", icon: TruckIcon },
   { label: "Addresses", to: "/account/addresses", icon: MapPinIcon },
   {

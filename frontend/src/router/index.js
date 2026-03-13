@@ -142,6 +142,11 @@ const routes = [
             component: () => import("@/pages/account/InquiriesPage.vue"),
           },
           {
+            path: "agreements",
+            name: "account.agreements",
+            component: () => import("@/pages/account/RentalAgreementsPage.vue"),
+          },
+          {
             path: "addresses",
             name: "account.addresses",
             component: () => import("@/pages/account/AddressesPage.vue"),

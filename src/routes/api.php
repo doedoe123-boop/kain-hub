@@ -97,6 +97,8 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
 
         // User inquiries (cross-sector dashboard)
         Route::get('/user/inquiries', [UserController::class, 'inquiries'])->name('user.inquiries');
+        Route::get('/user/rental-agreements', [UserController::class, 'rentalAgreements'])->name('user.rentalAgreements');
+        Route::patch('/user/rental-agreements/{id}', [UserController::class, 'updateRentalAgreement'])->name('user.rentalAgreements.update');
 
         // User notifications
         Route::get('/user/notifications', [UserController::class, 'notifications'])->name('user.notifications');
