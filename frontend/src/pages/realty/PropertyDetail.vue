@@ -677,7 +677,7 @@ async function submitPropertyReview(payload) {
             </section>
 
             <!-- ═══ Features & Amenities (dense grid) ═════════════════ -->
-            <section v-if="property.features?.length">
+            <section v-if="property.features?.length && !isRental">
               <h2 class="mb-4 text-lg font-bold text-slate-900">
                 Features & Amenities
               </h2>
