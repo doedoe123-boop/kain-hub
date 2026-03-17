@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { RouterView } from "vue-router";
 import { useHead } from "@unhead/vue";
 import Navbar from "@/components/Navbar.vue";
@@ -14,19 +14,15 @@ const cart = useCartStore();
 const auth = useAuthStore();
 const seo = useSeoStore();
 
-// Rehydrate cart from the server on every fresh page load.
-// The router's beforeEach guard has already resolved auth by the time
-// this component mounts, so auth.isLoggedIn is reliable here.
+// Site-wide title template — reactive so it updates after fetchSettings() resolves.
+useHead({
+  titleTemplate: computed(() => (seo.siteName ? `%s | ${seo.siteName}` : "%s")),
+});
+
 onMounted(async () => {
   if (auth.isLoggedIn) cart.fetch();
 
   await seo.fetchSettings();
-
-  // Set the site-wide title template so every page gets "Title | SiteName".
-  useHead({
-    titleTemplate: (title) =>
-      title ? `${title} | ${seo.siteName}` : seo.siteName,
-  });
 
   // Google Analytics 4
   if (seo.googleAnalyticsId) {
