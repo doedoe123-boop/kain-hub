@@ -6,6 +6,7 @@ import {
   ChevronUpIcon,
 } from "@heroicons/vue/20/solid";
 import { announcementsApi } from "@/api/announcements";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const announcements = ref([]);
 const currentIndex = ref(0);
@@ -44,6 +45,10 @@ function next() {
 
 function toggleExpand() {
   expanded.value = !expanded.value;
+}
+
+function sanitizedContent(content) {
+  return sanitizeHtml(content);
 }
 </script>
 
@@ -104,7 +109,7 @@ function toggleExpand() {
         >
           <div
             class="announcement-content mx-auto max-w-3xl text-sm leading-relaxed opacity-95"
-            v-html="current().content"
+            v-html="sanitizedContent(current().content)"
           />
         </div>
       </Transition>

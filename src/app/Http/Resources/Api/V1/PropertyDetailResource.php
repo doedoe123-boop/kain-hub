@@ -6,6 +6,7 @@ use App\Models\Property;
 use App\Models\PropertyInquiry;
 use App\Models\RentalAgreement;
 use App\PropertyStatus;
+use App\Support\HtmlSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -26,7 +27,7 @@ class PropertyDetailResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'description' => $this->description,
+            'description' => HtmlSanitizer::sanitize($this->description),
             'property_type' => $this->property_type->value,
             'property_type_label' => $this->property_type->label(),
             'listing_type' => $this->listing_type->value,

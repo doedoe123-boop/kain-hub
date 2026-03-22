@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\V1;
 
+use App\Support\HtmlSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +20,7 @@ class DevelopmentDetailResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'description' => $this->description,
+            'description' => HtmlSanitizer::sanitize($this->description),
             'developer_name' => $this->developer_name,
             'development_type' => $this->development_type,
             'city' => $this->city,

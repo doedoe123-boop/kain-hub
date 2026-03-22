@@ -130,6 +130,27 @@ describe('FAQ Homepage Display', function () {
     });
 });
 
+describe('FAQ API sanitization', function () {
+    it('strips unsafe HTML from answers returned by the public API', function () {
+        $faq = Faq::factory()->create([
+            'question' => 'Is this safe?',
+            'answer' => '<script>alert("x")</script><p>Hello <strong>world</strong></p><a href="javascript:alert(1)">click</a>',
+            'is_active' => true,
+        ]);
+
+        $response = $this->getJson('/api/v1/faqs')
+            ->assertOk()
+            ->assertJsonFragment(['id' => $faq->id]);
+
+        $answer = collect($response->json())
+            ->firstWhere('id', $faq->id)['answer'] ?? '';
+
+        expect($answer)->toContain('<p>Hello <strong>world</strong></p>')
+            ->and($answer)->not->toContain('<script>')
+            ->and($answer)->not->toContain('javascript:alert(1)');
+    });
+});
+
 describe('FAQ Admin Resource', function () {
 
     it('prevents guest access to FAQ admin', function () {

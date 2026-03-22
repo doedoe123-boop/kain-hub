@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreSupportTicketRequest;
+use App\Models\Store;
 use App\Models\SupportTicket;
-use App\TicketCategory;
-use App\TicketPriority;
 use App\TicketStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class SupportTicketController extends Controller
 {
@@ -29,16 +28,15 @@ class SupportTicketController extends Controller
     /**
      * Store a newly created support ticket.
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreSupportTicketRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'subject' => ['required', 'string', 'max:255'],
-            'message' => ['required', 'string', 'min:10'],
-            'category' => ['required', Rule::enum(TicketCategory::class)],
-            'priority' => ['required', Rule::enum(TicketPriority::class)],
-            'sector' => ['nullable', 'string', 'max:50'],
-            'store_id' => ['nullable', 'exists:stores,id'],
-        ]);
+        $validated = $request->validated();
+
+        if (! isset($validated['sector']) && isset($validated['store_id'])) {
+            $validated['sector'] = Store::query()
+                ->whereKey($validated['store_id'])
+                ->value('sector');
+        }
 
         $ticket = SupportTicket::create([
             ...$validated,

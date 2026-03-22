@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { ChevronDownIcon } from "@heroicons/vue/20/solid";
 import { useSeoMeta } from "@/composables/useSeoMeta";
 import { faqApi } from "@/api/faq";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 useSeoMeta({
   title: "Frequently Asked Questions",
@@ -28,16 +29,20 @@ onMounted(async () => {
 function toggle(id) {
   openId.value = openId.value === id ? null : id;
 }
+
+function sanitizedAnswer(answer) {
+  return sanitizeHtml(answer);
+}
 </script>
 
 <template>
   <div class="mx-auto max-w-3xl px-4 py-16 sm:px-6">
     <!-- Header -->
     <div class="mb-10 text-center">
-      <h1 class="text-3xl font-bold tracking-tight text-slate-800">
+      <h1 class="text-3xl font-bold tracking-tight text-slate-800 dark:text-white">
         Frequently Asked Questions
       </h1>
-      <p class="mt-3 text-base text-slate-500">
+      <p class="mt-3 text-base text-slate-500 dark:text-gray-300">
         Can't find what you're looking for? Visit our
         <RouterLink
           to="/account/help"
@@ -88,7 +93,7 @@ function toggle(id) {
           :aria-expanded="openId === faq.id"
           @click="toggle(faq.id)"
         >
-          <span class="text-sm font-semibold text-slate-800">{{
+          <span class="text-sm font-semibold text-slate-800 dark:text-white">{{
             faq.question
           }}</span>
           <ChevronDownIcon
@@ -99,7 +104,7 @@ function toggle(id) {
         <div
           v-show="openId === faq.id"
           class="border-t border-slate-100 px-6 py-5 text-sm leading-relaxed text-slate-600 dark:border-slate-700 dark:text-slate-300"
-          v-html="faq.answer"
+          v-html="sanitizedAnswer(faq.answer)"
         />
       </div>
     </div>

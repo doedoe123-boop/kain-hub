@@ -32,6 +32,7 @@ import { reviewsApi } from "@/api/reviews";
 import { useAuthStore } from "@/stores/auth";
 import PhotoLightbox from "@/components/PhotoLightbox.vue";
 import ReviewForm from "@/components/ReviewForm.vue";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const route = useRoute();
 const auth = useAuthStore();
@@ -242,6 +243,10 @@ const publishedAgo = computed(() => {
 
 const isRental = computed(
   () => property.value?.store?.sector_template === "rental",
+);
+
+const sanitizedDescription = computed(() =>
+  sanitizeHtml(property.value?.description ?? ""),
 );
 
 async function submitInquiry() {
@@ -728,7 +733,7 @@ async function submitPropertyReview(payload) {
               <div
                 class="prose prose-sm max-w-none"
                 style="color: var(--color-text-muted)"
-                v-html="property.description"
+                v-html="sanitizedDescription"
               ></div>
             </section>
 

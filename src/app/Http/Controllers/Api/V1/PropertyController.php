@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\QuickInquiryRequest;
 use App\Http\Requests\Api\V1\SubmitInquiryRequest;
+use App\Http\Requests\TrackPropertyEventRequest;
 use App\Http\Resources\Api\V1\PropertyDetailResource;
 use App\Http\Resources\Api\V1\PropertyResource;
 use App\Models\Property;
@@ -98,9 +99,9 @@ class PropertyController extends Controller
      *
      * Public — fire-and-forget, always returns 200.
      */
-    public function track(Request $request, Property $property): JsonResponse
+    public function track(TrackPropertyEventRequest $request, Property $property): JsonResponse
     {
-        $event = $request->input('event');
+        $event = $request->validated('event');
 
         $increments = match ($event) {
             'phone_click' => ['phone_clicks' => 1],

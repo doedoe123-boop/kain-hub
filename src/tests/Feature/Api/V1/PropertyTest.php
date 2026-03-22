@@ -173,3 +173,16 @@ it('returns 404 for a sold property', function () {
     $this->getJson(route('api.v1.properties.show', $property->slug))
         ->assertNotFound();
 });
+
+it('rejects unsupported analytics events', function () {
+    $store = Store::factory()->create();
+    $property = Property::factory()->create([
+        'store_id' => $store->id,
+        'status' => PropertyStatus::Active,
+        'published_at' => now(),
+    ]);
+
+    $this->postJson(route('api.v1.properties.track', $property->slug), [
+        'event' => 'unexpected_event',
+    ])->assertUnprocessable();
+});

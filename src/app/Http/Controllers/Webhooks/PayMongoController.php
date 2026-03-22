@@ -53,7 +53,10 @@ class PayMongoController extends Controller
 
         $event = $this->payMongo->parseWebhookEvent($request->json()->all());
 
-        Log::info('PayMongo webhook received', $event);
+        Log::info('PayMongo webhook received', [
+            'event' => $event['event'] ?? null,
+            'payment_intent_id' => $event['payment_intent_id'] ?? null,
+        ]);
 
         match ($event['event']) {
             'payment.paid' => $this->handlePaymentPaid($event['payment_intent_id']),

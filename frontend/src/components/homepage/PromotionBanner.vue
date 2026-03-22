@@ -110,15 +110,15 @@ onMounted(async () => {
             {{ discountLabel(promo) }}
           </p>
 
-          <div
-            class="text-sm font-semibold text-slate-700 line-clamp-1"
-            v-html="promo.name"
-          ></div>
+          <div class="text-sm font-semibold text-slate-700 line-clamp-1">
+            {{ promo.name }}
+          </div>
           <div
             v-if="promo.description"
             class="mt-1 text-xs text-slate-500 line-clamp-2"
-            v-html="promo.description"
-          ></div>
+          >
+            {{ promo.description }}
+          </div>
 
           <!-- Urgency label -->
           <p

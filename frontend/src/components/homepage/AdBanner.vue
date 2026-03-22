@@ -68,8 +68,10 @@ onBeforeUnmount(() => {
             class="flex h-48 items-center justify-center bg-gradient-to-r from-brand-600 to-emerald-500 sm:h-64 lg:h-72"
           >
             <div class="text-center text-white px-6">
-              <div class="text-2xl font-bold" v-html="ad.title"></div>
-              <div v-if="ad.description" class="mt-2 text-sm opacity-80" v-html="ad.description"></div>
+              <div class="text-2xl font-bold">{{ ad.title }}</div>
+              <div v-if="ad.description" class="mt-2 text-sm opacity-80">
+                {{ ad.description }}
+              </div>
             </div>
           </div>
         </a>
