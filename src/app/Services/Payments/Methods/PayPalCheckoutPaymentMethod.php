@@ -84,6 +84,10 @@ class PayPalCheckoutPaymentMethod implements CheckoutPaymentMethod
             ]);
         }
 
+        $cart = $cart->calculate();
+        $discountSummary = $this->checkoutDiscountService->summarizeCart($cart, $store);
+        $this->assertCapturedAmountMatchesOrder($paypalOrder, $cart->currency->code, $discountSummary['total_after_discount']);
+
         $captureId = $paypalOrder['purchase_units'][0]['payments']['captures'][0]['id'] ?? $paypalOrderId;
 
         $order = $this->orderService->createFromCart($cart, $store, [
@@ -107,5 +111,35 @@ class PayPalCheckoutPaymentMethod implements CheckoutPaymentMethod
             $order,
             'Payment captured and order placed successfully.'
         );
+    }
+
+    private function assertCapturedAmountMatchesOrder(array $paypalOrder, string $expectedCurrency, int $expectedAmountInCents): void
+    {
+        $purchaseUnit = $paypalOrder['purchase_units'][0] ?? [];
+        $capturedAmount = $purchaseUnit['payments']['captures'][0]['amount']
+            ?? $purchaseUnit['amount']
+            ?? null;
+
+        $capturedCurrency = strtoupper((string) ($capturedAmount['currency_code'] ?? ''));
+        $capturedValue = $this->normalizeAmountToCents($capturedAmount['value'] ?? null);
+
+        if (
+            $capturedValue === null
+            || $capturedCurrency !== strtoupper($expectedCurrency)
+            || $capturedValue !== $expectedAmountInCents
+        ) {
+            throw ValidationException::withMessages([
+                'paypal_order_id' => 'Captured PayPal amount does not match the server-calculated order total.',
+            ]);
+        }
+    }
+
+    private function normalizeAmountToCents(mixed $value): ?int
+    {
+        if (! is_string($value) && ! is_numeric($value)) {
+            return null;
+        }
+
+        return (int) round(((float) $value) * 100);
     }
 }

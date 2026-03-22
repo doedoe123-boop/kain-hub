@@ -10,6 +10,7 @@ import {
 } from "@heroicons/vue/24/outline";
 import { developmentsApi } from "@/api/developments";
 import { useSeoMeta } from "@/composables/useSeoMeta";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 const route = useRoute();
 const development = ref(null);
@@ -25,13 +26,15 @@ const normalizedDescription = computed(() => {
   }
 
   if (/<[a-z][\s\S]*>/i.test(description)) {
-    return description;
+    return sanitizeHtml(description);
   }
 
-  return description
+  return sanitizeHtml(
+    description
     .split(/\n{2,}/)
     .map((paragraph) => `<p>${paragraph.replace(/\n/g, "<br>")}</p>`)
-    .join("");
+    .join(""),
+  );
 });
 
 const mapCoordinates = computed(() => {

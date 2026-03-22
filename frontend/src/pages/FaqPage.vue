@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { ChevronDownIcon } from "@heroicons/vue/20/solid";
 import { useSeoMeta } from "@/composables/useSeoMeta";
 import { faqApi } from "@/api/faq";
+import { sanitizeHtml } from "@/utils/sanitizeHtml";
 
 useSeoMeta({
   title: "Frequently Asked Questions",
@@ -27,6 +28,10 @@ onMounted(async () => {
 
 function toggle(id) {
   openId.value = openId.value === id ? null : id;
+}
+
+function sanitizedAnswer(answer) {
+  return sanitizeHtml(answer);
 }
 </script>
 
@@ -99,7 +104,7 @@ function toggle(id) {
         <div
           v-show="openId === faq.id"
           class="border-t border-slate-100 px-6 py-5 text-sm leading-relaxed text-slate-600 dark:border-slate-700 dark:text-slate-300"
-          v-html="faq.answer"
+          v-html="sanitizedAnswer(faq.answer)"
         />
       </div>
     </div>
