@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Lunar\FieldTypes\Text;
+use Lunar\FieldTypes\Toggle;
 use Lunar\FieldTypes\TranslatedText;
 use Lunar\Models\Attribute;
 use Lunar\Models\AttributeGroup;
@@ -110,7 +111,7 @@ class LunarCatalogSeeder extends Seeder
             [
                 'handle' => 'is_available',
                 'name' => collect(['en' => 'Available']),
-                'type' => \Lunar\FieldTypes\Toggle::class,
+                'type' => Toggle::class,
                 'required' => false,
                 'system' => false,
                 'position' => 2,

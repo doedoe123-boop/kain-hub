@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\V1\CartController;
 use App\Http\Controllers\Api\V1\CategoryController;
 use App\Http\Controllers\Api\V1\CouponController;
 use App\Http\Controllers\Api\V1\DevelopmentController;
+use App\Http\Controllers\Api\V1\EmailVerificationController;
+use App\Http\Controllers\Api\V1\FaqController;
 use App\Http\Controllers\Api\V1\FeaturedListingController;
 use App\Http\Controllers\Api\V1\GlobalSearchController;
 use App\Http\Controllers\Api\V1\HomepageStatsController;
@@ -86,9 +88,10 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         Route::get('/movers', [MoverController::class, 'index'])->name('movers.index');
         Route::get('/movers/{store:slug}', [MoverController::class, 'show'])->name('movers.show');
 
-        // Marketing (public, read-only)
+        // Marketing & content (public, read-only)
         Route::get('/advertisements', [AdvertisementController::class, 'index'])->name('advertisements.index');
         Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('/faqs', [FaqController::class, 'index'])->name('faqs.index');
         Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
         Route::get('/featured-listings', [FeaturedListingController::class, 'index'])->name('featured-listings.index');
 
@@ -102,6 +105,11 @@ Route::prefix('v1')->name('api.v1.')->group(function () {
         // Auth
         Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
         Route::get('/user', [AuthController::class, 'user'])->name('auth.user');
+
+        // Email verification
+        Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
+            ->middleware('throttle:6,1')
+            ->name('verification.send');
 
         // User profile, password, settings, account
         Route::patch('/user', [UserController::class, 'update'])->name('user.update');

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 
 /**
@@ -23,7 +24,7 @@ class PayMongoService
      *
      * @return array{id: string, client_key: string, status: string}
      *
-     * @throws \Illuminate\Http\Client\RequestException
+     * @throws RequestException
      */
     public function createPaymentIntent(int $amountCentavos, string $description = ''): array
     {

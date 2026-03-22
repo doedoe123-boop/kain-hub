@@ -4,6 +4,7 @@ namespace App\Livewire\Store;
 
 use App\Models\Store;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -106,7 +107,7 @@ class StoreLogin extends Component
         $this->redirect($store->dashboardPath());
     }
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.store.store-login');
     }

@@ -7,6 +7,8 @@ use App\Models\Store;
 use App\Models\User;
 use App\StoreStatus;
 use App\UserRole;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 /**
@@ -108,7 +110,7 @@ class StoreService
      * Supports optional filtering by sector, city, and a name search term.
      *
      * @param  array{sector?: string|null, city?: string|null, search?: string|null, per_page?: int}  $filters
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function browseApproved(array $filters = [])
     {
@@ -123,7 +125,7 @@ class StoreService
         }
 
         if (! empty($filters['search'])) {
-            $like = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $like = DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
             $query->where('name', $like, '%'.$filters['search'].'%');
         }
 

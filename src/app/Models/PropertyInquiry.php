@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\InquiryStatus;
 use App\Observers\PropertyInquiryObserver;
+use Database\Factories\PropertyInquiryFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -21,14 +23,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property ?string $message
  * @property InquiryStatus $status
  * @property ?string $agent_notes
- * @property ?\Illuminate\Support\Carbon $contacted_at
- * @property ?\Illuminate\Support\Carbon $viewing_date
+ * @property ?Carbon $contacted_at
+ * @property ?Carbon $viewing_date
  * @property string $source
  */
 #[ObservedBy(PropertyInquiryObserver::class)]
 class PropertyInquiry extends Model
 {
-    /** @use HasFactory<\Database\Factories\PropertyInquiryFactory> */
+    /** @use HasFactory<PropertyInquiryFactory> */
     use HasFactory;
 
     /** @var list<string> */

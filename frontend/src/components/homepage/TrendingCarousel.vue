@@ -26,7 +26,9 @@ function scroll(dir) {
 }
 
 onMounted(() => {
-  scrollContainer.value?.addEventListener("scroll", checkScroll, { passive: true });
+  scrollContainer.value?.addEventListener("scroll", checkScroll, {
+    passive: true,
+  });
   checkScroll();
 });
 
@@ -41,28 +43,54 @@ onBeforeUnmount(() => {
       <!-- Header -->
       <div class="mb-6 flex items-end justify-between">
         <div>
-          <p class="mb-1 text-xs font-semibold uppercase tracking-widest text-brand-500">E-Commerce</p>
+          <p
+            class="mb-1 text-xs font-semibold uppercase tracking-widest text-brand-500"
+          >
+            E-Commerce
+          </p>
           <h2 class="text-2xl font-bold text-slate-900">Trending Products</h2>
-          <p class="mt-1 text-sm text-slate-500">Popular picks from local Filipino stores.</p>
+          <p class="mt-1 text-sm text-slate-500">
+            Popular picks from local Filipino stores.
+          </p>
         </div>
         <div class="flex items-center gap-2">
           <!-- Scroll arrows (desktop) -->
           <button
             @click="scroll(-1)"
             :disabled="!canScrollLeft"
-            class="hidden sm:flex size-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition-all hover:border-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+            class="hidden sm:flex size-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition-all hover:border-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"
           >
-            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            <svg
+              class="size-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 19.5L8.25 12l7.5-7.5"
+              />
             </svg>
           </button>
           <button
             @click="scroll(1)"
             :disabled="!canScrollRight"
-            class="hidden sm:flex size-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition-all hover:border-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+            class="hidden sm:flex size-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition-all hover:border-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed dark:bg-slate-800 dark:border-slate-700 dark:text-slate-400"
           >
-            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            <svg
+              class="size-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 4.5l7.5 7.5-7.5 7.5"
+              />
             </svg>
           </button>
 
@@ -71,8 +99,18 @@ onBeforeUnmount(() => {
             class="flex items-center gap-1 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
           >
             View All
-            <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            <svg
+              class="size-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+              />
             </svg>
           </RouterLink>
         </div>
@@ -83,7 +121,7 @@ onBeforeUnmount(() => {
         <div
           v-for="i in 5"
           :key="i"
-          class="w-[220px] shrink-0 animate-pulse rounded-2xl bg-white ring-1 ring-slate-100"
+          class="w-[220px] shrink-0 animate-pulse rounded-2xl bg-white ring-1 ring-slate-100 dark:bg-slate-800 dark:ring-slate-700"
         >
           <div class="aspect-square rounded-t-2xl bg-slate-100" />
           <div class="p-3 space-y-2">
@@ -94,9 +132,14 @@ onBeforeUnmount(() => {
       </div>
 
       <!-- Empty -->
-      <div v-else-if="products.length === 0" class="rounded-2xl border border-dashed border-slate-200 bg-white py-14 text-center">
+      <div
+        v-else-if="products.length === 0"
+        class="rounded-2xl border border-dashed border-slate-200 bg-white py-14 text-center dark:bg-slate-900 dark:border-slate-700"
+      >
         <p class="text-2xl mb-2">🛍️</p>
-        <p class="text-sm font-medium text-slate-500">No trending products yet — check back soon!</p>
+        <p class="text-sm font-medium text-slate-500">
+          No trending products yet — check back soon!
+        </p>
       </div>
 
       <!-- Carousel -->
@@ -104,11 +147,11 @@ onBeforeUnmount(() => {
         <!-- Gradient fade edges -->
         <div
           v-if="canScrollLeft"
-          class="pointer-events-none absolute left-0 top-0 z-10 h-full w-12 bg-gradient-to-r from-slate-50 to-transparent"
+          class="pointer-events-none absolute left-0 top-0 z-10 h-full w-12 bg-gradient-to-r from-slate-50 to-transparent dark:from-slate-950"
         />
         <div
           v-if="canScrollRight"
-          class="pointer-events-none absolute right-0 top-0 z-10 h-full w-12 bg-gradient-to-l from-slate-50 to-transparent"
+          class="pointer-events-none absolute right-0 top-0 z-10 h-full w-12 bg-gradient-to-l from-slate-50 to-transparent dark:from-slate-950"
         />
 
         <div
@@ -129,6 +172,11 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.scrollbar-none::-webkit-scrollbar { display: none; }
-.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 </style>

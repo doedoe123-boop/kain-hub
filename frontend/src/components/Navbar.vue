@@ -6,14 +6,18 @@ import {
   XMarkIcon,
   UserCircleIcon,
   MagnifyingGlassIcon,
+  MoonIcon,
+  SunIcon,
 } from "@heroicons/vue/24/outline";
 import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { useCartStore } from "@/stores/cart";
+import { useDarkMode } from "@/composables/useDarkMode";
 import { searchApi } from "@/api/search";
 
 const auth = useAuthStore();
 const cart = useCartStore();
+const { isDark, toggleDark } = useDarkMode();
 const route = useRoute();
 const router = useRouter();
 
@@ -208,7 +212,7 @@ function isActive(path) {
           >
             <div v-if="storesFlyout" class="absolute left-0 top-full z-50 pt-1">
               <div
-                class="w-48 overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-xl ring-1 ring-black/5"
+                class="w-48 overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 shadow-xl ring-1 ring-black/5 dark:bg-slate-800 dark:border-slate-700"
               >
                 <RouterLink
                   v-for="s in sectorLinks"
@@ -251,6 +255,18 @@ function isActive(path) {
 
       <!-- Right utilities -->
       <div class="flex items-center gap-1.5">
+        <!-- Dark Mode Toggle To be implemented it needs a proper dark mode support -->
+         <!-- for now lets just leave this as it is -->
+        <!-- <button
+          type="button"
+          class="rounded-lg p-2 text-white/70 hover:bg-white/10 hover:text-white transition-colors"
+          aria-label="Toggle dark mode"
+          @click="toggleDark"
+        >
+          <MoonIcon v-if="!isDark" class="size-5" />
+          <SunIcon v-else class="size-5" />
+        </button> -->
+
         <!-- Search (desktop) -->
         <button
           type="button"
@@ -431,7 +447,7 @@ function isActive(path) {
         <div class="relative w-full max-w-xl">
           <form @submit.prevent="submitSearch">
             <div
-              class="flex items-center gap-3 rounded-t-2xl border border-slate-200 bg-white px-4 py-3 shadow-2xl"
+              class="flex items-center gap-3 rounded-t-2xl border border-slate-200 bg-white px-4 py-3 shadow-2xl dark:bg-slate-900 dark:border-slate-700"
               :class="
                 searchResults && searchQuery.trim().length >= 2
                   ? ''
@@ -445,7 +461,7 @@ function isActive(path) {
                 type="search"
                 placeholder="Search stores, products, properties…"
                 autocomplete="off"
-                class="flex-1 text-base text-slate-800 placeholder-slate-400 outline-none"
+                class="flex-1 text-base text-slate-800 placeholder-slate-400 outline-none dark:text-slate-100 dark:placeholder-slate-500"
               />
               <svg
                 v-if="searchLoading"
@@ -478,7 +494,7 @@ function isActive(path) {
           <!-- Live results dropdown -->
           <div
             v-if="searchResults && searchQuery.trim().length >= 2"
-            class="max-h-80 overflow-y-auto rounded-b-2xl border border-t-0 border-slate-200 bg-white shadow-2xl"
+            class="max-h-80 overflow-y-auto rounded-b-2xl border border-t-0 border-slate-200 bg-white shadow-2xl dark:bg-slate-900 dark:border-slate-700"
           >
             <!-- No results -->
             <div

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Sector;
+use App\Models\Store;
 use App\Models\User;
 use App\PayoutMethod;
 use App\StoreStatus;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Store>
+ * @extends Factory<Store>
  */
 class StoreFactory extends Factory
 {

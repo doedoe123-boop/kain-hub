@@ -5,12 +5,13 @@ use App\Models\Store;
 use App\Models\User;
 use App\StoreStatus;
 use App\UserRole;
+use Database\Seeders\SectorSeeder;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
-    (new \Database\Seeders\SectorSeeder)->run();
+    (new SectorSeeder)->run();
 
     $role = Role::firstOrCreate(['name' => 'store_owner', 'guard_name' => 'web']);
 

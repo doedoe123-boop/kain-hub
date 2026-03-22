@@ -7,6 +7,7 @@ use App\Mail\StoreReinstated;
 use App\Mail\StoreSuspended;
 use App\Models\Sector;
 use App\Models\Store;
+use App\Models\User;
 use App\Services\StoreService;
 use App\StoreStatus;
 use Filament\Forms;
@@ -33,7 +34,7 @@ class StoreResource extends Resource
      */
     public static function canAccess(): bool
     {
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = Auth::user();
 
         return $user?->isAdmin() === true;

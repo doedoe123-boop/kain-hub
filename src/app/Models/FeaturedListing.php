@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\AdStatus;
 use App\FeaturedType;
+use Database\Factories\FeaturedListingFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -18,16 +20,16 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property AdStatus $status
  * @property int $priority
  * @property int $cost_cents
- * @property ?\Illuminate\Support\Carbon $starts_at
- * @property ?\Illuminate\Support\Carbon $ends_at
+ * @property ?Carbon $starts_at
+ * @property ?Carbon $ends_at
  * @property ?int $campaign_id
  * @property ?int $created_by
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class FeaturedListing extends Model
 {
-    /** @use HasFactory<\Database\Factories\FeaturedListingFactory> */
+    /** @use HasFactory<FeaturedListingFactory> */
     use HasFactory;
 
     /**

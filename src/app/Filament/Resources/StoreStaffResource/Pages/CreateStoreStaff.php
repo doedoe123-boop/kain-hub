@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\StoreStaffResource\Pages;
 
 use App\Filament\Resources\StoreStaffResource;
+use App\Models\User;
 use App\UserRole;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ class CreateStoreStaff extends CreateRecord
      */
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        /** @var \App\Models\User $owner */
+        /** @var User $owner */
         $owner = Auth::user();
 
         $data['role'] = UserRole::Staff->value;
@@ -30,7 +31,7 @@ class CreateStoreStaff extends CreateRecord
      */
     protected function afterCreate(): void
     {
-        /** @var \App\Models\User $staffMember */
+        /** @var User $staffMember */
         $staffMember = $this->record;
         $staffMember->assignRole('staff');
 

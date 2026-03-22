@@ -10,6 +10,7 @@ use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Lunar\DataTypes\Price;
 use Lunar\Facades\CartSession;
 
 /**
@@ -224,7 +225,7 @@ class OrderController extends Controller
      */
     private static function priceToArray(mixed $price): ?array
     {
-        if (! $price instanceof \Lunar\DataTypes\Price) {
+        if (! $price instanceof Price) {
             return null;
         }
 

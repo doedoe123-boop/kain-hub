@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Property;
+use App\Models\RentalAgreement;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RentalAgreement>
+ * @extends Factory<RentalAgreement>
  */
 class RentalAgreementFactory extends Factory
 {

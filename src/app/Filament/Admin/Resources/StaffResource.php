@@ -17,6 +17,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class StaffResource extends Resource
 {
@@ -97,7 +99,7 @@ class StaffResource extends Resource
                                     ])
                             )
                             ->descriptions(function (): array {
-                                return \Spatie\Permission\Models\Role::where('guard_name', 'web')
+                                return Role::where('guard_name', 'web')
                                     ->whereIn('name', ['super_admin', 'manager', 'support', 'moderator', 'finance', 'admin', 'staff'])
                                     ->get()
                                     ->mapWithKeys(fn ($role) => [$role->id => match ($role->name) {
@@ -122,7 +124,7 @@ class StaffResource extends Resource
                     ->collapsed()
                     ->schema([
                         Forms\Components\CheckboxList::make('permissions')
-                            ->options(fn (): array => \Spatie\Permission\Models\Permission::where('guard_name', 'web')
+                            ->options(fn (): array => Permission::where('guard_name', 'web')
                                 ->orderBy('name')
                                 ->pluck('name', 'name')
                                 ->toArray())

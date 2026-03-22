@@ -127,7 +127,7 @@ defineExpose({ onSuccess, onError });
       <div
         v-for="review in reviews"
         :key="review.id"
-        class="rounded-xl border border-slate-100 bg-white p-5 shadow-sm"
+        class="rounded-xl border border-slate-100 bg-white p-5 shadow-sm dark:bg-slate-800 dark:border-slate-700"
       >
         <div class="mb-2 flex items-center justify-between">
           <div class="flex items-center gap-3">
@@ -169,7 +169,7 @@ defineExpose({ onSuccess, onError });
 
     <div
       v-else
-      class="mb-8 rounded-xl border border-dashed border-slate-200 bg-slate-50 py-10 text-center"
+      class="mb-8 rounded-xl border border-dashed border-slate-200 bg-slate-50 py-10 text-center dark:bg-slate-800/50 dark:border-slate-700"
     >
       <p class="text-sm font-medium text-slate-500">
         No reviews yet. Be the first to share your experience!
@@ -177,10 +177,10 @@ defineExpose({ onSuccess, onError });
     </div>
 
     <!-- Review form -->
-    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h3 class="mb-5 text-base font-bold text-[#0F2044]">
-        Write a Review
-      </h3>
+    <div
+      class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:bg-slate-800 dark:border-slate-700"
+    >
+      <h3 class="mb-5 text-base font-bold text-[#0F2044]">Write a Review</h3>
 
       <!-- Not logged in -->
       <div
@@ -204,9 +204,7 @@ defineExpose({ onSuccess, onError });
         class="flex flex-col items-center gap-3 rounded-xl bg-emerald-50 p-6 text-center ring-1 ring-emerald-100"
       >
         <CheckCircleIcon class="size-10 text-emerald-500" />
-        <p class="font-bold text-[#0F2044]">
-          Thank you for your review!
-        </p>
+        <p class="font-bold text-[#0F2044]">Thank you for your review!</p>
         <p class="text-sm text-slate-500">
           Your review has been submitted and is pending approval.
         </p>

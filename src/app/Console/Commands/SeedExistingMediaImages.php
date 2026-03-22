@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Property;
+use App\PropertyType;
 use App\Support\MediaSeederHelper;
 use Illuminate\Console\Command;
 use Lunar\Models\Product;
@@ -80,7 +81,7 @@ class SeedExistingMediaImages extends Command
 
         foreach ($properties as $property) {
             $keyword = MediaSeederHelper::keywordForPropertyType(
-                $property->property_type instanceof \App\PropertyType
+                $property->property_type instanceof PropertyType
                     ? $property->property_type->value
                     : (string) $property->property_type
             );

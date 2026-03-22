@@ -4,12 +4,15 @@ namespace App\Models;
 
 use App\MovingBookingStatus;
 use App\PaymentStatus;
+use Database\Factories\MovingBookingFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -21,7 +24,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $delivery_address
  * @property string $pickup_city
  * @property string $delivery_city
- * @property \Illuminate\Support\Carbon $scheduled_at
+ * @property Carbon $scheduled_at
  * @property string $contact_name
  * @property string $contact_phone
  * @property ?string $notes
@@ -30,18 +33,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $total_price Centavos
  * @property PaymentStatus $payment_status
  * @property ?string $paymongo_payment_intent_id
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property ?Carbon $deleted_at
  * @property-read Store $store
  * @property-read User $customer
  * @property-read ?RentalAgreement $rentalAgreement
- * @property-read \Illuminate\Database\Eloquent\Collection<int, MovingAddOn> $addOns
+ * @property-read Collection<int, MovingAddOn> $addOns
  * @property-read ?MovingReview $review
  */
 class MovingBooking extends Model
 {
-    /** @use HasFactory<\Database\Factories\MovingBookingFactory> */
+    /** @use HasFactory<MovingBookingFactory> */
     use HasFactory;
 
     use SoftDeletes;

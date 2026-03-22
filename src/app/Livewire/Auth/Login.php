@@ -5,6 +5,7 @@ namespace App\Livewire\Auth;
 use App\UserRole;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -50,7 +51,7 @@ class Login extends Component
         };
     }
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.auth.login');
     }

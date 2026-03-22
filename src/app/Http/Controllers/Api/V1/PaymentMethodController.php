@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePaymentMethodRequest;
 use App\Models\PaymentMethod;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -106,7 +107,7 @@ class PaymentMethodController extends Controller
     /**
      * Retrieve the user's PayMongo customer ID, creating one if it doesn't exist.
      */
-    private function ensurePaymongoCustomer(\App\Models\User $user): string
+    private function ensurePaymongoCustomer(User $user): string
     {
         if ($user->paymongo_customer_id) {
             return $user->paymongo_customer_id;

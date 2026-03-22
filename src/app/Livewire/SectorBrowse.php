@@ -5,6 +5,8 @@ namespace App\Livewire;
 use App\Models\Sector;
 use App\Models\Store;
 use App\StoreStatus;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -17,7 +19,7 @@ class SectorBrowse extends Component
     /**
      * Get active sector data with supplier counts.
      *
-     * @return \Illuminate\Database\Eloquent\Collection<int, Sector>
+     * @return Collection<int, Sector>
      */
     private function getSectors(): mixed
     {
@@ -32,7 +34,7 @@ class SectorBrowse extends Component
         return Sector::active()
             ->with('documents')
             ->when($this->search, fn ($q) => $q->where(function ($q) {
-                $op = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
+                $op = DB::connection()->getDriverName() === 'pgsql' ? 'ilike' : 'like';
                 $q->where('name', $op, "%{$this->search}%")
                     ->orWhere('description', $op, "%{$this->search}%");
             }))

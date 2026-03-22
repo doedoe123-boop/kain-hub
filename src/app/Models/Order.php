@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\OrderStatus;
+use Database\Factories\OrderFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Lunar\Base\Casts\Price;
 use Lunar\Models\Order as LunarOrder;
 use Spatie\Activitylog\LogOptions;
@@ -20,8 +22,8 @@ use Spatie\Activitylog\LogOptions;
  * @property ?string $payment_intent_id
  * @property ?string $payment_client_key
  * @property ?string $payment_status
- * @property ?\Illuminate\Support\Carbon $paid_at
- * @property ?\Illuminate\Support\Carbon $cancelled_at
+ * @property ?Carbon $paid_at
+ * @property ?Carbon $cancelled_at
  *
  * @see /skills/commission-calculation.md
  * @see /skills/order-processing.md
@@ -31,9 +33,9 @@ class Order extends LunarOrder
     /**
      * Point to our custom OrderFactory.
      */
-    protected static function newFactory(): \Database\Factories\OrderFactory
+    protected static function newFactory(): OrderFactory
     {
-        return \Database\Factories\OrderFactory::new();
+        return OrderFactory::new();
     }
 
     /**

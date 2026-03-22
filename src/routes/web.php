@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\V1\EmailVerificationController;
 use App\Http\Controllers\SupplierProfileController;
 use App\Livewire\SectorBrowse;
 use App\Livewire\Store\SectorSelection;
 use App\Livewire\Store\StoreOwnerRegistration;
 use App\Livewire\StoreDirectory;
 use App\Models\GlobalSeoSetting;
+use App\Models\LegalPage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -50,7 +52,7 @@ Route::get('/sector', SectorBrowse::class)->name('sector.browse');
 
 // Public legal pages (Terms, Privacy Policy, etc.)
 Route::get('/legal/{slug}', function (string $slug) {
-    $page = \App\Models\LegalPage::published()->where('slug', $slug)->firstOrFail();
+    $page = LegalPage::published()->where('slug', $slug)->firstOrFail();
 
     return view('legal.show', compact('page'));
 })->name('legal.show');
@@ -64,6 +66,14 @@ Route::middleware('guest')->group(function () {
     Route::get('/register/store-owner/success', fn () => view('store.registration-success'))->name('register.store-owner.success');
     Route::get('/register/store-owner/{sector}', StoreOwnerRegistration::class)->name('register.store-owner');
 });
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Email Verification (signed URL — must be auth so Laravel can resolve the user
+// from the {id} segment)
+// ──────────────────────────────────────────────────────────────────────────────
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->middleware(['auth', 'signed'])
+    ->name('verification.verify');
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {

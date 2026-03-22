@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Models\Payout;
 use App\Models\Store;
+use App\Models\User;
 use App\StoreStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -72,7 +74,7 @@ class PurgeExpiredDocumentsJob implements ShouldQueue
      */
     private function purgeSoftDeletedRecords(): void
     {
-        $usersDeleted = \App\Models\User::onlyTrashed()
+        $usersDeleted = User::onlyTrashed()
             ->where('deleted_at', '<', now()->subDays(90))
             ->forceDelete();
 
@@ -80,7 +82,7 @@ class PurgeExpiredDocumentsJob implements ShouldQueue
             ->where('deleted_at', '<', now()->subDays(90))
             ->forceDelete();
 
-        $payoutsDeleted = \App\Models\Payout::onlyTrashed()
+        $payoutsDeleted = Payout::onlyTrashed()
             ->where('deleted_at', '<', now()->subDays(90))
             ->forceDelete();
 

@@ -70,7 +70,7 @@ function val(property, spec) {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="min-h-screen bg-slate-50 dark:bg-slate-950">
     <!-- Header -->
     <div class="py-10 text-white" style="background: #0f2044">
       <div class="mx-auto max-w-7xl px-4 sm:px-6">
@@ -129,7 +129,7 @@ function val(property, spec) {
           <div
             v-for="property in properties"
             :key="property.id"
-            class="relative overflow-hidden rounded-2xl border bg-white shadow-sm"
+            class="relative overflow-hidden rounded-2xl border bg-white shadow-sm dark:bg-slate-800 dark:border-slate-700"
           >
             <button
               class="absolute right-2 top-2 z-10 rounded-full bg-white/80 p-1 shadow-sm hover:bg-red-50 hover:text-red-500"
@@ -150,7 +150,9 @@ function val(property, spec) {
               <HomeModernIcon class="size-10 text-slate-300" />
             </div>
             <div class="p-3">
-              <p class="line-clamp-2 text-sm font-semibold text-slate-800">
+              <p
+                class="line-clamp-2 text-sm font-semibold text-slate-800 dark:text-slate-100"
+              >
                 {{ property.title }}
               </p>
               <p class="text-xs text-slate-500 mt-0.5">
@@ -178,14 +180,18 @@ function val(property, spec) {
         <!-- Spec rows -->
         <div
           v-else
-          class="overflow-hidden rounded-2xl border bg-white shadow-sm"
+          class="overflow-hidden rounded-2xl border bg-white shadow-sm dark:bg-slate-800 dark:border-slate-700"
         >
           <div
             v-for="(spec, i) in specs"
             :key="spec.key"
-            class="grid gap-0 border-b border-slate-100 last:border-b-0"
+            class="grid gap-0 border-b border-slate-100 last:border-b-0 dark:border-slate-700"
             :style="`grid-template-columns: 180px repeat(${properties.length}, 1fr)`"
-            :class="i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'"
+            :class="
+              i % 2 === 0
+                ? 'bg-white dark:bg-slate-800'
+                : 'bg-slate-50/50 dark:bg-slate-900/60'
+            "
           >
             <div
               class="flex items-center px-4 py-3 text-xs font-semibold uppercase tracking-wide text-slate-500"
@@ -195,7 +201,7 @@ function val(property, spec) {
             <div
               v-for="property in properties"
               :key="property.id"
-              class="flex items-center border-l border-slate-100 px-4 py-3 text-sm text-slate-800"
+              class="flex items-center border-l border-slate-100 px-4 py-3 text-sm text-slate-800 dark:border-slate-700 dark:text-slate-200"
             >
               {{ val(property, spec) }}
             </div>

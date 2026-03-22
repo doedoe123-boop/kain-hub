@@ -5,6 +5,7 @@ namespace App\Models;
 use App\PayoutMethod;
 use App\SectorTemplate;
 use App\StoreStatus;
+use Database\Factories\StoreFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Lunar\Models\Collection;
 use Spatie\Activitylog\LogOptions;
@@ -49,17 +51,17 @@ use Spatie\Activitylog\Traits\LogsActivity;
  * @property ?array $operating_hours
  * @property ?PayoutMethod $payout_method
  * @property ?array $payout_details
- * @property ?\Illuminate\Support\Carbon $suspended_at
+ * @property ?Carbon $suspended_at
  * @property ?string $suspension_reason
- * @property ?\Illuminate\Support\Carbon $setup_completed_at
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $setup_completed_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  *
  * @see /skills/store-management.md
  */
 class Store extends Model
 {
-    /** @use HasFactory<\Database\Factories\StoreFactory> */
+    /** @use HasFactory<StoreFactory> */
     use HasFactory;
 
     use LogsActivity;

@@ -128,7 +128,22 @@ const year = new Date().getFullYear();
                 >Privacy Policy</a
               >
             </li>
-            <li class="text-slate-600">About Us</li>
+            <li>
+              <RouterLink
+                to="/about"
+                class="transition-colors hover:text-white"
+              >
+                About Us
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink
+                to="/faq"
+                class="transition-colors hover:text-white"
+              >
+                FAQs
+              </RouterLink>
+            </li>
           </ul>
         </div>
       </div>

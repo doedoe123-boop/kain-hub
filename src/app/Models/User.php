@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Notifications\CustomerResetPasswordNotification;
 use App\UserRole;
+use Database\Factories\UserFactory;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,9 +22,9 @@ use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements FilamentUser, LunarUserInterface
+class User extends Authenticatable implements FilamentUser, LunarUserInterface, MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasApiTokens;
 
     use HasFactory;
@@ -248,6 +251,6 @@ class User extends Authenticatable implements FilamentUser, LunarUserInterface
      */
     public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
     {
-        $this->notify(new \App\Notifications\CustomerResetPasswordNotification($token));
+        $this->notify(new CustomerResetPasswordNotification($token));
     }
 }

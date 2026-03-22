@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\Order;
+use App\Models\Payout;
+use App\Models\PayoutLine;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PayoutLine>
+ * @extends Factory<PayoutLine>
  */
 class PayoutLineFactory extends Factory
 {
@@ -17,8 +20,8 @@ class PayoutLineFactory extends Factory
     public function definition(): array
     {
         return [
-            'payout_id' => \App\Models\Payout::factory(),
-            'order_id' => \App\Models\Order::factory(),
+            'payout_id' => Payout::factory(),
+            'order_id' => Order::factory(),
             'store_earning' => fake()->numberBetween(1000, 100000),
         ];
     }

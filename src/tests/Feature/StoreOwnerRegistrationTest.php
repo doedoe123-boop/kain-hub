@@ -414,7 +414,7 @@ it('has different required documents per sector', function () {
 });
 
 it('returns required document keys for a sector', function () {
-    $required = \App\Models\Sector::where('slug', 'ecommerce')->first()->requiredDocumentKeys();
+    $required = Sector::where('slug', 'ecommerce')->first()->requiredDocumentKeys();
 
     expect($required)->toContain('dti_sec_registration')
         ->toContain('business_permit')

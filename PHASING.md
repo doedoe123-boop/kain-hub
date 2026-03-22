@@ -270,16 +270,16 @@ Customer-facing frontend built with Vue 3 + Pinia + Vue Router + Tailwind CSS.
 | 25  | Map/geolocation view           | ✅     | OpenStreetMap iframe in `PropertyDetail.vue` + `DevelopmentDetail.vue` using lat/lng data                             |
 | 26  | Property analytics tracker     | ✅     | `PropertyController::track()`, `propertiesApi.track()`, phone/share click events in `PropertyDetail.vue`              |
 
-### 5C — Shared Storefront 🔶 PARTIAL
+### 5C — Shared Storefront ✅ COMPLETE
 
-| #   | Feature                     | Status | Notes                                                                     |
-| --- | --------------------------- | ------ | ------------------------------------------------------------------------- |
-| 27  | Email verification flow     | ❌     | Not enforced on customer registration                                     |
-| 28  | Password reset flow         | ✅     | `ForgotPassword.vue` + `ResetPassword.vue` with API integration           |
-| 29  | Customer dashboard          | ✅     | `AccountDashboard.vue` — recent orders, quick-link cards to account pages |
-| 30  | FAQ public page             | ❌     | No standalone FAQ page (backend FAQs exist via FaqResource)               |
-| 31  | Notification preferences    | ✅     | `SettingsPage.vue` — toggles for order updates and promotions             |
-| 32  | Multi-city support (future) | ❌     | Not yet implemented                                                       |
+| #   | Feature                  | Status | Notes                                                                                                                                                                                                                       |
+| --- | ------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 27  | Email verification flow  | ✅     | `MustVerifyEmail` on User model; `EmailVerificationController` (resend + web verify route); `EmailVerify.vue` page with resend button; verified state redirect                                                              |
+| 28  | Password reset flow      | ✅     | `ForgotPassword.vue` + `ResetPassword.vue` with API integration                                                                                                                                                             |
+| 29  | Customer dashboard       | ✅     | `AccountDashboard.vue` — recent orders, quick-link cards to account pages                                                                                                                                                   |
+| 30  | FAQ public page          | ✅     | `FaqController` + `GET /api/v1/faqs`; `FaqPage.vue` with accordion; routed at `/faq`                                                                                                                                        |
+| 31  | Notification preferences | ✅     | `SettingsPage.vue` — toggles for order updates and promotions                                                                                                                                                               |
+| 32  | Multi-city support       | ✅     | `useCityStore` (Pinia) — browser geolocation → Nominatim reverse geocode → city; `CityBanner.vue` on listing pages; Properties/Developments/Movers pre-fill city filter; "Browse all Philippines" fallback on empty results |
 
 ### 5D — LipatBahay / Moving Services Storefront ✅ COMPLETE
 

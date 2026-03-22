@@ -14,11 +14,13 @@ import { ScaleIcon as ScaleSolid } from "@heroicons/vue/24/solid";
 import { propertiesApi } from "@/api/properties";
 import { savedSearchesApi } from "@/api/savedSearches";
 import { useAuthStore } from "@/stores/auth";
+import { useCityStore } from "@/stores/city";
 import { useCompare } from "@/composables/useCompare";
 
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
+const cityStore = useCityStore();
 const { compareList, canAdd, isInCompare, addToCompare, removeFromCompare } =
   useCompare();
 
@@ -129,7 +131,13 @@ function resetFilters() {
   load();
 }
 
-onMounted(() => load());
+onMounted(() => {
+  // Pre-fill city from store when no URL query param is present
+  if (!filters.value.city && cityStore.activeCity) {
+    filters.value.city = cityStore.activeCity;
+  }
+  load();
+});
 watch(
   () => route.query,
   () => load(),
@@ -207,7 +215,7 @@ const hasActiveFilters = computed(() =>
           :class="
             filters.listing_type === l.value
               ? 'bg-emerald-600 text-white shadow-sm'
-              : 'border border-slate-300 bg-white text-slate-600 hover:border-emerald-400 hover:text-emerald-700'
+              : 'border border-slate-300 bg-white text-slate-600 hover:border-emerald-400 hover:text-emerald-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300'
           "
           @click="
             filters.listing_type = l.value;
@@ -220,7 +228,7 @@ const hasActiveFilters = computed(() =>
 
       <!-- Filters -->
       <form
-        class="mb-8 rounded-2xl border bg-white p-4 shadow-sm"
+        class="mb-8 rounded-2xl border bg-white p-4 shadow-sm dark:bg-slate-900 dark:border-slate-700"
         @submit.prevent="onSearch"
       >
         <div class="relative mb-3">
@@ -231,7 +239,7 @@ const hasActiveFilters = computed(() =>
             v-model="filters.search"
             type="search"
             placeholder="Search by title, city, or address…"
-            class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+            class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:placeholder-slate-500"
           />
         </div>
 
@@ -240,7 +248,7 @@ const hasActiveFilters = computed(() =>
         >
           <select
             v-model="filters.type"
-            class="col-span-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-auto"
+            class="col-span-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-auto dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
           >
             <option v-for="t in propertyTypes" :key="t.value" :value="t.value">
               {{ t.label }}
@@ -252,7 +260,7 @@ const hasActiveFilters = computed(() =>
             type="number"
             min="1"
             placeholder="Min bedrooms"
-            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-32"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-32 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
           />
 
           <input
@@ -260,7 +268,7 @@ const hasActiveFilters = computed(() =>
             type="number"
             min="0"
             placeholder="Min price"
-            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-32"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-32 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
           />
 
           <input
@@ -268,14 +276,14 @@ const hasActiveFilters = computed(() =>
             type="number"
             min="0"
             placeholder="Max price"
-            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-32"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 sm:w-32 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
           />
 
           <input
             v-model="filters.city"
             type="text"
             placeholder="City"
-            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-36"
+            class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-400 sm:w-36 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
           />
 
           <button
@@ -314,7 +322,7 @@ const hasActiveFilters = computed(() =>
         <div
           v-for="i in 6"
           :key="i"
-          class="animate-pulse overflow-hidden rounded-2xl border bg-white shadow-sm"
+          class="animate-pulse overflow-hidden rounded-2xl border bg-white shadow-sm dark:bg-slate-800 dark:border-slate-700"
         >
           <div class="aspect-[16/9] bg-slate-200" />
           <div class="p-4 space-y-3">
@@ -341,6 +349,23 @@ const hasActiveFilters = computed(() =>
             reset all
           </button>
         </p>
+        <p
+          v-if="cityStore.activeCity && filters.city"
+          class="mt-3 text-sm text-slate-400"
+        >
+          No listings found in
+          <strong class="text-slate-600">{{ cityStore.activeCity }}</strong
+          >.
+          <button
+            class="ml-1 text-emerald-600 underline underline-offset-2"
+            @click="
+              cityStore.clearAll();
+              resetFilters();
+            "
+          >
+            Browse all Philippines
+          </button>
+        </p>
       </div>
 
       <!-- Grid -->
@@ -348,7 +373,7 @@ const hasActiveFilters = computed(() =>
         <div
           v-for="property in properties"
           :key="property.id"
-          class="group flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow hover:shadow-md"
+          class="group flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow hover:shadow-md dark:bg-slate-800 dark:border-slate-700"
         >
           <RouterLink :to="`/properties/${property.slug}`" class="flex-1">
             <div class="relative aspect-[16/9] overflow-hidden bg-slate-100">
@@ -422,7 +447,7 @@ const hasActiveFilters = computed(() =>
                   ? 'bg-emerald-50 text-emerald-700'
                   : !canAdd
                     ? 'cursor-not-allowed text-slate-300'
-                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+                    : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-slate-700'
               "
               :disabled="!canAdd && !isInCompare(property.id)"
               @click="
@@ -451,7 +476,7 @@ const hasActiveFilters = computed(() =>
           :class="
             meta.current_page === page
               ? 'bg-emerald-600 text-white border-emerald-600'
-              : 'bg-white text-slate-600 hover:bg-slate-50'
+              : 'bg-white text-slate-600 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
           "
           @click="load(page)"
         >
@@ -470,7 +495,7 @@ const hasActiveFilters = computed(() =>
       >
         <div
           v-if="compareList.length"
-          class="fixed bottom-0 inset-x-0 z-40 border-t border-slate-200 bg-white shadow-xl"
+          class="fixed bottom-0 inset-x-0 z-40 border-t border-slate-200 bg-white shadow-xl dark:bg-slate-900 dark:border-slate-700"
         >
           <div
             class="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3 sm:px-6"
@@ -484,7 +509,7 @@ const hasActiveFilters = computed(() =>
               <div
                 v-for="item in compareList"
                 :key="item.id"
-                class="flex shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs"
+                class="flex shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs dark:bg-slate-800 dark:border-slate-700"
               >
                 <span
                   class="max-w-[120px] truncate font-medium text-slate-700"
@@ -515,7 +540,9 @@ const hasActiveFilters = computed(() =>
         class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
         @click.self="saveSearchModalOpen = false"
       >
-        <div class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+        <div
+          class="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-900"
+        >
           <h3 class="mb-1 text-lg font-bold text-slate-900">
             Save this Search
           </h3>
@@ -573,7 +600,7 @@ const hasActiveFilters = computed(() =>
             <div class="flex gap-2 pt-1">
               <button
                 type="button"
-                class="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+                class="flex-1 rounded-xl border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
                 @click="saveSearchModalOpen = false"
               >
                 Cancel

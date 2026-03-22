@@ -3,6 +3,9 @@
 namespace App\Http\Resources\Api\V1;
 
 use App\Models\Property;
+use App\Models\PropertyInquiry;
+use App\Models\RentalAgreement;
+use App\PropertyStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +32,7 @@ class PropertyDetailResource extends JsonResource
             'listing_type' => $this->listing_type->value,
             'listing_type_label' => $this->listing_type->label(),
             'status' => $this->status->value,
-            'is_active' => $this->status === \App\PropertyStatus::Active,
+            'is_active' => $this->status === PropertyStatus::Active,
             'price' => $this->price,
             'price_currency' => $this->price_currency,
             'price_period' => $this->price_period,
@@ -129,7 +132,7 @@ class PropertyDetailResource extends JsonResource
             // Inquiry awareness (authenticated users only)
             'has_inquired' => $this->when(
                 $request->user('sanctum') !== null,
-                fn () => \App\Models\PropertyInquiry::query()
+                fn () => PropertyInquiry::query()
                     ->where('property_id', $this->id)
                     ->where('user_id', $request->user('sanctum')->id)
                     ->exists(),
@@ -138,7 +141,7 @@ class PropertyDetailResource extends JsonResource
             // Rental agreement awareness (authenticated users only)
             'has_rented' => $this->when(
                 $request->user('sanctum') !== null,
-                fn () => \App\Models\RentalAgreement::query()
+                fn () => RentalAgreement::query()
                     ->where('property_id', $this->id)
                     ->where('tenant_user_id', $request->user('sanctum')->id)
                     ->whereIn('status', ['pending', 'negotiating', 'signed', 'active'])
@@ -148,7 +151,7 @@ class PropertyDetailResource extends JsonResource
             // Rental agreement awareness (authenticated users only)
             'has_rented' => $this->when(
                 $request->user('sanctum') !== null,
-                fn () => \App\Models\RentalAgreement::query()
+                fn () => RentalAgreement::query()
                     ->where('property_id', $this->id)
                     ->where('tenant_user_id', $request->user('sanctum')->id)
                     ->whereIn('status', ['pending', 'negotiating', 'signed', 'active'])

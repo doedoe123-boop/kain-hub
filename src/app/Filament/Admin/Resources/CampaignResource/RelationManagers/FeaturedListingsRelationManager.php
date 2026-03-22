@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Resources\CampaignResource\RelationManagers;
 
 use App\AdStatus;
 use App\FeaturedType;
+use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -34,7 +35,7 @@ class FeaturedListingsRelationManager extends RelationManager
                 Forms\Components\MorphToSelect::make('featurable')
                     ->label('Featured Item')
                     ->types([
-                        Forms\Components\MorphToSelect\Type::make(\App\Models\Store::class)
+                        Forms\Components\MorphToSelect\Type::make(Store::class)
                             ->titleAttribute('name'),
                     ])
                     ->searchable()

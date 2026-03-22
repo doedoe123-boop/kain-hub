@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Lunar\Models\Product;
 
 class ReviewResource extends Resource
 {
@@ -88,7 +89,7 @@ class ReviewResource extends Resource
                                     $set('reviewable_type', Store::class);
                                     $set('reviewable_id', $store->id);
                                 } else {
-                                    $set('reviewable_type', \Lunar\Models\Product::class);
+                                    $set('reviewable_type', Product::class);
                                     $set('reviewable_id', null);
                                 }
                             })
@@ -107,7 +108,7 @@ class ReviewResource extends Resource
                                     return [];
                                 }
 
-                                return \Lunar\Models\Product::query()
+                                return Product::query()
                                     ->whereHas('variants', function ($q) {
                                         $q->whereHas('prices');
                                     })
@@ -127,10 +128,10 @@ class ReviewResource extends Resource
                             ->searchable()
                             ->preload()
                             ->native(false)
-                            ->visible(fn (Forms\Get $get): bool => $get('review_type') === 'product' || $get('reviewable_type') === \Lunar\Models\Product::class)
+                            ->visible(fn (Forms\Get $get): bool => $get('review_type') === 'product' || $get('reviewable_type') === Product::class)
                             ->afterStateUpdated(function (Forms\Set $set, $state): void {
                                 if ($state) {
-                                    $set('reviewable_type', \Lunar\Models\Product::class);
+                                    $set('reviewable_type', Product::class);
                                     $set('reviewable_id', $state);
                                 }
                             })
@@ -205,13 +206,13 @@ class ReviewResource extends Resource
                     ->label('Type')
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         Store::class => 'Store',
-                        \Lunar\Models\Product::class => 'Product',
+                        Product::class => 'Product',
                         default => 'Other',
                     })
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         Store::class => 'info',
-                        \Lunar\Models\Product::class => 'success',
+                        Product::class => 'success',
                         default => 'gray',
                     }),
 
@@ -255,7 +256,7 @@ class ReviewResource extends Resource
                     ->label('Type')
                     ->options([
                         Store::class => 'Store Reviews',
-                        \Lunar\Models\Product::class => 'Product Reviews',
+                        Product::class => 'Product Reviews',
                     ])
                     ->attribute('reviewable_type'),
 

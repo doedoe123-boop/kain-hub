@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\AdPlacement;
 use App\AdStatus;
+use Database\Factories\AdvertisementFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -22,16 +24,16 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property ?int $advertisable_id
  * @property int $priority
  * @property int $cost_cents
- * @property ?\Illuminate\Support\Carbon $starts_at
- * @property ?\Illuminate\Support\Carbon $ends_at
+ * @property ?Carbon $starts_at
+ * @property ?Carbon $ends_at
  * @property ?int $campaign_id
  * @property ?int $created_by
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class Advertisement extends Model
 {
-    /** @use HasFactory<\Database\Factories\AdvertisementFactory> */
+    /** @use HasFactory<AdvertisementFactory> */
     use HasFactory;
 
     /**

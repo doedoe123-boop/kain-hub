@@ -6,6 +6,7 @@ use App\AdStatus;
 use App\FeaturedType;
 use App\Filament\Admin\Resources\FeaturedListingResource\Pages;
 use App\Models\FeaturedListing;
+use App\Models\Store;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -48,7 +49,7 @@ class FeaturedListingResource extends Resource
                         Forms\Components\MorphToSelect::make('featurable')
                             ->label('Featured Item')
                             ->types([
-                                Forms\Components\MorphToSelect\Type::make(\App\Models\Store::class)
+                                Forms\Components\MorphToSelect\Type::make(Store::class)
                                     ->titleAttribute('name'),
                             ])
                             ->searchable()

@@ -11,11 +11,12 @@ use App\Services\OrderService;
 use App\UserRole;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+use Lunar\Models\Currency;
 
 describe('Order Placed — store owner notifications', function () {
 
     beforeEach(function () {
-        \Lunar\Models\Currency::factory()->create(['default' => true, 'code' => 'PHP']);
+        Currency::factory()->create(['default' => true, 'code' => 'PHP']);
         $this->service = app(OrderService::class);
     });
 
@@ -40,14 +41,14 @@ describe('Order Placed — store owner notifications', function () {
         $order = Order::factory()->create();
         $notification = new OrderPlacedNotification($order);
 
-        expect($notification->via(new \stdClass))->toBe(['database']);
+        expect($notification->via(new stdClass))->toBe(['database']);
     });
 });
 
 describe('Order Status Updates — customer notifications', function () {
 
     beforeEach(function () {
-        \Lunar\Models\Currency::factory()->create(['default' => true, 'code' => 'PHP']);
+        Currency::factory()->create(['default' => true, 'code' => 'PHP']);
 
         $this->customer = User::factory()->create(['role' => UserRole::Customer]);
         $this->store = Store::factory()->create(['commission_rate' => 15.00]);
@@ -147,6 +148,6 @@ describe('Order Status Updates — customer notifications', function () {
         $order = Order::factory()->create();
         $notification = new OrderStatusUpdated($order);
 
-        expect($notification->via(new \stdClass))->toBe(['mail', 'database']);
+        expect($notification->via(new stdClass))->toBe(['mail', 'database']);
     });
 });

@@ -4,6 +4,7 @@ namespace Tests\Browser\Concerns;
 
 use App\Models\Store;
 use App\Models\User;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 /**
@@ -80,7 +81,7 @@ trait CreatesTestUsers
         ];
 
         foreach ($lunarPermissions as $handle) {
-            $permission = \Spatie\Permission\Models\Permission::firstOrCreate([
+            $permission = Permission::firstOrCreate([
                 'name' => $handle,
                 'guard_name' => $guard,
             ]);
