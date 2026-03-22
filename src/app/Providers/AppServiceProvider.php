@@ -16,6 +16,7 @@ use Filament\Http\Responses\Auth\Contracts\LogoutResponse;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
 use Lunar\Admin\Filament\Resources\ChannelResource as LunarChannelResource;
 use Lunar\Admin\Filament\Resources\CurrencyResource as LunarCurrencyResource;
@@ -85,6 +86,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->app->bind(LogoutResponse::class, LunarLogoutResponse::class);
+
+        Vite::createAssetPathsUsing(static fn (string $path): string => '/'.ltrim($path, '/'));
 
         // Register our extended Lunar models so route model binding and all
         // Lunar internals resolve App\Models\Order rather than Lunar\Models\Order.
