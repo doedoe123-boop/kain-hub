@@ -4,12 +4,13 @@ namespace Database\Factories;
 
 use App\AdStatus;
 use App\FeaturedType;
+use App\Models\FeaturedListing;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\FeaturedListing>
+ * @extends Factory<FeaturedListing>
  */
 class FeaturedListingFactory extends Factory
 {

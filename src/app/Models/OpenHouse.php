@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\OpenHouseFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * A scheduled open house event for a property listing.
@@ -16,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $store_id
  * @property string $title
  * @property ?string $description
- * @property \Illuminate\Support\Carbon $event_date
+ * @property Carbon $event_date
  * @property string $start_time
  * @property string $end_time
  * @property ?int $max_attendees
@@ -26,7 +28,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class OpenHouse extends Model
 {
-    /** @use HasFactory<\Database\Factories\OpenHouseFactory> */
+    /** @use HasFactory<OpenHouseFactory> */
     use HasFactory;
 
     /** @var list<string> */

@@ -58,7 +58,9 @@ function select(cat) {
 </script>
 
 <template>
-  <div class="border-b border-slate-100 bg-white shadow-sm">
+  <div
+    class="border-b border-slate-100 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800"
+  >
     <div class="mx-auto max-w-7xl px-4 sm:px-6">
       <!-- Skeleton -->
       <div
@@ -68,7 +70,7 @@ function select(cat) {
         <div
           v-for="i in 8"
           :key="i"
-          class="h-7 w-20 shrink-0 animate-pulse rounded-full bg-slate-100"
+          class="h-7 w-20 shrink-0 animate-pulse rounded-full bg-slate-100 dark:bg-slate-700"
         />
       </div>
 
@@ -85,7 +87,7 @@ function select(cat) {
           :class="
             active === cat.id
               ? 'bg-navy-900 text-white shadow-sm'
-              : 'border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-700'
+              : 'border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300'
           "
           @click="select(cat)"
         >

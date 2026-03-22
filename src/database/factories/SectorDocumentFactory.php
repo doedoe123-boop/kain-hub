@@ -3,14 +3,15 @@
 namespace Database\Factories;
 
 use App\Models\Sector;
+use App\Models\SectorDocument;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SectorDocument>
+ * @extends Factory<SectorDocument>
  */
 class SectorDocumentFactory extends Factory
 {
-    protected $model = \App\Models\SectorDocument::class;
+    protected $model = SectorDocument::class;
 
     /**
      * Define the model's default state.

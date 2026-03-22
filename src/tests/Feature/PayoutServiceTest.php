@@ -7,11 +7,12 @@ use App\Models\Store;
 use App\OrderStatus;
 use App\Services\PayoutService;
 use Illuminate\Support\Carbon;
+use Lunar\Models\Currency;
 
 describe('PayoutService — generateForStore', function () {
 
     beforeEach(function () {
-        \Lunar\Models\Currency::factory()->create(['default' => true, 'code' => 'PHP']);
+        Currency::factory()->create(['default' => true, 'code' => 'PHP']);
 
         $this->store = Store::factory()->create(['commission_rate' => 15.00]);
         $this->service = app(PayoutService::class);
@@ -106,7 +107,7 @@ describe('PayoutService — generateForStore', function () {
 describe('PayoutService — generateAll', function () {
 
     beforeEach(function () {
-        \Lunar\Models\Currency::factory()->create(['default' => true, 'code' => 'PHP']);
+        Currency::factory()->create(['default' => true, 'code' => 'PHP']);
         $this->service = app(PayoutService::class);
     });
 
@@ -135,7 +136,7 @@ describe('PayoutService — generateAll', function () {
 describe('PayoutService — generateWeekly', function () {
 
     beforeEach(function () {
-        \Lunar\Models\Currency::factory()->create(['default' => true, 'code' => 'PHP']);
+        Currency::factory()->create(['default' => true, 'code' => 'PHP']);
         $this->service = app(PayoutService::class);
     });
 

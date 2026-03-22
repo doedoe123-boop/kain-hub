@@ -3,9 +3,11 @@ import { ref, onMounted, watch } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { TruckIcon, MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
 import { moversApi } from "@/api/movers";
+import { useCityStore } from "@/stores/city";
 
 const route = useRoute();
 const router = useRouter();
+const cityStore = useCityStore();
 
 const movers = ref([]);
 const meta = ref({});
@@ -47,11 +49,16 @@ watch(
   },
 );
 
-onMounted(() => fetchMovers());
+onMounted(() => {
+  if (!filters.value.city && cityStore.activeCity) {
+    filters.value.city = cityStore.activeCity;
+  }
+  fetchMovers();
+});
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="min-h-screen bg-slate-50 dark:bg-slate-900">
     <!-- Header -->
     <div
       class="relative overflow-hidden py-14 text-white"
@@ -117,11 +124,13 @@ onMounted(() => fetchMovers());
     </div>
 
     <!-- Filters -->
-    <div class="border-b border-slate-100 bg-white shadow-sm">
+    <div
+      class="border-b border-slate-100 bg-white shadow-sm dark:bg-slate-900 dark:border-slate-800"
+    >
       <div class="mx-auto max-w-7xl px-4 sm:px-6 py-4">
         <form class="flex flex-wrap gap-3" @submit.prevent="applyFilters">
           <div
-            class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all"
+            class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-emerald-500/20 transition-all dark:bg-slate-800 dark:border-slate-700"
           >
             <MagnifyingGlassIcon class="h-4 w-4 text-slate-400 shrink-0" />
             <input
@@ -137,7 +146,7 @@ onMounted(() => fetchMovers());
             type="text"
             placeholder="Province..."
             autocomplete="off"
-            class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 placeholder-slate-400 outline-none focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+            class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-700 placeholder-slate-400 outline-none focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20 transition-all dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200"
           />
           <button
             type="submit"
@@ -164,7 +173,7 @@ onMounted(() => fetchMovers());
 
       <div
         v-else-if="movers.length === 0"
-        class="rounded-2xl border border-dashed border-slate-200 bg-white py-20 text-center"
+        class="rounded-2xl border border-dashed border-slate-200 bg-white py-20 text-center dark:bg-slate-900 dark:border-slate-700"
       >
         <TruckIcon class="mx-auto mb-4 h-16 w-16 text-slate-300" />
         <p class="text-lg font-medium text-slate-600">
@@ -173,6 +182,24 @@ onMounted(() => fetchMovers());
         <p class="mt-1 text-sm text-slate-400">
           Try adjusting your search filters
         </p>
+        <p
+          v-if="cityStore.activeCity && filters.city"
+          class="mt-3 text-sm text-slate-400"
+        >
+          No movers available in
+          <strong class="text-slate-600">{{ cityStore.activeCity }}</strong
+          >.
+          <button
+            class="ml-1 text-emerald-600 underline underline-offset-2"
+            @click="
+              cityStore.clearAll();
+              filters.city = '';
+              fetchMovers();
+            "
+          >
+            Browse all Philippines
+          </button>
+        </p>
       </div>
 
       <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -180,7 +207,7 @@ onMounted(() => fetchMovers());
           v-for="mover in movers"
           :key="mover.id"
           :to="{ name: 'movers.show', params: { slug: mover.slug } }"
-          class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+          class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all dark:bg-slate-800 dark:border-slate-700"
         >
           <div class="p-5">
             <div class="flex items-start gap-4">

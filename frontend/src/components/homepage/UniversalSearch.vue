@@ -138,7 +138,7 @@ const hasResults = () => {
     <div class="mx-auto max-w-3xl">
       <form
         @submit.prevent="handleSubmit"
-        class="relative rounded-2xl bg-white p-3 sm:p-4 shadow-[0_8px_24px_rgba(15,32,68,0.12)] ring-1 ring-slate-100"
+        class="relative rounded-2xl bg-white p-3 sm:p-4 shadow-[0_8px_24px_rgba(15,32,68,0.12)] ring-1 ring-slate-100 dark:bg-slate-800 dark:ring-slate-700"
       >
         <!-- Search input row -->
         <div class="flex items-center gap-3">
@@ -147,7 +147,7 @@ const hasResults = () => {
             v-model="query"
             type="text"
             placeholder="Search products, properties, or stores…"
-            class="flex-1 bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none sm:text-base"
+            class="flex-1 bg-transparent text-sm text-slate-800 placeholder:text-slate-400 outline-none sm:text-base dark:text-slate-100 dark:placeholder:text-slate-500"
             autocomplete="off"
           />
           <!-- Loading spinner -->
@@ -208,7 +208,7 @@ const hasResults = () => {
         >
           <div
             v-if="results && query.trim().length >= 2"
-            class="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black/5"
+            class="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black/5 dark:bg-slate-800 dark:border-slate-700"
           >
             <!-- No results -->
             <div

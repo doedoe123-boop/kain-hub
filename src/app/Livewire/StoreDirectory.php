@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Sector;
 use App\Models\Store;
 use App\StoreStatus;
 use Illuminate\Contracts\View\View;
@@ -77,8 +78,8 @@ class StoreDirectory extends Component
     {
         $totalCount = Store::where('status', StoreStatus::Approved)->count();
 
-        /** @var Collection<int, \App\Models\Sector> $sectors */
-        $sectors = \App\Models\Sector::active()->orderBy('name')->get();
+        /** @var Collection<int, Sector> $sectors */
+        $sectors = Sector::active()->orderBy('name')->get();
 
         return view('livewire.store-directory', [
             'totalCount' => $totalCount,

@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources\StaffResource\Pages;
 
 use App\Filament\Admin\Resources\StaffResource;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
 class ListStaff extends ListRecords
@@ -12,7 +13,7 @@ class ListStaff extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\CreateAction::make()
+            CreateAction::make()
                 ->label('New Staff Member'),
         ];
     }

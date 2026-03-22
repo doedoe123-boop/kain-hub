@@ -6,6 +6,7 @@ use App\Http\Middleware\EnsureStoreSetupComplete;
 use App\Http\Responses\LunarLogoutResponse;
 use App\Listeners\RecordLoginHistory;
 use App\Models\MovingBooking;
+use App\Models\Order;
 use App\Models\PropertyInquiry;
 use App\Models\RentalAgreement;
 use App\Observers\MovingBookingObserver;
@@ -91,7 +92,7 @@ class AppServiceProvider extends ServiceProvider
         // Lunar\Models\Order, which causes policy type-hint mismatches (403s).
         ModelManifest::replace(
             \Lunar\Models\Contracts\Order::class,
-            \App\Models\Order::class,
+            Order::class,
         );
 
         // Record all login attempts (success + failure) for security audit

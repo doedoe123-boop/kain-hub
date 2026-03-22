@@ -3,26 +3,28 @@
 namespace App\Models;
 
 use App\CampaignStatus;
+use Database\Factories\CampaignFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property string $name
  * @property ?string $description
  * @property CampaignStatus $status
- * @property ?\Illuminate\Support\Carbon $starts_at
- * @property ?\Illuminate\Support\Carbon $ends_at
+ * @property ?Carbon $starts_at
+ * @property ?Carbon $ends_at
  * @property ?int $created_by
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class Campaign extends Model
 {
-    /** @use HasFactory<\Database\Factories\CampaignFactory> */
+    /** @use HasFactory<CampaignFactory> */
     use HasFactory;
 
     /**

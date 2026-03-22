@@ -2,13 +2,14 @@
 
 namespace App\Http\Resources\Api\V1;
 
+use App\Models\PropertyInquiry;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * Represents a property inquiry as seen by the customer who submitted it.
  *
- * @mixin \App\Models\PropertyInquiry
+ * @mixin PropertyInquiry
  */
 class UserInquiryResource extends JsonResource
 {

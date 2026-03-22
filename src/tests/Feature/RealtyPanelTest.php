@@ -1,5 +1,6 @@
 <?php
 
+use App\InquiryStatus;
 use App\Models\Development;
 use App\Models\Property;
 use App\Models\PropertyInquiry;
@@ -8,11 +9,12 @@ use App\Models\User;
 use App\PropertyStatus;
 use App\StoreStatus;
 use App\UserRole;
+use Database\Seeders\SectorSeeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 beforeEach(function () {
-    (new \Database\Seeders\SectorSeeder)->run();
+    (new SectorSeeder)->run();
 
     $role = Role::firstOrCreate(['name' => 'store_owner', 'guard_name' => 'web']);
     $permissions = [
@@ -196,7 +198,7 @@ it('marks an inquiry as contacted', function () {
     $inquiry->markContacted();
 
     $inquiry->refresh();
-    expect($inquiry->status)->toBe(\App\InquiryStatus::Contacted);
+    expect($inquiry->status)->toBe(InquiryStatus::Contacted);
     expect($inquiry->contacted_at)->not->toBeNull();
 });
 
@@ -207,7 +209,7 @@ it('schedules a viewing for an inquiry', function () {
     $inquiry->scheduleViewing($viewingDate);
 
     $inquiry->refresh();
-    expect($inquiry->status)->toBe(\App\InquiryStatus::ViewingScheduled);
+    expect($inquiry->status)->toBe(InquiryStatus::ViewingScheduled);
     expect($inquiry->viewing_date->toDateString())->toBe($viewingDate->toDateString());
 });
 

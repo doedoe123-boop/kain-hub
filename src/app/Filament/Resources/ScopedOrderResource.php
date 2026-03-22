@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Models\Order;
+use App\Models\User;
 use App\OrderStatus;
 use App\Services\OrderService;
 use Filament\Notifications\Notification;
@@ -26,7 +27,7 @@ class ScopedOrderResource extends LunarOrderResource
     {
         $query = parent::getEloquentQuery();
 
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = Auth::user();
 
         if ($user && ! $user->isAdmin()) {

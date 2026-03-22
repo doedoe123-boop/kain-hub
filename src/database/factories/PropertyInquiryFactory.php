@@ -4,11 +4,12 @@ namespace Database\Factories;
 
 use App\InquiryStatus;
 use App\Models\Property;
+use App\Models\PropertyInquiry;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PropertyInquiry>
+ * @extends Factory<PropertyInquiry>
  */
 class PropertyInquiryFactory extends Factory
 {

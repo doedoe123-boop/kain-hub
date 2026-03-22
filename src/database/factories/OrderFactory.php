@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Order;
 use App\Models\Store;
 use App\Models\User;
 use App\OrderStatus;
@@ -10,11 +11,11 @@ use Lunar\Base\ValueObjects\Cart\TaxBreakdown;
 use Lunar\Models\Channel;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Order>
+ * @extends Factory<Order>
  */
 class OrderFactory extends Factory
 {
-    protected $model = \App\Models\Order::class;
+    protected $model = Order::class;
 
     /**
      * Define the model's default state.

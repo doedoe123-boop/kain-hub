@@ -4,9 +4,12 @@ namespace App\Filament\Realty\Resources;
 
 use App\Filament\Realty\Resources\PropertyResource\Pages;
 use App\Filament\Realty\Resources\PropertyResource\RelationManagers;
+use App\InquiryStatus;
 use App\ListingType;
 use App\Models\Development;
+use App\Models\Property;
 use App\Models\RentalAgreement;
+use App\Models\User;
 use App\PropertyStatus;
 use App\PropertyType;
 use App\SectorTemplate;
@@ -15,16 +18,18 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class PropertyResource extends Resource
 {
-    protected static ?string $model = \App\Models\Property::class;
+    protected static ?string $model = Property::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-home-modern';
 
@@ -769,7 +774,7 @@ class PropertyResource extends Resource
                             ->rows(2),
                     ])
                     ->action(function (Model $record, array $data): void {
-                        $tenantUser = \App\Models\User::where('email', $data['tenant_email'])->first();
+                        $tenantUser = User::where('email', $data['tenant_email'])->first();
 
                         RentalAgreement::create([
                             'property_id' => $record->id,
@@ -787,12 +792,12 @@ class PropertyResource extends Resource
                             'notes' => $data['notes'] ?? null,
                         ]);
 
-                        $record->update(['status' => \App\PropertyStatus::UnderOffer]);
+                        $record->update(['status' => PropertyStatus::UnderOffer]);
                         // Only update inquiries that belong to this tenant, or actually close them all and let the RentalAgreement drive it?
                         // It's cleaner to keep them as "negotiating" if we want them to stick around, or just set to Closed.
-                        $record->inquiries()->update(['status' => \App\InquiryStatus::Closed]);
+                        $record->inquiries()->update(['status' => InquiryStatus::Closed]);
 
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->success()
                             ->title('Property is now Under Offer')
                             ->body('A rental agreement has been sent to the tenant for review and signature.')
@@ -814,7 +819,7 @@ class PropertyResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->deselectRecordsAfterCompletion()
-                        ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
+                        ->action(function (Collection $records): void {
                             $count = 0;
                             $records->each(function (Model $record) use (&$count): void {
                                 if ($record->status === PropertyStatus::Draft) {
@@ -823,7 +828,7 @@ class PropertyResource extends Resource
                                 }
                             });
 
-                            \Filament\Notifications\Notification::make()
+                            Notification::make()
                                 ->success()
                                 ->title("{$count} propert".($count === 1 ? 'y' : 'ies').' published')
                                 ->send();
@@ -834,7 +839,7 @@ class PropertyResource extends Resource
                         ->color('warning')
                         ->requiresConfirmation()
                         ->deselectRecordsAfterCompletion()
-                        ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
+                        ->action(function (Collection $records): void {
                             $count = 0;
                             $records->each(function (Model $record) use (&$count): void {
                                 if ($record->status !== PropertyStatus::Archived) {
@@ -843,7 +848,7 @@ class PropertyResource extends Resource
                                 }
                             });
 
-                            \Filament\Notifications\Notification::make()
+                            Notification::make()
                                 ->success()
                                 ->title("{$count} propert".($count === 1 ? 'y' : 'ies').' archived')
                                 ->send();

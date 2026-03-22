@@ -8,6 +8,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Model;
+use Lunar\Models\Product;
 
 class LatestStoreReviewsTable extends BaseWidget
 {
@@ -45,13 +46,13 @@ class LatestStoreReviewsTable extends BaseWidget
                     ->label('Type')
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         Store::class => 'Store',
-                        \Lunar\Models\Product::class => 'Product',
+                        Product::class => 'Product',
                         default => 'Other',
                     })
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         Store::class => 'info',
-                        \Lunar\Models\Product::class => 'success',
+                        Product::class => 'success',
                         default => 'gray',
                     }),
 

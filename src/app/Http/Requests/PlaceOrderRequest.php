@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Order;
+use App\Models\Store;
 use App\StoreStatus;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 use Lunar\Facades\CartSession;
@@ -40,13 +43,13 @@ class PlaceOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()?->can('create', \App\Models\Order::class) ?? false;
+        return $this->user()?->can('create', Order::class) ?? false;
     }
 
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -71,7 +74,7 @@ class PlaceOrderRequest extends FormRequest
                     return;
                 }
 
-                $store = \App\Models\Store::query()->find($this->validated('store_id'));
+                $store = Store::query()->find($this->validated('store_id'));
 
                 if ($store && $store->status !== StoreStatus::Approved) {
                     $validator->errors()->add(

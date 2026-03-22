@@ -107,7 +107,7 @@ async function addToCart(product) {
           <div
             v-for="i in 8"
             :key="i"
-            class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-100"
+            class="rounded-2xl bg-white shadow-sm ring-1 ring-slate-100 dark:bg-slate-800 dark:ring-slate-700"
           >
             <div class="aspect-square w-full rounded-t-2xl bg-slate-100" />
             <div class="p-3 space-y-2">
@@ -151,7 +151,7 @@ async function addToCart(product) {
         <div class="relative -mt-10 mb-6 flex items-end gap-4">
           <div
             v-if="store.logo"
-            class="size-[100px] shrink-0 overflow-hidden rounded-full border-4 border-white bg-white shadow-lg"
+            class="size-[100px] shrink-0 overflow-hidden rounded-full border-4 border-white bg-white shadow-lg dark:border-slate-700 dark:bg-slate-700"
           >
             <img
               :src="store.logo"
@@ -190,7 +190,7 @@ async function addToCart(product) {
           <!-- Left Sidebar (Contact Info) -->
           <div class="space-y-4">
             <div
-              class="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-slate-100"
+              class="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-slate-100 dark:bg-slate-800 dark:border-slate-700"
             >
               <PhoneIcon class="size-5 text-brand-600 shrink-0" />
               <div class="flex flex-col min-w-0">
@@ -202,7 +202,7 @@ async function addToCart(product) {
             </div>
 
             <div
-              class="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-slate-100 hover:bg-slate-50 transition-colors"
+              class="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-slate-100 hover:bg-slate-50 transition-colors dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700"
             >
               <GlobeAltIcon class="size-5 text-brand-600 shrink-0" />
               <div class="flex flex-col min-w-0">
@@ -219,7 +219,7 @@ async function addToCart(product) {
             </div>
 
             <div
-              class="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-slate-100"
+              class="flex items-start gap-4 p-4 rounded-2xl bg-white shadow-sm border border-slate-100 dark:bg-slate-800 dark:border-slate-700"
             >
               <MapPinIcon class="size-5 text-brand-600 shrink-0 mt-0.5" />
               <div class="flex flex-col min-w-0">
@@ -239,7 +239,7 @@ async function addToCart(product) {
             <!-- Description Box -->
             <div
               v-if="store.description"
-              class="p-5 rounded-2xl bg-slate-50 border border-slate-100 mt-6"
+              class="p-5 rounded-2xl bg-slate-50 border border-slate-100 mt-6 dark:bg-slate-800/60 dark:border-slate-700"
             >
               <h3 class="text-sm font-bold text-[#0F2044] mb-2">
                 {{ isRealEstate ? "About Agency" : "About Store" }}
@@ -262,7 +262,7 @@ async function addToCart(product) {
 
               <div
                 v-if="properties.length === 0"
-                class="rounded-2xl border border-slate-200 bg-white py-16 text-center shadow-sm"
+                class="rounded-2xl border border-slate-200 bg-white py-16 text-center shadow-sm dark:bg-slate-900 dark:border-slate-700"
               >
                 <div
                   class="mx-auto flex size-16 items-center justify-center rounded-full bg-slate-100 mb-4"
@@ -370,7 +370,7 @@ async function addToCart(product) {
 
               <div
                 v-if="products.length === 0"
-                class="rounded-2xl border border-slate-200 bg-white py-16 text-center shadow-sm"
+                class="rounded-2xl border border-slate-200 bg-white py-16 text-center shadow-sm dark:bg-slate-900 dark:border-slate-700"
               >
                 <div
                   class="mx-auto flex size-16 items-center justify-center rounded-full bg-slate-100 mb-4"
@@ -392,7 +392,7 @@ async function addToCart(product) {
                 <div
                   v-for="product in products"
                   :key="product.id"
-                  class="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                  class="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md dark:bg-slate-800 dark:border-slate-700"
                 >
                   <!-- Image -->
                   <RouterLink

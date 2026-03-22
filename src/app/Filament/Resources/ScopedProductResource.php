@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Lunar\Admin\Filament\Resources\ProductResource as LunarProductResource;
@@ -20,7 +21,7 @@ class ScopedProductResource extends LunarProductResource
     {
         $query = parent::getEloquentQuery();
 
-        /** @var \App\Models\User|null $user */
+        /** @var User|null $user */
         $user = Auth::user();
 
         if ($user && ! $user->isAdmin()) {

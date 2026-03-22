@@ -4,10 +4,12 @@ namespace App\Models;
 
 use App\AdStatus;
 use App\PromotionType;
+use Database\Factories\PromotionFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -17,16 +19,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property AdStatus $status
  * @property ?int $discount_percentage
  * @property ?int $discount_amount_cents
- * @property ?\Illuminate\Support\Carbon $starts_at
- * @property ?\Illuminate\Support\Carbon $ends_at
+ * @property ?Carbon $starts_at
+ * @property ?Carbon $ends_at
  * @property ?int $campaign_id
  * @property ?int $created_by
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class Promotion extends Model
 {
-    /** @use HasFactory<\Database\Factories\PromotionFactory> */
+    /** @use HasFactory<PromotionFactory> */
     use HasFactory;
 
     /**

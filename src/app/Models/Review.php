@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\ReviewFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
+use Lunar\Models\Product;
 
 /**
  * A customer review for a store or a Lunar product.
@@ -28,11 +31,11 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property bool $is_verified_purchase
  * @property bool $is_published
  * @property bool $is_featured
- * @property ?\Illuminate\Support\Carbon $published_at
+ * @property ?Carbon $published_at
  */
 class Review extends Model
 {
-    /** @use HasFactory<\Database\Factories\ReviewFactory> */
+    /** @use HasFactory<ReviewFactory> */
     use HasFactory;
 
     /** @var list<string> */
@@ -110,7 +113,7 @@ class Review extends Model
 
     public function scopeProductReviews(Builder $query): Builder
     {
-        return $query->where('reviewable_type', \Lunar\Models\Product::class);
+        return $query->where('reviewable_type', Product::class);
     }
 
     public function scopeVerifiedPurchase(Builder $query): Builder
@@ -154,6 +157,6 @@ class Review extends Model
      */
     public function isProductReview(): bool
     {
-        return $this->reviewable_type === \Lunar\Models\Product::class;
+        return $this->reviewable_type === Product::class;
     }
 }

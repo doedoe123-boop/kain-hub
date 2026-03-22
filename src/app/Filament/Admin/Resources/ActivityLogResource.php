@@ -3,6 +3,7 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ActivityLogResource\Pages;
+use App\Models\User;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -152,7 +153,7 @@ class ActivityLogResource extends Resource
                     ),
                 Tables\Filters\SelectFilter::make('causer_id')
                     ->label('User')
-                    ->options(fn (): array => \App\Models\User::query()
+                    ->options(fn (): array => User::query()
                         ->whereIn('id', Activity::query()->distinct('causer_id')->whereNotNull('causer_id')->pluck('causer_id'))
                         ->pluck('name', 'id')
                         ->toArray()

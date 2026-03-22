@@ -3,9 +3,11 @@
 use App\InquiryStatus;
 use App\Models\Property;
 use App\Models\PropertyInquiry;
+use App\Models\Sector;
 use App\Models\Store;
 use App\Models\User;
 use App\PropertyStatus;
+use App\SectorTemplate;
 use App\UserRole;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -130,9 +132,9 @@ describe('POST /api/v1/properties/{slug}/quick-inquiry', function () {
         Mail::fake();
         Notification::fake();
 
-        \App\Models\Sector::factory()->create([
+        Sector::factory()->create([
             'slug' => 'paupahan',
-            'template' => \App\SectorTemplate::Rental,
+            'template' => SectorTemplate::Rental,
         ]);
         $store = Store::factory()->create(['sector' => 'paupahan']);
         $property = Property::factory()->create([
@@ -153,9 +155,9 @@ describe('POST /api/v1/properties/{slug}/quick-inquiry', function () {
         Mail::fake();
         Notification::fake();
 
-        \App\Models\Sector::factory()->create([
+        Sector::factory()->create([
             'slug' => 'real_estate',
-            'template' => \App\SectorTemplate::RealEstate,
+            'template' => SectorTemplate::RealEstate,
         ]);
         $store = Store::factory()->create(['sector' => 'real_estate']);
         $property = Property::factory()->create([

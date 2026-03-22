@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\PropertyStatus;
 use App\StoreStatus;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Lunar\Models\Product;
 
 /**
@@ -113,7 +114,7 @@ class GlobalSearchService
                 'logo_url' => $store->logo_url,
                 'sector' => $store->sector,
                 'city' => $store->address['city'] ?? null,
-                'description' => $store->description ? \Illuminate\Support\Str::limit($store->description, 100) : null,
+                'description' => $store->description ? Str::limit($store->description, 100) : null,
             ])
             ->values()
             ->toArray();

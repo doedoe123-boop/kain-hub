@@ -3,6 +3,8 @@
 use App\Models\Review;
 use App\Models\Store;
 use App\Models\User;
+use Illuminate\Support\Carbon;
+use Lunar\Models\Product;
 
 beforeEach(function () {
     $this->store = Store::factory()->create([
@@ -34,7 +36,7 @@ it('creates a product review with polymorphic type', function () {
         'rating' => 4,
     ]);
 
-    expect($review->reviewable_type)->toBe(\Lunar\Models\Product::class)
+    expect($review->reviewable_type)->toBe(Product::class)
         ->and($review->reviewable_id)->toBe(99)
         ->and($review->store_id)->toBe($this->store->id);
 });
@@ -253,5 +255,5 @@ it('casts rating as integer', function () {
 it('casts published_at as datetime', function () {
     $review = Review::factory()->forStoreReview($this->store)->published()->create();
 
-    expect($review->published_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
+    expect($review->published_at)->toBeInstanceOf(Carbon::class);
 });

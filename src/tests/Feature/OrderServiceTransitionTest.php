@@ -5,12 +5,13 @@ use App\Models\Store;
 use App\OrderStatus;
 use App\Services\OrderService;
 use Illuminate\Validation\ValidationException;
+use Lunar\Models\Currency;
 
 describe('OrderService — Status Transitions', function () {
 
     beforeEach(function () {
         // Lunar's Price cast requires a default Currency in the DB
-        \Lunar\Models\Currency::factory()->create(['default' => true, 'code' => 'PHP']);
+        Currency::factory()->create(['default' => true, 'code' => 'PHP']);
 
         $this->store = Store::factory()->create(['commission_rate' => 15.00]);
         $this->service = app(OrderService::class);
@@ -93,7 +94,7 @@ describe('OrderService — Status Transitions', function () {
 describe('OrderService — Summarize', function () {
 
     it('summarizes an order correctly', function () {
-        \Lunar\Models\Currency::factory()->create(['default' => true, 'code' => 'PHP']);
+        Currency::factory()->create(['default' => true, 'code' => 'PHP']);
         $store = Store::factory()->create(['name' => 'Test Store', 'commission_rate' => 15.00]);
         $order = Order::factory()->for($store)->create([
             'status' => OrderStatus::Pending->value,

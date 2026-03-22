@@ -2,8 +2,12 @@
 
 namespace App\Mail;
 
+use App\Models\Property;
+use App\Models\SavedSearch;
 use Illuminate\Bus\Queueable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -14,11 +18,11 @@ class SavedSearchResultsMail extends Mailable
     use SerializesModels;
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Collection<int, \App\Models\Property>  $properties
+     * @param  Collection<int, Property>  $properties
      */
     public function __construct(
-        public readonly \App\Models\SavedSearch $savedSearch,
-        public readonly \Illuminate\Database\Eloquent\Collection $properties,
+        public readonly SavedSearch $savedSearch,
+        public readonly Collection $properties,
     ) {}
 
     /**
@@ -44,7 +48,7 @@ class SavedSearchResultsMail extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

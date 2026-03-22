@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\MovingAddOnFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -14,13 +16,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property ?string $description
  * @property int $price Stored in centavos
  * @property bool $is_active
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property-read Store $store
  */
 class MovingAddOn extends Model
 {
-    /** @use HasFactory<\Database\Factories\MovingAddOnFactory> */
+    /** @use HasFactory<MovingAddOnFactory> */
     use HasFactory;
 
     protected $fillable = [

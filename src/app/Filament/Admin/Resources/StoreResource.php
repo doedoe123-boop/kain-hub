@@ -6,6 +6,7 @@ use App\Filament\Admin\Resources\StoreResource\Pages;
 use App\Mail\StoreApproved;
 use App\Mail\StoreReinstated;
 use App\Mail\StoreSuspended;
+use App\Models\Sector;
 use App\Models\Store;
 use App\PhilippineIdType;
 use App\Services\StoreService;
@@ -18,6 +19,8 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class StoreResource extends Resource
@@ -54,7 +57,7 @@ class StoreResource extends Resource
                         Forms\Components\Select::make('sector')
                             ->label('Industry Sector')
                             ->options(
-                                \App\Models\Sector::all()->pluck('name', 'slug')
+                                Sector::all()->pluck('name', 'slug')
                             )
                             ->searchable(),
                         Forms\Components\TextInput::make('commission_rate')
@@ -119,10 +122,10 @@ class StoreResource extends Resource
                             ->label('Industry Sector')
                             ->badge()
                             ->formatStateUsing(function (?string $state): string {
-                                return \App\Models\Sector::where('slug', $state)->value('name') ?? $state ?? '—';
+                                return Sector::where('slug', $state)->value('name') ?? $state ?? '—';
                             })
                             ->color(function (?string $state): string {
-                                return \App\Models\Sector::where('slug', $state)->value('color') ?? 'gray';
+                                return Sector::where('slug', $state)->value('color') ?? 'gray';
                             }),
                         Infolists\Components\TextEntry::make('commission_rate')
                             ->suffix('%'),
@@ -261,11 +264,11 @@ class StoreResource extends Resource
                     ->label('Sector')
                     ->badge()
                     ->formatStateUsing(function (?string $state): string {
-                        return \App\Models\Sector::where('slug', $state)->value('name') ?? ($state ?? '—');
+                        return Sector::where('slug', $state)->value('name') ?? ($state ?? '—');
                     })
                     ->color(function (?string $state): string {
                         $colorMap = ['indigo' => 'info', 'emerald' => 'success', 'amber' => 'warning', 'rose' => 'danger', 'sky' => 'info', 'violet' => 'info'];
-                        $color = \App\Models\Sector::where('slug', $state)->value('color');
+                        $color = Sector::where('slug', $state)->value('color');
 
                         return $colorMap[$color] ?? 'gray';
                     })
@@ -285,7 +288,7 @@ class StoreResource extends Resource
                     )),
                 Tables\Filters\SelectFilter::make('sector')
                     ->label('Industry Sector')
-                    ->options(fn () => \App\Models\Sector::active()->pluck('name', 'slug')->toArray()),
+                    ->options(fn () => Sector::active()->pluck('name', 'slug')->toArray()),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -302,7 +305,7 @@ class StoreResource extends Resource
 
                         $ownerEmail = $record->owner->email;
 
-                        \Illuminate\Support\Facades\Log::info('Store approval started', [
+                        Log::info('Store approval started', [
                             'store_id' => $record->id,
                             'store_name' => $record->name,
                             'owner_email' => $ownerEmail,
@@ -311,12 +314,12 @@ class StoreResource extends Resource
                         try {
                             Mail::to($ownerEmail)->send(new StoreApproved($record));
 
-                            \Illuminate\Support\Facades\Log::info('Store approval email sent successfully', [
+                            Log::info('Store approval email sent successfully', [
                                 'store_id' => $record->id,
                                 'owner_email' => $ownerEmail,
                             ]);
                         } catch (\Throwable $e) {
-                            \Illuminate\Support\Facades\Log::error('Store approval email failed', [
+                            Log::error('Store approval email failed', [
                                 'store_id' => $record->id,
                                 'owner_email' => $ownerEmail,
                                 'error' => $e->getMessage(),
@@ -451,7 +454,7 @@ class StoreResource extends Resource
                         ->modalHeading('Bulk Approve Stores')
                         ->modalDescription('This will approve all selected pending stores and send approval emails to each owner.')
                         ->deselectRecordsAfterCompletion()
-                        ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
+                        ->action(function (Collection $records): void {
                             $approved = 0;
 
                             foreach ($records as $record) {
@@ -481,7 +484,7 @@ class StoreResource extends Resource
             ->groups([
                 Tables\Grouping\Group::make('sector')
                     ->label('Industry Sector')
-                    ->getTitleFromRecordUsing(fn (Store $record): string => \App\Models\Sector::where('slug', $record->sector)->value('name') ?? $record->sector ?? 'Unclassified'),
+                    ->getTitleFromRecordUsing(fn (Store $record): string => Sector::where('slug', $record->sector)->value('name') ?? $record->sector ?? 'Unclassified'),
             ]);
     }
 

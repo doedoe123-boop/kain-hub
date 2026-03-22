@@ -36,7 +36,7 @@ describe('New Inquiry — agent notifications', function () {
         $inquiry = PropertyInquiry::factory()->create();
         $notification = new NewInquiryNotification($inquiry);
 
-        expect($notification->via(new \stdClass))->toBe(['database']);
+        expect($notification->via(new stdClass))->toBe(['database']);
     });
 
     it('NewInquiryNotification body contains the inquirer name', function () {

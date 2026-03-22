@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Database\Factories\MovingReviewFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -14,15 +16,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $rating 1-5
  * @property ?string $comment
  * @property bool $is_published
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property-read MovingBooking $booking
  * @property-read Store $store
  * @property-read User $customer
  */
 class MovingReview extends Model
 {
-    /** @use HasFactory<\Database\Factories\MovingReviewFactory> */
+    /** @use HasFactory<MovingReviewFactory> */
     use HasFactory;
 
     protected $fillable = [

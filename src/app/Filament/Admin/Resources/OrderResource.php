@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Store;
 use App\OrderStatus;
 use App\Services\OrderService;
+use Filament\Forms\Components\DatePicker;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
@@ -134,8 +135,8 @@ class OrderResource extends Resource
                     ),
                 Tables\Filters\Filter::make('created_at')
                     ->form([
-                        \Filament\Forms\Components\DatePicker::make('from')->label('Placed From'),
-                        \Filament\Forms\Components\DatePicker::make('until')->label('Placed Until'),
+                        DatePicker::make('from')->label('Placed From'),
+                        DatePicker::make('until')->label('Placed Until'),
                     ])
                     ->query(function ($query, array $data) {
                         return $query

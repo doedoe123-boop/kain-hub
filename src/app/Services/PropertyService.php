@@ -11,6 +11,7 @@ use App\Models\User;
 use App\PropertyStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Read-only property browsing service for the customer storefront.
@@ -36,7 +37,7 @@ class PropertyService
 
         if (! empty($params['search'])) {
             $search = $params['search'];
-            $like = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $like = DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
             $query->where(function ($q) use ($search, $like) {
                 $q->where('title', $like, "%{$search}%")
                     ->orWhere('city', $like, "%{$search}%")
@@ -65,7 +66,7 @@ class PropertyService
         }
 
         if (! empty($params['city'])) {
-            $like = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $like = DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
             $query->where('city', $like, "%{$params['city']}%");
         }
 
@@ -129,7 +130,7 @@ class PropertyService
 
         if (! empty($params['search'])) {
             $search = $params['search'];
-            $like = \Illuminate\Support\Facades\DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
+            $like = DB::connection()->getDriverName() === 'pgsql' ? 'ILIKE' : 'LIKE';
             $query->where(function ($q) use ($search, $like) {
                 $q->where('title', $like, "%{$search}%")
                     ->orWhere('city', $like, "%{$search}%");

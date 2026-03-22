@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use Database\Factories\FaqFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -11,12 +14,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $answer
  * @property bool $is_active
  * @property int $sort_order
- * @property ?\Illuminate\Support\Carbon $created_at
- * @property ?\Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
  */
 class Faq extends Model
 {
-    /** @use HasFactory<\Database\Factories\FaqFactory> */
+    /** @use HasFactory<FaqFactory> */
     use HasFactory;
 
     /** @var list<string> */
@@ -41,10 +44,10 @@ class Faq extends Model
     /**
      * Scope to only active FAQs, ordered by sort_order.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder<self>  $query
-     * @return \Illuminate\Database\Eloquent\Builder<self>
+     * @param  Builder<self>  $query
+     * @return Builder<self>
      */
-    public function scopeActive(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true)->orderBy('sort_order');
     }

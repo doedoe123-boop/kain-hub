@@ -1,9 +1,13 @@
 <?php
 
 use App\Http\HttpErrorMessages;
+use App\Http\Middleware\EnsureUserHasRole;
+use App\Http\Middleware\ForceHttps;
+use App\Http\Middleware\ResolveStoreFromSubdomain;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
@@ -22,16 +26,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->statefulApi();
 
         // HTTPS enforcement (only active in production)
-        $middleware->prepend(\App\Http\Middleware\ForceHttps::class);
+        $middleware->prepend(ForceHttps::class);
 
         // Customer auth is on the API/SPA — redirect unauthenticated
         // web visitors to the home page instead of a login route.
         $middleware->redirectGuestsTo('/');
 
         $middleware->alias([
-            'role' => \App\Http\Middleware\EnsureUserHasRole::class,
-            'store.subdomain' => \App\Http\Middleware\ResolveStoreFromSubdomain::class,
-            'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+            'role' => EnsureUserHasRole::class,
+            'store.subdomain' => ResolveStoreFromSubdomain::class,
+            'signed' => ValidateSignature::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

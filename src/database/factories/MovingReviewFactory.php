@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\MovingBooking;
+use App\Models\MovingReview;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MovingReview>
+ * @extends Factory<MovingReview>
  */
 class MovingReviewFactory extends Factory
 {

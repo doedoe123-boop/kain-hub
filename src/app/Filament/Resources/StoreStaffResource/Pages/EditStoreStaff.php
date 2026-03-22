@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\StoreStaffResource\Pages;
 
 use App\Filament\Resources\StoreStaffResource;
+use App\Models\User;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -22,7 +23,7 @@ class EditStoreStaff extends EditRecord
      */
     protected function afterSave(): void
     {
-        /** @var \App\Models\User $staffMember */
+        /** @var User $staffMember */
         $staffMember = $this->record;
 
         $permissions = $this->data['staff_permissions'] ?? [];

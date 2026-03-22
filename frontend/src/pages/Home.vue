@@ -173,7 +173,9 @@ onMounted(async () => {
     <AdBanner placement="home_banner" />
 
     <!-- ── 4. Sector picker ────────────────────────────────────────── -->
-    <section class="border-b border-slate-100 bg-white px-4 py-12 sm:px-6">
+    <section
+      class="border-b border-slate-100 bg-white px-4 py-12 sm:px-6 dark:bg-slate-900 dark:border-slate-800"
+    >
       <div class="mx-auto max-w-7xl">
         <div class="mb-7 text-center">
           <h2 class="text-2xl font-bold text-slate-900">
@@ -192,8 +194,8 @@ onMounted(async () => {
             class="group relative flex items-start gap-4 rounded-2xl border p-6 transition-all"
             :class="
               sector.soon
-                ? 'cursor-not-allowed bg-slate-50 opacity-60'
-                : 'cursor-pointer bg-white sector-card hover:-translate-y-0.5'
+                ? 'cursor-not-allowed bg-slate-50 opacity-60 dark:bg-slate-800'
+                : 'cursor-pointer bg-white sector-card hover:-translate-y-0.5 dark:bg-slate-800'
             "
           >
             <span
@@ -353,7 +355,7 @@ onMounted(async () => {
           v-for="store in featuredStores.slice(3)"
           :key="store.id"
           :to="`/stores/${store.slug}`"
-          class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white hover:-translate-y-0.5 transition-all store-card"
+          class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white hover:-translate-y-0.5 transition-all store-card dark:bg-slate-800 dark:border-slate-700"
         >
           <div class="aspect-[3/2] w-full overflow-hidden bg-slate-100">
             <img
@@ -381,7 +383,7 @@ onMounted(async () => {
               v-if="store.logo_url"
               :src="store.logo_url"
               :alt="store.name"
-              class="size-10 shrink-0 rounded-xl bg-slate-100 object-cover ring-2 ring-white shadow-sm"
+              class="size-10 shrink-0 rounded-xl bg-slate-100 object-cover ring-2 ring-white shadow-sm dark:ring-slate-700"
             />
             <div
               v-else
@@ -416,7 +418,7 @@ onMounted(async () => {
       </div>
       <div
         v-else-if="featuredStores.length === 0"
-        class="rounded-2xl border border-dashed border-slate-200 bg-white py-14 text-center"
+        class="rounded-2xl border border-dashed border-slate-200 bg-white py-14 text-center dark:bg-slate-900 dark:border-slate-700"
       >
         <p class="text-2xl mb-2">🏪</p>
         <p class="text-sm font-medium text-slate-500">
