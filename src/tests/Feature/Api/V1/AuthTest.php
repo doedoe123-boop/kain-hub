@@ -1,8 +1,11 @@
 <?php
 
 use App\Models\User;
+use App\Notifications\CustomerResetPasswordNotification;
 use App\UserRole;
+use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 
 // Strong password satisfying the API registration policy:
 // min 8 chars, uppercase + lowercase + number + symbol.
@@ -172,7 +175,7 @@ it('returns 200 for forgot-password even when email does not exist', function ()
 });
 
 it('sends a password reset notification for a real customer', function () {
-    \Illuminate\Support\Facades\Notification::fake();
+    Notification::fake();
 
     $user = User::factory()->create(['email' => 'reset@example.com']);
 
@@ -180,9 +183,9 @@ it('sends a password reset notification for a real customer', function () {
         'email' => 'reset@example.com',
     ])->assertOk();
 
-    \Illuminate\Support\Facades\Notification::assertSentTo(
+    Notification::assertSentTo(
         $user,
-        \App\Notifications\CustomerResetPasswordNotification::class,
+        CustomerResetPasswordNotification::class,
     );
 });
 
@@ -205,7 +208,7 @@ it('rejects forgot-password with missing email', function () {
 it('resets the password with a valid token and returns a new token', function () {
     $user = User::factory()->create(['email' => 'reset-me@example.com']);
 
-    $token = app(\Illuminate\Auth\Passwords\PasswordBrokerManager::class)
+    $token = app(PasswordBrokerManager::class)
         ->broker()
         ->createToken($user);
 
@@ -235,7 +238,7 @@ it('rejects reset-password with an invalid token', function () {
 
 it('rejects reset-password with a weak new password', function () {
     $user = User::factory()->create(['email' => 'weak-reset@example.com']);
-    $token = app(\Illuminate\Auth\Passwords\PasswordBrokerManager::class)
+    $token = app(PasswordBrokerManager::class)
         ->broker()
         ->createToken($user);
 
@@ -251,7 +254,7 @@ it('rejects reset-password with a weak new password', function () {
 
 it('rejects reset-password when passwords do not match', function () {
     $user = User::factory()->create(['email' => 'mismatch-reset@example.com']);
-    $token = app(\Illuminate\Auth\Passwords\PasswordBrokerManager::class)
+    $token = app(PasswordBrokerManager::class)
         ->broker()
         ->createToken($user);
 

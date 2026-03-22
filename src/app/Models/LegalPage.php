@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\LegalPageFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -14,15 +16,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $content
  * @property string $type
  * @property bool $is_published
- * @property ?\Illuminate\Support\Carbon $published_at
- * @property ?\Illuminate\Support\Carbon $last_reviewed_at
+ * @property ?Carbon $published_at
+ * @property ?Carbon $last_reviewed_at
  * @property ?int $updated_by
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class LegalPage extends Model
 {
-    /** @use HasFactory<\Database\Factories\LegalPageFactory> */
+    /** @use HasFactory<LegalPageFactory> */
     use HasFactory;
 
     /** @var list<string> */

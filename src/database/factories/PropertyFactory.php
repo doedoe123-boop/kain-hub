@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\ListingType;
+use App\Models\Property;
 use App\Models\Store;
 use App\PropertyStatus;
 use App\PropertyType;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Property>
+ * @extends Factory<Property>
  */
 class PropertyFactory extends Factory
 {

@@ -52,10 +52,10 @@ function isActive(item) {
 </script>
 
 <template>
-  <div class="bg-slate-50">
+  <div class="bg-slate-50 dark:bg-slate-950 transition-colors">
     <!-- Mobile / tablet tab strip (hidden on lg+) -->
     <div
-      class="sticky top-0 z-10 border-b border-slate-200 bg-white shadow-sm lg:hidden"
+      class="sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm lg:hidden"
     >
       <div class="overflow-x-auto">
         <div class="flex min-w-max px-4 sm:px-6">
@@ -81,11 +81,11 @@ function isActive(item) {
     <div class="mx-auto max-w-7xl lg:flex">
       <!-- Desktop sidebar -->
       <aside
-        class="hidden w-64 shrink-0 border-r border-slate-200 bg-white p-6 lg:block"
+        class="hidden w-64 shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 lg:block"
         style="min-height: calc(100vh - 64px)"
       >
         <!-- User card -->
-        <div class="mb-5 flex items-center gap-3 rounded-2xl bg-slate-50 p-3">
+        <div class="mb-5 flex items-center gap-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 p-3">
           <div
             class="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-600 text-sm font-bold text-white"
           >

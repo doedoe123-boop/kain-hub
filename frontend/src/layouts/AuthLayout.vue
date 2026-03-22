@@ -133,7 +133,7 @@ const stats = [
     </div>
 
     <!-- ─── Right: form area ──────────────────────────────────────────── -->
-    <div class="flex flex-1 flex-col items-center justify-center bg-white px-6 py-12 lg:px-16">
+    <div class="flex flex-1 flex-col items-center justify-center bg-white dark:bg-slate-900 px-6 py-12 lg:px-16 transition-colors">
       <!-- Mobile-only compact logo -->
       <RouterLink to="/" class="mb-8 flex items-center gap-2 lg:hidden group">
         <span class="flex size-8 items-center justify-center rounded-lg bg-brand-500 text-sm font-bold text-white">

@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\PropertyAnalyticFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Daily analytics snapshot for a property listing.
@@ -13,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $property_id
  * @property int $store_id
- * @property \Illuminate\Support\Carbon $date
+ * @property Carbon $date
  * @property int $views
  * @property int $unique_views
  * @property int $inquiries
@@ -23,7 +25,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class PropertyAnalytic extends Model
 {
-    /** @use HasFactory<\Database\Factories\PropertyAnalyticFactory> */
+    /** @use HasFactory<PropertyAnalyticFactory> */
     use HasFactory;
 
     /** @var list<string> */

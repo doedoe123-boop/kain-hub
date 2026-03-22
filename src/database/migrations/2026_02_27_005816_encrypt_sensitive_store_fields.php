@@ -76,7 +76,7 @@ return new class extends Migration
                 if ($store->id_number) {
                     try {
                         $updates['id_number'] = Crypt::decryptString($store->id_number);
-                    } catch (\Exception) {
+                    } catch (Exception) {
                         // Already plaintext
                     }
                 }
@@ -84,7 +84,7 @@ return new class extends Migration
                 if ($store->business_permit) {
                     try {
                         $updates['business_permit'] = Crypt::decryptString($store->business_permit);
-                    } catch (\Exception) {
+                    } catch (Exception) {
                         // Already plaintext
                     }
                 }
@@ -92,7 +92,7 @@ return new class extends Migration
                 if ($store->compliance_documents) {
                     try {
                         $updates['compliance_documents'] = json_encode(Crypt::decrypt($store->compliance_documents));
-                    } catch (\Exception) {
+                    } catch (Exception) {
                         // Already plaintext
                     }
                 }

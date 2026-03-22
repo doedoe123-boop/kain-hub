@@ -467,7 +467,9 @@ async function submitPropertyReview(payload) {
       </div>
 
       <!-- ─ Breadcrumb ─────────────────────────────────────────────────── -->
-      <div class="border-b border-slate-100 bg-white">
+      <div
+        class="border-b border-slate-100 bg-white dark:bg-slate-900 dark:border-slate-800"
+      >
         <div class="mx-auto max-w-6xl px-4 sm:px-6">
           <nav
             class="flex items-center gap-1.5 py-3 text-xs text-slate-400"
@@ -596,7 +598,7 @@ async function submitPropertyReview(payload) {
             <!-- Pag-IBIG monthly estimate -->
             <div
               v-if="!isRental && monthlyEstimate"
-              class="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-4 py-3 text-sm shadow-sm"
+              class="flex items-center gap-2 rounded-xl border border-slate-100 bg-white px-4 py-3 text-sm shadow-sm dark:bg-slate-800 dark:border-slate-700"
             >
               <span class="text-base">🏦</span>
               <span class="text-slate-600">
@@ -630,7 +632,7 @@ async function submitPropertyReview(payload) {
               <!-- Large: Floor Area -->
               <div
                 v-if="property.floor_area"
-                class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/60 shadow-sm"
+                class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/60 shadow-sm dark:bg-slate-800 dark:ring-slate-700"
               >
                 <p
                   class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1"
@@ -647,7 +649,7 @@ async function submitPropertyReview(payload) {
               <!-- Large: Bedrooms -->
               <div
                 v-if="property.bedrooms != null"
-                class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/60 shadow-sm"
+                class="rounded-2xl bg-white p-5 ring-1 ring-slate-200/60 shadow-sm dark:bg-slate-800 dark:ring-slate-700"
               >
                 <p
                   class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1"
@@ -664,7 +666,7 @@ async function submitPropertyReview(payload) {
               <!-- Small: Bathrooms -->
               <div
                 v-if="property.bathrooms != null"
-                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm"
+                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm dark:bg-slate-800 dark:ring-slate-700"
               >
                 <p
                   class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5"
@@ -678,7 +680,7 @@ async function submitPropertyReview(payload) {
               <!-- Small: Garage -->
               <div
                 v-if="property.garage_spaces != null"
-                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm"
+                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm dark:bg-slate-800 dark:ring-slate-700"
               >
                 <p
                   class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5"
@@ -692,7 +694,7 @@ async function submitPropertyReview(payload) {
               <!-- Small: Lot Area -->
               <div
                 v-if="property.lot_area && !isRental"
-                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm"
+                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm dark:bg-slate-800 dark:ring-slate-700"
               >
                 <p
                   class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5"
@@ -707,7 +709,7 @@ async function submitPropertyReview(payload) {
               <!-- Small: Year Built -->
               <div
                 v-if="property.year_built && !isRental"
-                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm"
+                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm dark:bg-slate-800 dark:ring-slate-700"
               >
                 <p
                   class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5"
@@ -721,7 +723,7 @@ async function submitPropertyReview(payload) {
               <!-- Small: Floors -->
               <div
                 v-if="property.floors && !isRental"
-                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm"
+                class="rounded-2xl bg-white p-4 ring-1 ring-slate-200/60 shadow-sm dark:bg-slate-800 dark:ring-slate-700"
               >
                 <p
                   class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-0.5"
@@ -754,7 +756,7 @@ async function submitPropertyReview(payload) {
                 <div
                   v-for="feature in property.features"
                   :key="feature"
-                  class="flex items-center gap-2 rounded-xl bg-white px-3 py-2.5 text-sm font-medium text-slate-700 ring-1 ring-slate-100 shadow-sm"
+                  class="flex items-center gap-2 rounded-xl bg-white px-3 py-2.5 text-sm font-medium text-slate-700 ring-1 ring-slate-100 shadow-sm dark:bg-slate-800 dark:ring-slate-700 dark:text-slate-200"
                 >
                   <CheckCircleIcon class="size-4 shrink-0 text-emerald-500" />
                   {{ feature }}
@@ -768,7 +770,7 @@ async function submitPropertyReview(payload) {
                 Property Details
               </h2>
               <div
-                class="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700"
               >
                 <table class="w-full text-sm">
                   <tbody class="divide-y divide-slate-100">
@@ -888,7 +890,7 @@ async function submitPropertyReview(payload) {
                   :href="plan.url || plan"
                   target="_blank"
                   rel="noopener"
-                  class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+                  class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
                   <DocumentArrowDownIcon
                     class="size-5 shrink-0 text-slate-400"
@@ -908,7 +910,7 @@ async function submitPropertyReview(payload) {
                   :href="doc.url || doc"
                   target="_blank"
                   rel="noopener"
-                  class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+                  class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-700"
                 >
                   <DocumentArrowDownIcon
                     class="size-5 shrink-0 text-slate-400"
@@ -940,7 +942,7 @@ async function submitPropertyReview(payload) {
                 <li
                   v-for="oh in openHouses"
                   :key="oh.id"
-                  class="flex items-start justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-100"
+                  class="flex items-start justify-between gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-100 dark:bg-slate-800 dark:ring-slate-700"
                 >
                   <div class="flex flex-col gap-1">
                     <div class="flex items-center gap-2">
@@ -993,7 +995,7 @@ async function submitPropertyReview(payload) {
                   @click.self="closeRsvpModal"
                 >
                   <div
-                    class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+                    class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-900"
                   >
                     <h3 class="mb-1 text-lg font-bold text-slate-900">
                       RSVP for Open House
@@ -1113,7 +1115,7 @@ async function submitPropertyReview(payload) {
                 <li
                   v-for="place in property.nearby_places"
                   :key="place.name ?? place"
-                  class="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm text-slate-700 shadow-sm ring-1 ring-slate-100"
+                  class="flex items-center justify-between rounded-xl bg-white px-4 py-3 text-sm text-slate-700 shadow-sm ring-1 ring-slate-100 dark:bg-slate-800 dark:ring-slate-700 dark:text-slate-200"
                 >
                   <div class="flex items-center gap-2">
                     <MapPinIcon class="size-4 shrink-0 text-emerald-500" />
@@ -1158,7 +1160,7 @@ async function submitPropertyReview(payload) {
                   </div>
 
                   <div
-                    class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm"
+                    class="rounded-xl border border-slate-100 bg-white p-4 shadow-sm dark:bg-slate-800 dark:border-slate-700"
                   >
                     <!-- Transport mode badge -->
                     <div class="mb-1 flex items-center gap-2">
@@ -1323,7 +1325,7 @@ async function submitPropertyReview(payload) {
                 >Share this listing</span
               >
               <button
-                class="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-colors hover:bg-slate-50"
+                class="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-colors hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700"
                 @click="
                   copyLink();
                   trackEvent('share_click');
@@ -1335,7 +1337,7 @@ async function submitPropertyReview(payload) {
                 :href="`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(route.fullPath)}`"
                 target="_blank"
                 rel="noopener"
-                class="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-colors hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600"
+                class="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm transition-colors hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300"
                 @click="trackEvent('share_click')"
               >
                 <svg class="size-4" fill="currentColor" viewBox="0 0 24 24">
@@ -1352,7 +1354,7 @@ async function submitPropertyReview(payload) {
           <div class="space-y-4 lg:sticky lg:top-24 self-start">
             <!-- Agent / Landlord Inquiry Card -->
             <div
-              class="rounded-3xl border border-slate-100 bg-white p-7 shadow-2xl shadow-slate-200/50"
+              class="rounded-3xl border border-slate-100 bg-white p-7 shadow-2xl shadow-slate-200/50 dark:bg-slate-800 dark:border-slate-700"
             >
               <!-- Agent / Landlord Header -->
               <div
@@ -1551,7 +1553,7 @@ async function submitPropertyReview(payload) {
                     v-model="quickMessage"
                     rows="2"
                     placeholder="I'd like to schedule a viewing…"
-                    class="w-full resize-none rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                    class="w-full resize-none rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20 dark:bg-slate-700/60 dark:text-slate-200 dark:placeholder-slate-500 dark:focus:bg-slate-700"
                   />
 
                   <div
@@ -1620,26 +1622,26 @@ async function submitPropertyReview(payload) {
                       required
                       type="text"
                       placeholder="Full Name *"
-                      class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                      class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20 dark:bg-slate-700/60 dark:text-slate-200 dark:placeholder-slate-500 dark:focus:bg-slate-700"
                     />
                     <input
                       v-model="inquiry.email"
                       required
                       type="email"
                       placeholder="Email Address *"
-                      class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                      class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20 dark:bg-slate-700/60 dark:text-slate-200 dark:placeholder-slate-500 dark:focus:bg-slate-700"
                     />
                     <input
                       v-model="inquiry.phone"
                       type="tel"
                       placeholder="Phone Number"
-                      class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                      class="w-full rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20 dark:bg-slate-700/60 dark:text-slate-200 dark:placeholder-slate-500 dark:focus:bg-slate-700"
                     />
                     <textarea
                       v-model="inquiry.message"
                       rows="3"
                       placeholder="I'm interested in this property. Please contact me for a viewing."
-                      class="w-full resize-none rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                      class="w-full resize-none rounded-xl border-none bg-slate-50 px-4 py-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-500/20 dark:bg-slate-700/60 dark:text-slate-200 dark:placeholder-slate-500 dark:focus:bg-slate-700"
                     />
 
                     <div
@@ -1706,7 +1708,7 @@ async function submitPropertyReview(payload) {
 
             <!-- Share mini card -->
             <div
-              class="rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-sm"
+              class="rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-sm dark:bg-slate-800 dark:border-slate-700"
             >
               <p
                 class="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400"

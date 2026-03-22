@@ -52,7 +52,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50">
+  <div class="min-h-screen bg-slate-50 dark:bg-slate-950">
     <!-- Loading skeleton -->
     <div
       v-if="loading"
@@ -139,7 +139,7 @@ onMounted(async () => {
                   v-if="development.logo_url"
                   :src="development.logo_url"
                   :alt="development.name"
-                  class="size-16 shrink-0 rounded-2xl bg-white object-contain p-2 shadow-sm ring-1 ring-slate-200"
+                  class="size-16 shrink-0 rounded-2xl bg-white object-contain p-2 shadow-sm ring-1 ring-slate-200 dark:bg-slate-700 dark:ring-slate-600"
                 />
                 <div>
                   <h1 class="text-3xl font-extrabold text-slate-900">
@@ -177,7 +177,7 @@ onMounted(async () => {
                 <span
                   v-for="amenity in development.amenities"
                   :key="amenity"
-                  class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700"
+                  class="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300"
                 >
                   {{ amenity }}
                 </span>
@@ -209,7 +209,7 @@ onMounted(async () => {
                   v-for="property in development.properties"
                   :key="property.id"
                   :to="`/properties/${property.slug}`"
-                  class="group flex gap-3 overflow-hidden rounded-2xl border bg-white p-3 shadow-sm transition-shadow hover:shadow-md"
+                  class="group flex gap-3 overflow-hidden rounded-2xl border bg-white p-3 shadow-sm transition-shadow hover:shadow-md dark:bg-slate-800 dark:border-slate-700"
                 >
                   <div
                     class="aspect-square size-20 shrink-0 overflow-hidden rounded-xl bg-slate-100"
@@ -252,7 +252,7 @@ onMounted(async () => {
           <!-- RIGHT sidebar -->
           <div class="space-y-4 lg:sticky lg:top-24 self-start">
             <div
-              class="rounded-2xl border border-slate-100 bg-white p-5 shadow-lg"
+              class="rounded-2xl border border-slate-100 bg-white p-5 shadow-lg dark:bg-slate-800 dark:border-slate-700"
             >
               <h3 class="mb-4 text-base font-bold text-slate-900">
                 Project Details

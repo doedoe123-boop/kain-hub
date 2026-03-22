@@ -5,12 +5,13 @@ namespace Database\Factories;
 use App\AdStatus;
 use App\CouponScope;
 use App\CouponType;
+use App\Models\Coupon;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Coupon>
+ * @extends Factory<Coupon>
  */
 class CouponFactory extends Factory
 {

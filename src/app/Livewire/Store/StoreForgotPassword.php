@@ -5,6 +5,7 @@ namespace App\Livewire\Store;
 use App\Models\Store;
 use App\Notifications\StoreResetPasswordNotification;
 use Illuminate\Support\Facades\Password;
+use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -85,7 +86,7 @@ class StoreForgotPassword extends Component
         return Store::where('slug', $slug)->first();
     }
 
-    public function render(): \Illuminate\View\View
+    public function render(): View
     {
         return view('livewire.store.store-forgot-password');
     }

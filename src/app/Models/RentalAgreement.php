@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\RentalAgreementFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -17,19 +19,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ?string $tenant_phone
  * @property int $monthly_rent Stored in cents
  * @property ?int $security_deposit Stored in cents
- * @property \Illuminate\Support\Carbon $move_in_date
+ * @property Carbon $move_in_date
  * @property ?int $lease_term_months
  * @property ?string $notes
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @property ?\Illuminate\Support\Carbon $deleted_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property ?Carbon $deleted_at
  * @property-read Property $property
  * @property-read Store $store
  * @property-read ?User $tenantUser
  */
 class RentalAgreement extends Model
 {
-    /** @use HasFactory<\Database\Factories\RentalAgreementFactory> */
+    /** @use HasFactory<RentalAgreementFactory> */
     use HasFactory;
 
     use SoftDeletes;

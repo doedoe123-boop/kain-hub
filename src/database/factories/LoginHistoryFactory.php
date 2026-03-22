@@ -2,15 +2,16 @@
 
 namespace Database\Factories;
 
+use App\Models\LoginHistory;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\LoginHistory>
+ * @extends Factory<LoginHistory>
  */
 class LoginHistoryFactory extends Factory
 {
-    protected $model = \App\Models\LoginHistory::class;
+    protected $model = LoginHistory::class;
 
     /**
      * Define the model's default state.

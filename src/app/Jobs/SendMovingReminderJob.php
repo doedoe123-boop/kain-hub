@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Mail\MovingReminderMail;
 use App\Models\MovingBooking;
 use App\MovingBookingStatus;
 use Illuminate\Bus\Queueable;
@@ -35,6 +36,6 @@ class SendMovingReminderJob implements ShouldQueue
             return;
         }
 
-        Mail::to($customer)->send(new \App\Mail\MovingReminderMail($this->booking));
+        Mail::to($customer)->send(new MovingReminderMail($this->booking));
     }
 }

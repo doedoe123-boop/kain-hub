@@ -75,6 +75,28 @@ const routes = [
         name: "movers.show",
         component: () => import("@/pages/movers/MoverDetail.vue"),
       },
+      // ─── Content pages ────────────────────────────────────────────
+      {
+        path: "about",
+        name: "about",
+        component: () => import("@/pages/AboutPage.vue"),
+      },
+      {
+        path: "faq",
+        name: "faq",
+        component: () => import("@/pages/FaqPage.vue"),
+      },
+      // ─── Email verification (accessible to logged-in users) ───────
+      {
+        path: "email/verify",
+        name: "email.verify",
+        component: () => import("@/pages/auth/EmailVerify.vue"),
+      },
+      {
+        path: "email/verified",
+        name: "email.verified",
+        component: () => import("@/pages/auth/EmailVerify.vue"),
+      },
     ],
   },
 

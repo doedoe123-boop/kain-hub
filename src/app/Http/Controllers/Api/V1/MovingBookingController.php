@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\CreateMovingBookingRequest;
 use App\Http\Requests\Api\V1\UpdateMovingBookingStatusRequest;
 use App\Models\MovingBooking;
+use App\MovingBookingStatus;
 use App\Services\MovingBookingService;
 use Illuminate\Http\JsonResponse;
 
@@ -46,7 +47,7 @@ class MovingBookingController extends Controller
     {
         $this->authorize('updateStatus', $movingBooking);
 
-        $updated = $this->service->updateStatus($movingBooking, $request->enum('status', \App\MovingBookingStatus::class));
+        $updated = $this->service->updateStatus($movingBooking, $request->enum('status', MovingBookingStatus::class));
 
         return response()->json($updated);
     }
@@ -55,7 +56,7 @@ class MovingBookingController extends Controller
     {
         $this->authorize('cancel', $movingBooking);
 
-        $cancelled = $this->service->updateStatus($movingBooking, \App\MovingBookingStatus::Cancelled);
+        $cancelled = $this->service->updateStatus($movingBooking, MovingBookingStatus::Cancelled);
 
         return response()->json($cancelled);
     }

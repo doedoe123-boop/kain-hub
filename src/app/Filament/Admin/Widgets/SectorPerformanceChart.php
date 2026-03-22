@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Widgets;
 
 use App\Models\Order;
 use App\Models\Sector;
+use App\Models\Store;
 use App\OrderStatus;
 use Filament\Widgets\ChartWidget;
 
@@ -38,7 +39,7 @@ class SectorPerformanceChart extends ChartWidget
         $revenueColors = [];
 
         foreach (Sector::active()->get() as $sector) {
-            $storeIds = \App\Models\Store::query()
+            $storeIds = Store::query()
                 ->where('sector', $sector->slug)
                 ->pluck('id');
 

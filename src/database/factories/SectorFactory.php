@@ -2,16 +2,17 @@
 
 namespace Database\Factories;
 
+use App\Models\Sector;
 use App\SectorTemplate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Sector>
+ * @extends Factory<Sector>
  */
 class SectorFactory extends Factory
 {
-    protected $model = \App\Models\Sector::class;
+    protected $model = Sector::class;
 
     /**
      * Define the model's default state.

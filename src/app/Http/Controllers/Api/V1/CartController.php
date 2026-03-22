@@ -8,6 +8,7 @@ use App\Http\Requests\Api\V1\SetCartAddressRequest;
 use App\Http\Requests\Api\V1\SetShippingOptionRequest;
 use App\Http\Requests\Api\V1\UpdateCartLineRequest;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Lunar\DataTypes\ShippingOption;
 use Lunar\Facades\CartSession;
 use Lunar\Models\Cart;
@@ -118,7 +119,7 @@ class CartController extends Controller
      */
     public function shippingOptions(): JsonResponse
     {
-        /** @var \Illuminate\Support\Collection<ShippingOption> $options */
+        /** @var Collection<ShippingOption> $options */
         $options = CartSession::getShippingOptions();
 
         return response()->json(

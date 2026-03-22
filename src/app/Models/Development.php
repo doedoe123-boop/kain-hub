@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\DevelopmentFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -43,11 +45,11 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property ?string $website_url
  * @property ?string $video_url
  * @property bool $is_featured
- * @property ?\Illuminate\Support\Carbon $published_at
+ * @property ?Carbon $published_at
  */
 class Development extends Model implements HasMedia
 {
-    /** @use HasFactory<\Database\Factories\DevelopmentFactory> */
+    /** @use HasFactory<DevelopmentFactory> */
     use HasFactory;
 
     use InteractsWithMedia;

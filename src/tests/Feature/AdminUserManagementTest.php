@@ -3,6 +3,7 @@
 use App\Models\LoginHistory;
 use App\Models\Store;
 use App\Models\User;
+use App\StoreStatus;
 
 describe('User Model — Disable/Enable', function () {
 
@@ -77,10 +78,10 @@ describe('User Policy', function () {
 describe('Store Model — scopeApproved', function () {
 
     it('returns only approved stores', function () {
-        Store::factory()->create(['status' => \App\StoreStatus::Approved]);
-        Store::factory()->create(['status' => \App\StoreStatus::Approved]);
-        Store::factory()->create(['status' => \App\StoreStatus::Pending]);
-        Store::factory()->create(['status' => \App\StoreStatus::Suspended]);
+        Store::factory()->create(['status' => StoreStatus::Approved]);
+        Store::factory()->create(['status' => StoreStatus::Approved]);
+        Store::factory()->create(['status' => StoreStatus::Pending]);
+        Store::factory()->create(['status' => StoreStatus::Suspended]);
 
         expect(Store::approved()->count())->toBe(2);
     });

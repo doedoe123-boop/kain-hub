@@ -5,9 +5,11 @@ namespace App\Models;
 use App\TicketCategory;
 use App\TicketPriority;
 use App\TicketStatus;
+use Database\Factories\SupportTicketFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -20,13 +22,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property TicketStatus $status
  * @property ?string $admin_notes
  * @property ?int $assigned_to
- * @property ?\Illuminate\Support\Carbon $resolved_at
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
+ * @property ?Carbon $resolved_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  */
 class SupportTicket extends Model
 {
-    /** @use HasFactory<\Database\Factories\SupportTicketFactory> */
+    /** @use HasFactory<SupportTicketFactory> */
     use HasFactory;
 
     /**

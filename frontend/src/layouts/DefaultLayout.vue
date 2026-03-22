@@ -6,13 +6,16 @@ import Navbar from "@/components/Navbar.vue";
 import Footer from "@/components/Footer.vue";
 import CartDrawer from "@/components/CartDrawer.vue";
 import AnnouncementBar from "@/components/AnnouncementBar.vue";
+import CityBanner from "@/components/CityBanner.vue";
 import { useCartStore } from "@/stores/cart";
 import { useAuthStore } from "@/stores/auth";
 import { useSeoStore } from "@/stores/seo";
+import { useCityStore } from "@/stores/city";
 
 const cart = useCartStore();
 const auth = useAuthStore();
 const seo = useSeoStore();
+const cityStore = useCityStore();
 
 // Set the site-wide title template so every page gets "Title | SiteName".
 // Must be called at the top level of setup(), not inside a lifecycle hook.
@@ -26,6 +29,9 @@ useHead({
 // this component mounts, so auth.isLoggedIn is reliable here.
 onMounted(async () => {
   if (auth.isLoggedIn) cart.fetch();
+
+  // Attempt silent geolocation detection on first visit
+  cityStore.detectCity();
 
   await seo.fetchSettings();
 
@@ -85,8 +91,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col bg-slate-50">
+  <div class="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950 transition-colors">
     <AnnouncementBar />
+    <CityBanner />
     <Navbar />
 
     <main class="flex-1">

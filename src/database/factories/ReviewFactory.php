@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Review;
 use App\Models\Store;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Lunar\Models\Product;
 
 /**
  * @extends Factory<Review>
@@ -86,7 +87,7 @@ class ReviewFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'store_id' => $storeId,
-            'reviewable_type' => \Lunar\Models\Product::class,
+            'reviewable_type' => Product::class,
             'reviewable_id' => $productId,
         ]);
     }

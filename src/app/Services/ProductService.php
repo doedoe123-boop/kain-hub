@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Review;
 use App\Models\Store;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Lunar\Models\Product;
 
@@ -75,7 +77,7 @@ class ProductService
      *
      * @param  array{search?: string}  $params
      */
-    private function baseQuery(array $params = []): \Illuminate\Database\Eloquent\Builder
+    private function baseQuery(array $params = []): Builder
     {
         $query = Product::query()
             ->with(['variants.prices.currency', 'media'])
@@ -145,8 +147,8 @@ class ProductService
             ] : null;
         }
 
-        $avgRatingQuery = \App\Models\Review::query()
-            ->where('reviewable_type', \Lunar\Models\Product::class)
+        $avgRatingQuery = Review::query()
+            ->where('reviewable_type', Product::class)
             ->where('reviewable_id', $product->id)
             ->where('is_published', true);
 

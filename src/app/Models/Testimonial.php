@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Database\Factories\TestimonialFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * A client testimonial / review for a store or specific property.
@@ -21,12 +23,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $is_featured
  * @property bool $is_published
  * @property ?string $agent_reply
- * @property ?\Illuminate\Support\Carbon $replied_at
- * @property ?\Illuminate\Support\Carbon $published_at
+ * @property ?Carbon $replied_at
+ * @property ?Carbon $published_at
  */
 class Testimonial extends Model
 {
-    /** @use HasFactory<\Database\Factories\TestimonialFactory> */
+    /** @use HasFactory<TestimonialFactory> */
     use HasFactory;
 
     /** @var list<string> */

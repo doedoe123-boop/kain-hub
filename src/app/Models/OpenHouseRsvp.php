@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\OpenHouseRsvpFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class OpenHouseRsvp extends Model
 {
-    /** @use HasFactory<\Database\Factories\OpenHouseRsvpFactory> */
+    /** @use HasFactory<OpenHouseRsvpFactory> */
     use HasFactory;
 
     /** @var list<string> */

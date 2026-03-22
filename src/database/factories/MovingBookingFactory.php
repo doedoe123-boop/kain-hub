@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\MovingBooking;
 use App\Models\Store;
 use App\Models\User;
 use App\MovingBookingStatus;
@@ -9,7 +10,7 @@ use App\PaymentStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\MovingBooking>
+ * @extends Factory<MovingBooking>
  */
 class MovingBookingFactory extends Factory
 {

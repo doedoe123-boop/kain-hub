@@ -68,7 +68,7 @@ onMounted(async () => {
 <template>
   <section
     v-if="loaded && promotions.length > 0"
-    class="border-b border-slate-100 bg-white px-4 py-12 sm:px-6"
+    class="border-b border-slate-100 bg-white px-4 py-12 sm:px-6 dark:bg-slate-900 dark:border-slate-800"
   >
     <div class="mx-auto max-w-7xl">
       <div class="mb-7 flex items-end justify-between">
@@ -92,7 +92,7 @@ onMounted(async () => {
         <div
           v-for="promo in promotions"
           :key="promo.id"
-          class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:-translate-y-0.5 promo-card"
+          class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:-translate-y-0.5 promo-card dark:bg-slate-800 dark:border-slate-700"
         >
           <!-- Type icon -->
           <span
@@ -110,7 +110,10 @@ onMounted(async () => {
             {{ discountLabel(promo) }}
           </p>
 
-          <div class="text-sm font-semibold text-slate-700 line-clamp-1" v-html="promo.name"></div>
+          <div
+            class="text-sm font-semibold text-slate-700 line-clamp-1"
+            v-html="promo.name"
+          ></div>
           <div
             v-if="promo.description"
             class="mt-1 text-xs text-slate-500 line-clamp-2"

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\SupportTicket;
 use App\Models\User;
 use App\TicketCategory;
 use App\TicketPriority;
@@ -9,7 +10,7 @@ use App\TicketStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SupportTicket>
+ * @extends Factory<SupportTicket>
  */
 class SupportTicketFactory extends Factory
 {

@@ -15,6 +15,7 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 #[Layout('components.layouts.guest-fullwidth')]
@@ -84,7 +85,7 @@ class StoreOwnerRegistration extends Component
 
     // --- Step 5: Sector Compliance Documents ---
 
-    /** @var array<string, \Livewire\Features\SupportFileUploads\TemporaryUploadedFile|null> */
+    /** @var array<string, TemporaryUploadedFile|null> */
     public array $complianceFiles = [];
 
     /**

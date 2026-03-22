@@ -5,6 +5,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Models\User;
 use App\UserRole;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -13,6 +14,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
@@ -74,7 +76,7 @@ class UserResource extends Resource
                             }),
                         Infolists\Components\TextEntry::make('email_verified_at')
                             ->label('Email Verified')
-                            ->formatStateUsing(fn ($state): string => $state instanceof \DateTimeInterface ? \Carbon\Carbon::instance($state)->format('M d, Y H:i') : 'Not verified'),
+                            ->formatStateUsing(fn ($state): string => $state instanceof \DateTimeInterface ? Carbon::instance($state)->format('M d, Y H:i') : 'Not verified'),
                         Infolists\Components\TextEntry::make('created_at')
                             ->dateTime(),
                     ])->columns(2),
@@ -169,7 +171,7 @@ class UserResource extends Resource
             ->defaultSort('created_at', 'desc');
     }
 
-    public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([SoftDeletingScope::class]);

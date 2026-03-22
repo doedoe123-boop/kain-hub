@@ -60,7 +60,7 @@ describe('InquiryStatusUpdatedNotification', function () {
         $inquiry = PropertyInquiry::factory()->create();
         $notif = new InquiryStatusUpdatedNotification($inquiry);
 
-        expect($notif->via(new \stdClass))->toBe(['database']);
+        expect($notif->via(new stdClass))->toBe(['database']);
     });
 
     it('dispatches to the user when inquiry status changes', function () {

@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\LegalPage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\LegalPage>
+ * @extends Factory<LegalPage>
  */
 class LegalPageFactory extends Factory
 {

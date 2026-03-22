@@ -14,9 +14,7 @@ onMounted(() => cart.fetch());
     <div class="mb-8">
       <h1 class="text-2xl font-bold text-slate-900">Shopping Cart</h1>
       <p v-if="cart.lineCount > 0" class="mt-1 text-sm text-slate-500">
-        {{ cart.totalQuantity }} item{{
-          cart.totalQuantity !== 1 ? "s" : ""
-        }}
+        {{ cart.totalQuantity }} item{{ cart.totalQuantity !== 1 ? "s" : "" }}
         in your cart
       </p>
     </div>
@@ -24,7 +22,7 @@ onMounted(() => cart.fetch());
     <!-- Empty state -->
     <div
       v-if="cart.lineCount === 0"
-      class="rounded-2xl border border-dashed border-slate-300 bg-white py-20 text-center"
+      class="rounded-2xl border border-dashed border-slate-300 bg-white py-20 text-center dark:bg-slate-900 dark:border-slate-700"
     >
       <div
         class="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-slate-100"
@@ -47,7 +45,7 @@ onMounted(() => cart.fetch());
       <!-- Line items -->
       <div class="lg:col-span-2">
         <ul
-          class="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+          class="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:bg-slate-800 dark:border-slate-700 dark:divide-slate-700"
         >
           <li
             v-for="line in cart.cart?.lines"
@@ -69,7 +67,7 @@ onMounted(() => cart.fetch());
               <div class="flex items-center justify-between mt-2">
                 <!-- Qty controls -->
                 <div
-                  class="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 p-0.5"
+                  class="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 p-0.5 dark:bg-slate-700 dark:border-slate-600"
                 >
                   <button
                     type="button"
@@ -113,7 +111,7 @@ onMounted(() => cart.fetch());
       <!-- Order summary -->
       <div class="lg:col-span-1">
         <div
-          class="sticky top-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+          class="sticky top-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-800 dark:border-slate-700"
         >
           <h2 class="mb-4 text-base font-semibold text-slate-900">
             Order summary

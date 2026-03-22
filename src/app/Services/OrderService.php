@@ -5,9 +5,12 @@ namespace App\Services;
 use App\Mail\NewOrderReceived;
 use App\Models\Order;
 use App\Models\Store;
+use App\Models\User;
 use App\Notifications\OrderPlacedNotification;
 use App\Notifications\OrderStatusUpdated;
 use App\OrderStatus;
+use App\PaymentStatus;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -214,9 +217,9 @@ class OrderService
      * - Store owners see only their store's orders.
      * - Customers see only their own orders.
      *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
-    public function listForUser(\App\Models\User $user, int $perPage = 15)
+    public function listForUser(User $user, int $perPage = 15)
     {
         $query = Order::query()->with('store');
 
@@ -331,7 +334,7 @@ class OrderService
 
         $order->update([
             'status' => OrderStatus::Confirmed->value,
-            'payment_status' => \App\PaymentStatus::Paid->value,
+            'payment_status' => PaymentStatus::Paid->value,
             'paid_at' => now(),
         ]);
         $order->refresh();
@@ -354,7 +357,7 @@ class OrderService
 
         $order->update([
             'status' => OrderStatus::PaymentFailed->value,
-            'payment_status' => \App\PaymentStatus::Failed->value,
+            'payment_status' => PaymentStatus::Failed->value,
         ]);
         $order->refresh();
 

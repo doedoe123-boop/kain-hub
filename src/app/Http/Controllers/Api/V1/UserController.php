@@ -11,6 +11,7 @@ use App\Models\RentalAgreement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -86,7 +87,7 @@ class UserController extends Controller
     /**
      * List the authenticated user's rental agreements.
      */
-    public function rentalAgreements(Request $request): \Illuminate\Http\Resources\Json\AnonymousResourceCollection|\Illuminate\Pagination\LengthAwarePaginator
+    public function rentalAgreements(Request $request): AnonymousResourceCollection|LengthAwarePaginator
     {
         $agreements = RentalAgreement::query()
             ->where('tenant_user_id', $request->user()->id)

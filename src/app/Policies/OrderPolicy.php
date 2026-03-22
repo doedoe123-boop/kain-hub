@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Order;
 use App\Models\User;
+use App\OrderStatus;
 
 /**
  * @see /skills/order-processing.md
@@ -98,7 +99,7 @@ class OrderPolicy
 
         // Customers may only cancel while the order is still Pending.
         return (int) $order->user_id === $user->id
-            && $order->status === \App\OrderStatus::Pending->value;
+            && $order->status === OrderStatus::Pending->value;
     }
 
     /**

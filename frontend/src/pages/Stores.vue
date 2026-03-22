@@ -145,7 +145,7 @@ watch(
               v-model="search"
               type="search"
               placeholder="Search stores by name or location…"
-              class="w-full rounded-2xl border-0 bg-white shadow-xl py-3.5 pl-12 pr-4 text-sm text-[#0F2044] font-medium placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-brand-500/30"
+              class="w-full rounded-2xl border-0 bg-white shadow-xl py-3.5 pl-12 pr-4 text-sm text-[#0F2044] font-medium placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-brand-500/30 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
             />
           </div>
           <button
@@ -207,7 +207,7 @@ watch(
       <!-- Empty -->
       <div
         v-else-if="stores.length === 0"
-        class="rounded-2xl border border-dashed border-slate-200 bg-white py-20 text-center"
+        class="rounded-2xl border border-dashed border-slate-200 bg-white py-20 text-center dark:bg-slate-900 dark:border-slate-700"
       >
         <p class="text-2xl mb-3">🔍</p>
         <p class="font-medium text-slate-600">No stores found</p>
@@ -216,7 +216,7 @@ watch(
         </p>
         <button
           type="button"
-          class="mt-5 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+          class="mt-5 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300"
           @click="
             search = '';
             sector = '';
@@ -236,7 +236,7 @@ watch(
           v-for="store in stores"
           :key="store.id"
           :to="`/stores/${store.slug}`"
-          class="group flex flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-brand-200 transition-all duration-300"
+          class="group flex flex-col overflow-hidden rounded-3xl border border-slate-100 bg-white shadow-sm hover:shadow-xl hover:-translate-y-1 hover:border-brand-200 transition-all duration-300 dark:bg-slate-800 dark:border-slate-700"
         >
           <!-- Banner -->
           <div class="relative h-32 w-full overflow-hidden bg-slate-100">
@@ -271,7 +271,7 @@ watch(
             <div class="relative -mt-10 mb-3 flex justify-start">
               <div
                 v-if="store.logo_url"
-                class="size-20 overflow-hidden rounded-full border-4 border-white bg-white shadow-md relative z-10 transition-transform group-hover:scale-105"
+                class="size-20 overflow-hidden rounded-full border-4 border-white bg-white shadow-md relative z-10 transition-transform group-hover:scale-105 dark:border-slate-700 dark:bg-slate-700"
               >
                 <img
                   :src="store.logo_url"
@@ -327,7 +327,7 @@ watch(
           :class="
             meta.current_page === page
               ? 'bg-brand-500 text-white shadow-sm'
-              : 'border border-slate-200 bg-white text-slate-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600'
+              : 'border border-slate-200 bg-white text-slate-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-600 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300'
           "
           @click="load(page)"
         >

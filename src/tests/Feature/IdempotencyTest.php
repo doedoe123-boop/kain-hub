@@ -1,11 +1,13 @@
 <?php
 
+use App\Models\Order;
 use App\Models\Store;
 use App\Models\User;
 use App\Services\CommissionService;
 use App\Services\OrderService;
 use Illuminate\Support\Facades\Cache;
 use Lunar\Facades\CartSession;
+use Lunar\Models\Cart;
 use Lunar\Models\Currency;
 
 beforeEach(function () {
@@ -101,16 +103,16 @@ describe('Concurrent order lock', function () {
         $this->app->bind(OrderService::class, function ($app) {
             return new class($app->make(CommissionService::class)) extends OrderService
             {
-                public function validateCart(\Lunar\Models\Cart $cart): void {}
+                public function validateCart(Cart $cart): void {}
 
-                public function validateStore(\App\Models\Store $store): void {}
+                public function validateStore(Store $store): void {}
 
-                public function validateCartBelongsToStore(\Lunar\Models\Cart $cart, \App\Models\Store $store): void {}
+                public function validateCartBelongsToStore(Cart $cart, Store $store): void {}
             };
         });
 
         // Return a fake cart object so the controller's null-cart guard passes.
-        $fakeCart = Mockery::mock(\Lunar\Models\Cart::class)->makePartial();
+        $fakeCart = Mockery::mock(Cart::class)->makePartial();
         $fakeCart->customer_id = $user->id;
 
         CartSession::shouldReceive('current')->once()->andReturn($fakeCart);
@@ -135,21 +137,21 @@ describe('Concurrent order lock', function () {
         $this->app->bind(OrderService::class, function ($app) {
             return new class($app->make(CommissionService::class)) extends OrderService
             {
-                public function validateCart(\Lunar\Models\Cart $cart): void {}
+                public function validateCart(Cart $cart): void {}
 
-                public function validateStore(\App\Models\Store $store): void {}
+                public function validateStore(Store $store): void {}
 
-                public function validateCartBelongsToStore(\Lunar\Models\Cart $cart, \App\Models\Store $store): void {}
+                public function validateCartBelongsToStore(Cart $cart, Store $store): void {}
 
-                protected function notifyStoreOwner(\App\Models\Order $order): void {}
+                protected function notifyStoreOwner(Order $order): void {}
             };
         });
 
-        $fakeCart = Mockery::mock(\Lunar\Models\Cart::class)->makePartial();
+        $fakeCart = Mockery::mock(Cart::class)->makePartial();
         $fakeCart->customer_id = $user->id;
         // calculate() on the mock will throw (no real cart lines), verifying the lock
         // finally block fires and releases the lock.
-        $fakeCart->shouldReceive('calculate')->andThrow(new \RuntimeException('Simulated failure'));
+        $fakeCart->shouldReceive('calculate')->andThrow(new RuntimeException('Simulated failure'));
 
         CartSession::shouldReceive('current')->once()->andReturn($fakeCart);
 
