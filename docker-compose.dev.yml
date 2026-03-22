@@ -19,6 +19,7 @@ services:
       - ./src:/var/www
       - ./skills:/var/www/skills
       - ./agent:/var/www/agent
+      - ./docker/php/zzz-dev.conf:/usr/local/etc/php-fpm.d/zzz-dev.conf
     networks:
       - app-network
     depends_on:
@@ -75,6 +76,8 @@ services:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
+    command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3"]
+    user: "1000:1000"
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
@@ -98,6 +101,8 @@ services:
     build:
       context: .
       dockerfile: docker/php/Dockerfile
+    command: ["php", "artisan", "schedule:work"]
+    user: "1000:1000"
     environment:
       APP_ENV: local
       APP_DEBUG: "true"

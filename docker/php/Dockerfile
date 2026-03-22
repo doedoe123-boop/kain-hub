@@ -1,12 +1,9 @@
-# Use FrankenPHP - it includes the web server and PHP 8.4
-# 1.12.1 is built with Go 1.25+, which patches CVE-2025-68121 (crypto/tls session resumption)
-FROM dunglas/frankenphp:1.12.1-php8.4-bookworm
+FROM php:8.4-fpm-bookworm
 
-# Metadata
 LABEL org.opencontainers.image.source=https://github.com/doedoe123-boop/negosyohub
-LABEL org.opencontainers.image.description="Production container for Negosyohub on Cloud Run"
+LABEL org.opencontainers.image.description="Production container for Negosyohub"
 
-# Install system dependencies (Keeping your specific list)
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
@@ -33,36 +30,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pcntl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /var/www
 
-# Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copy only composer files first for caching
 COPY src/composer.json src/composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
-# Copy the rest of your source code
 COPY ./src /var/www
 
-# Fix permissions for Laravel
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-# Copy custom Caddyfile — disables auto-HTTPS and sets correct document root.
-# Cloud Run terminates TLS, so the container only needs plain HTTP on $PORT.
-COPY docker/php/Caddyfile /etc/caddy/Caddyfile
-
-# Finalize composer
 RUN composer dump-autoload --optimize --no-dev
 
-# Fail the container if the app stops responding (Laravel's built-in /up route).
-HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8080}/up || exit 1
+EXPOSE 9000
 
-# Expose the port Cloud Run expects
-EXPOSE 8080
-
-# No need for a separate CMD for php-fpm, FrankenPHP handles it
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+CMD ["php-fpm"]
