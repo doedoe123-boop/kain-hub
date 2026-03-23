@@ -32,6 +32,12 @@ vi.mock("@/api/addresses", () => ({
   },
 }));
 
+vi.mock("@/api/seo", () => ({
+  seoApi: {
+    global: vi.fn(),
+  },
+}));
+
 vi.mock("@/i18n", () => ({
   useAppI18n: () => ({
     t: (key) => key,
@@ -97,6 +103,7 @@ describe("Checkout page", () => {
     sessionStorage.clear();
 
     const { addressesApi } = await import("@/api/addresses");
+    const { seoApi } = await import("@/api/seo");
     addressesApi.list.mockResolvedValue({
       data: [
         {
@@ -108,6 +115,11 @@ describe("Checkout page", () => {
           is_default: true,
         },
       ],
+    });
+    seoApi.global.mockResolvedValue({
+      data: {
+        paypal_checkout_enabled: true,
+      },
     });
   });
 
@@ -253,5 +265,39 @@ describe("Checkout page", () => {
     expect(cart.reset).toHaveBeenCalledOnce();
     expect(router.currentRoute.value.path).toBe("/checkout/success");
     expect(router.currentRoute.value.query.order).toBe("99");
+  });
+
+  it("shows PayPal as disabled and falls back to COD when PayPal checkout is disabled", async () => {
+    const { seoApi } = await import("@/api/seo");
+
+    seoApi.global.mockResolvedValue({
+      data: {
+        paypal_checkout_enabled: false,
+      },
+    });
+
+    const cart = useCartStore();
+    cart.fetch = vi.fn().mockImplementation(async () => {
+      cart.cart = structuredClone(mockCart);
+    });
+
+    const auth = useAuthStore();
+    auth.user = { id: 1, name: "Maria Santos", email: "maria@example.com" };
+
+    const { wrapper } = await mountCheckout();
+
+    await wrapper.find("form").trigger("submit");
+    await flushPromises();
+    await wrapper.find('input[type="radio"][value="ship-standard"]').setValue();
+    await wrapper.findAll("button").find((button) => button.text() === "Continue to Payment").trigger("click");
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("Cash on Delivery");
+    expect(wrapper.text()).toContain("PayPal checkout is temporarily disabled for this demo.");
+    expect(wrapper.text()).toContain("Disabled");
+    expect(wrapper.text()).toContain("Temporarily unavailable for this demo deployment.");
+    expect(wrapper.find('input[type="radio"][value="paypal"]').attributes("disabled")).toBeDefined();
+    expect(wrapper.find('input[type="radio"][value="cash_on_delivery"]').element.checked).toBe(true);
+    expect(wrapper.findAll("button").some((button) => button.text() === "Place COD Order")).toBe(true);
   });
 });

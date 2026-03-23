@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { ExclamationTriangleIcon } from "@heroicons/vue/24/solid";
 import { LockClosedIcon, ShieldCheckIcon } from "@heroicons/vue/24/outline";
@@ -11,10 +11,12 @@ import { paypalApi } from "@/api/paypal";
 import { addressesApi } from "@/api/addresses";
 import CouponInput from "@/components/CouponInput.vue";
 import { useAppI18n } from "@/i18n";
+import { useSeoStore } from "@/stores/seo";
 
 const router = useRouter();
 const cart = useCartStore();
 const auth = useAuthStore();
+const seo = useSeoStore();
 const { t } = useAppI18n();
 
 // Guard: redirect to cart if empty
@@ -39,18 +41,42 @@ const error = ref(null);
 const showLeaveModal = ref(false);
 const appliedCoupon = ref(null);
 const selectedPaymentMethod = ref("paypal");
-const paymentOptions = [
-  {
-    value: "paypal",
-    label: "PayPal",
-    description: "Pay securely online before we place your order.",
+const paymentOptions = computed(() => {
+  return [
+    {
+      value: "paypal",
+      label: "PayPal",
+      description: "Pay securely online before we place your order.",
+      disabled: !seo.paypalCheckoutEnabled,
+      disabledReason: !seo.paypalCheckoutEnabled
+        ? "Temporarily unavailable for this demo deployment."
+        : null,
+    },
+    {
+      value: "cash_on_delivery",
+      label: "Cash on Delivery",
+      description: "Pay when your order arrives.",
+      disabled: false,
+      disabledReason: null,
+    },
+  ];
+});
+
+const selectedPaymentOption = computed(() =>
+  paymentOptions.value.find((option) => option.value === selectedPaymentMethod.value) ?? null
+);
+
+const isSelectedPaymentDisabled = computed(() => selectedPaymentOption.value?.disabled ?? false);
+
+watch(
+  paymentOptions,
+  (options) => {
+    if (! options.some((option) => option.value === selectedPaymentMethod.value && !option.disabled)) {
+      selectedPaymentMethod.value = options.find((option) => !option.disabled)?.value ?? "cash_on_delivery";
+    }
   },
-  {
-    value: "cash_on_delivery",
-    label: "Cash on Delivery",
-    description: "Pay when your order arrives.",
-  },
-];
+  { immediate: true }
+);
 
 function onCouponApplied(coupon) {
   appliedCoupon.value = coupon;
@@ -76,6 +102,7 @@ function confirmLeave() {
 }
 
 onMounted(async () => {
+  await seo.fetchSettings();
   await cart.fetch();
 
   if (!cart.lineCount) {
@@ -140,6 +167,13 @@ async function selectShipping() {
 }
 
 async function placeOrder() {
+  if (isSelectedPaymentDisabled.value) {
+    error.value = "PayPal checkout is temporarily disabled for this demo.";
+    selectedPaymentMethod.value = paymentOptions.value.find((option) => !option.disabled)?.value ?? "cash_on_delivery";
+
+    return;
+  }
+
   loading.value = true;
   error.value = null;
   try {
@@ -438,27 +472,51 @@ async function placeOrder() {
           <p class="theme-copy mb-6 text-sm">
             Choose how you want to pay for this order.
           </p>
+          <p
+            v-if="!seo.paypalCheckoutEnabled"
+            class="mb-4 rounded-xl bg-amber-500/12 px-4 py-3 text-sm text-amber-300"
+          >
+            PayPal checkout is temporarily disabled for this demo. Please use Cash on Delivery instead.
+          </p>
           <div class="mb-6 space-y-3">
             <label
               v-for="option in paymentOptions"
               :key="option.value"
-              class="theme-card-muted flex cursor-pointer items-start gap-3 rounded-xl p-4 transition-colors hover:bg-[var(--color-surface)]"
+              class="theme-card-muted flex items-start gap-3 rounded-xl p-4 transition-colors"
               :class="{
                 'border-brand-400 bg-brand-500/10': selectedPaymentMethod === option.value,
+                'cursor-pointer hover:bg-[var(--color-surface)]': !option.disabled,
+                'cursor-not-allowed opacity-60': option.disabled,
+                'border-amber-500/50 bg-amber-500/8': option.disabled,
               }"
             >
               <input
                 v-model="selectedPaymentMethod"
                 type="radio"
                 :value="option.value"
+                :disabled="option.disabled"
                 class="mt-0.5 text-brand-500"
               />
               <div class="flex-1">
-                <p class="theme-title text-sm font-semibold">
-                  {{ option.label }}
-                </p>
+                <div class="flex items-center gap-2">
+                  <p class="theme-title text-sm font-semibold">
+                    {{ option.label }}
+                  </p>
+                  <span
+                    v-if="option.disabled"
+                    class="rounded-full bg-amber-500/12 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-300"
+                  >
+                    Disabled
+                  </span>
+                </div>
                 <p class="theme-copy text-xs">
                   {{ option.description }}
+                </p>
+                <p
+                  v-if="option.disabledReason"
+                  class="mt-1 text-xs text-amber-300"
+                >
+                  {{ option.disabledReason }}
                 </p>
               </div>
             </label>
@@ -473,8 +531,8 @@ async function placeOrder() {
             </button>
             <button
               type="button"
-              :disabled="loading"
-              class="flex-1 rounded-xl py-3 text-sm font-bold text-white transition-all active:scale-[0.98] disabled:opacity-50 shadow-md cursor-pointer"
+              :disabled="loading || isSelectedPaymentDisabled"
+              class="flex-1 rounded-xl py-3 text-sm font-bold text-white transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 shadow-md cursor-pointer"
               :class="
                 selectedPaymentMethod === 'paypal'
                   ? 'bg-[#0551b5] hover:bg-[#1161CA]'
@@ -487,9 +545,11 @@ async function placeOrder() {
                   ? selectedPaymentMethod === "paypal"
                     ? "Redirecting…"
                     : "Placing order…"
-                  : selectedPaymentMethod === "paypal"
-                    ? "Pay with PayPal"
-                    : "Place COD Order"
+                  : isSelectedPaymentDisabled
+                    ? "PayPal Unavailable"
+                    : selectedPaymentMethod === "paypal"
+                      ? "Pay with PayPal"
+                      : "Place COD Order"
               }}
             </button>
           </div>

@@ -523,5 +523,15 @@
                 </div>
             @endif
         </div>
+
+        <div class="sticky bottom-0 z-20 border-t border-sky-200/80 bg-sky-50/95 px-5 py-3 backdrop-blur dark:border-sky-800/80 dark:bg-slate-950/95 sm:px-10 xl:px-16">
+            <div class="mx-auto flex max-w-2xl items-start gap-3">
+                <x-heroicon-s-information-circle class="mt-0.5 h-5 w-5 flex-shrink-0 text-sky-600 dark:text-sky-400" />
+                <p class="text-xs leading-relaxed text-sky-800 dark:text-sky-300">
+                    <span class="font-semibold">Demo notice:</span>
+                    Please do not upload the original copy of your business papers. Use redacted or sample documents only because this registration flow is for demo purposes.
+                </p>
+            </div>
+        </div>
     </main>
 </div>

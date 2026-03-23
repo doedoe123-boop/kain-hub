@@ -35,8 +35,8 @@ async function submit() {
   <div>
     <!-- Heading -->
     <div class="mb-8">
-      <h1 class="text-2xl font-bold text-slate-900">{{ t("auth.login.title") }}</h1>
-      <p class="mt-1 text-sm text-slate-500">
+      <h1 class="text-2xl font-bold text-slate-900 dark:text-white">{{ t("auth.login.title") }}</h1>
+      <p class="mt-1 text-sm text-slate-500 dark:text-gray-300">
         {{ t("auth.login.subtitle") }}
       </p>
     </div>
@@ -54,7 +54,7 @@ async function submit() {
       <div>
         <label
           for="login-email"
-          class="mb-1.5 block text-sm font-medium text-slate-700"
+          class="mb-1.5 block text-sm font-medium text-slate-700 dark:text-gray-300"
         >
           {{ t("auth.fields.email") }}
         </label>
@@ -74,7 +74,7 @@ async function submit() {
         <div class="mb-1.5 flex items-center justify-between">
           <label
             for="login-password"
-            class="text-sm font-medium text-slate-700"
+            class="text-sm font-medium text-slate-700 dark:text-gray-300"
           >
             {{ t("auth.fields.password") }}
           </label>
@@ -170,7 +170,7 @@ async function submit() {
     </form>
 
     <!-- Register link -->
-    <p class="mt-6 text-center text-sm text-slate-500">
+    <p class="mt-6 text-center text-sm text-slate-500 dark:text-gray-300">
       {{ t("auth.login.noAccount") }}
       <RouterLink
         to="/register"

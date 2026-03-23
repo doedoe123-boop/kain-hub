@@ -12,6 +12,7 @@ export const useSeoStore = defineStore("seo", () => {
   const googleAnalyticsId = ref(null);
   const googleTagManagerId = ref(null);
   const facebookPixelId = ref(null);
+  const paypalCheckoutEnabled = ref(true);
   const loaded = ref(false);
 
   async function fetchSettings() {
@@ -27,6 +28,7 @@ export const useSeoStore = defineStore("seo", () => {
       googleAnalyticsId.value = data.google_analytics_id ?? null;
       googleTagManagerId.value = data.google_tag_manager_id ?? null;
       facebookPixelId.value = data.facebook_pixel_id ?? null;
+      paypalCheckoutEnabled.value = data.paypal_checkout_enabled ?? true;
       loaded.value = true;
     } catch {
       // Silently fall back to defaults — SEO is non-critical for app function.
@@ -52,6 +54,7 @@ export const useSeoStore = defineStore("seo", () => {
     googleAnalyticsId,
     googleTagManagerId,
     facebookPixelId,
+    paypalCheckoutEnabled,
     loaded,
     fetchSettings,
     buildTitle,

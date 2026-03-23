@@ -97,7 +97,7 @@ onMounted(() => {
     >
       <div>
         <h1
-          class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl"
+          class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl"
         >
           My Moving Bookings
         </h1>

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property ?string $google_analytics_id
  * @property ?string $google_tag_manager_id
  * @property ?string $facebook_pixel_id
+ * @property bool $paypal_checkout_enabled
  * @property ?string $robots_txt_content
  * @property bool $sitemap_enabled
  */
@@ -33,6 +34,7 @@ class GlobalSeoSetting extends Model
         'google_analytics_id',
         'google_tag_manager_id',
         'facebook_pixel_id',
+        'paypal_checkout_enabled',
         'robots_txt_content',
         'sitemap_enabled',
     ];
@@ -43,6 +45,7 @@ class GlobalSeoSetting extends Model
     protected function casts(): array
     {
         return [
+            'paypal_checkout_enabled' => 'boolean',
             'sitemap_enabled' => 'boolean',
         ];
     }
@@ -59,6 +62,7 @@ class GlobalSeoSetting extends Model
                 'title_template' => '%s | NegosyoHub',
                 'default_description' => 'Find properties, products, and services on NegosyoHub — the Philippines\' multi-sector marketplace.',
                 'twitter_card' => 'summary_large_image',
+                'paypal_checkout_enabled' => true,
                 'sitemap_enabled' => true,
             ]
         );
