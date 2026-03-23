@@ -22,20 +22,20 @@
             </div>
 
             <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.1] mb-6">
-                Ready to accelerate
+                Ready to launch
                 <span class="block relative mt-2">
-                    <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400">your business growth?</span>
+                    <span class="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400">your business on NegosyoHub?</span>
                 </span>
             </h2>
             
             <p class="text-lg sm:text-xl text-slate-400 leading-relaxed max-w-2xl mx-auto mb-10 font-medium">
-                Tap into the Philippines' most trusted multi-sector marketplace. Free to register, no hidden fees, and targeted customer exposure.
+                Join the Philippines' multi-sector marketplace built for sellers, landlords, agents, and service providers. Free to register, no hidden fees, and structured onboarding.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="{{ route('register.sector') }}"
                     class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-10 py-4 text-base font-extrabold rounded-xl text-slate-900 bg-white hover:bg-slate-50 shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_60px_rgba(255,255,255,0.2)] transition-all duration-300 hover:-translate-y-1 group" id="final-cta-btn">
-                    Start Selling Today
+                    Start Your Business Setup
                     <x-heroicon-o-arrow-right class="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
                 </a>
             </div>

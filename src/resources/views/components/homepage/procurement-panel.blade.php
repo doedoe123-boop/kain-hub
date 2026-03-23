@@ -25,16 +25,16 @@
                         <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-emerald-500 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                     </span>
-                    <span class="text-xs font-bold text-slate-800 dark:text-slate-300 tracking-wide uppercase">The Philippines' Multi-Sector Marketplace</span>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-300 tracking-wide uppercase">Business Platform for the Philippines</span>
                 </div>
 
                 {{-- Headline --}}
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white leading-[1.1] tracking-tight">
-                    Scale your business.
+                    Launch your presence.
                     <br>
-                    Streamline orders.
+                    Manage operations.
                     <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-emerald-500">All in one place.</span>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-emerald-500">Grow across sectors.</span>
                 </h1>
                 
                 @php
@@ -45,7 +45,7 @@
                 @endphp
                 
                 <p class="mt-6 text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
-                    NegosyoHub isn't just a directory — it's a powerful sales engine. We connect verified professionals across {{ $heroList }}.
+                    NegosyoHub helps sellers, landlords, agents, movers, and service providers launch trusted listings, manage inquiries, and operate from one multi-sector platform across {{ $heroList }}.
                 </p>
 
                 {{-- CTAs --}}
@@ -55,9 +55,9 @@
                         Start Selling Today
                         <x-heroicon-o-arrow-right class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                     </a>
-                    <a href="{{ route('stores.index') }}"
+                    <a href="#industry-sectors"
                         class="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 text-sm font-bold rounded-xl text-slate-700 dark:text-slate-300 bg-white dark:bg-transparent border-2 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all duration-300">
-                        Explore Marketplace
+                        See Supported Sectors
                     </a>
                 </div>
 
@@ -109,7 +109,7 @@
                              <x-heroicon-o-chart-bar class="w-5 h-5 text-white" />
                           </div>
                           <div>
-                             <div class="text-sm font-bold text-slate-900 dark:text-white transition-opacity duration-300" x-text="cities[activeIndex].name">Seller Dashboard</div>
+                            <div class="text-sm font-bold text-slate-900 dark:text-white transition-opacity duration-300" x-text="cities[activeIndex].name">Business Dashboard</div>
                              <div class="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1 mt-0.5"><x-heroicon-s-check-circle class="w-3.5 h-3.5" /> <span x-text="cities[activeIndex].subtitle">Performance Optimized</span></div>
                           </div>
                        </div>
