@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\GlobalSeoSetting;
 use App\Models\Order;
 use App\Models\Store;
 use App\OrderPaymentMethod;
@@ -87,6 +88,8 @@ class PaymentController extends Controller
      */
     public function paypalCreateOrder(Request $request): JsonResponse
     {
+        $this->ensurePayPalCheckoutIsEnabled();
+
         $cart = CartSession::current(calculate: true);
 
         if (! $cart || $cart->lines->isEmpty()) {
@@ -112,6 +115,8 @@ class PaymentController extends Controller
      */
     public function paypalCaptureOrder(Request $request): JsonResponse
     {
+        $this->ensurePayPalCheckoutIsEnabled();
+
         $validated = $request->validate([
             'paypal_order_id' => ['required', 'string', 'max:100'],
             'store_id' => ['required', 'integer', 'exists:stores,id'],
@@ -130,5 +135,14 @@ class PaymentController extends Controller
             'order' => $order,
             'summary' => $order ? $this->orderService->summarize($order) : null,
         ], 201);
+    }
+
+    private function ensurePayPalCheckoutIsEnabled(): void
+    {
+        if (! GlobalSeoSetting::current()->paypal_checkout_enabled) {
+            throw ValidationException::withMessages([
+                'payment_method' => 'PayPal checkout is temporarily unavailable.',
+            ]);
+        }
     }
 }

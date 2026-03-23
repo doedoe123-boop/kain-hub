@@ -118,7 +118,9 @@ it('shows sector-specific compliance documents on step 5', function () {
         ->assertSee("Mayor's Permit / Business Permit")
         ->assertSee('Store / Warehouse Photo')
         ->assertSee('DTI / SEC Registration')
-        ->assertSee('BIR Certificate of Registration');
+        ->assertSee('BIR Certificate of Registration')
+        ->assertSee('Demo notice:')
+        ->assertSee('Please do not upload the original copy of your business papers.');
 });
 
 it('shows real-estate-specific docs for real estate sector', function () {

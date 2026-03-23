@@ -20,7 +20,7 @@ class GlobalSeoSettings extends Page implements HasForms
 
     protected static ?int $navigationSort = 10;
 
-    protected static ?string $title = 'SEO & Analytics';
+    protected static ?string $title = 'SEO, Analytics & Checkout';
 
     protected static string $view = 'filament.admin.pages.global-seo-settings';
 
@@ -38,7 +38,7 @@ class GlobalSeoSettings extends Page implements HasForms
     {
         return $form
             ->schema([
-                Forms\Components\Tabs::make('SEO & Analytics')
+                Forms\Components\Tabs::make('SEO, Analytics & Checkout')
                     ->tabs([
                         Forms\Components\Tabs\Tab::make('Global Defaults')
                             ->icon('heroicon-o-globe-alt')
@@ -120,6 +120,15 @@ class GlobalSeoSettings extends Page implements HasForms
                                             ->placeholder('123456789012345')
                                             ->helperText('Leave blank to disable Meta Pixel tracking.'),
                                     ]),
+
+                                Forms\Components\Section::make('Checkout Safety')
+                                    ->description('Use this to disable the public PayPal checkout flow during demos, testing, or abuse prevention windows.')
+                                    ->schema([
+                                        Forms\Components\Toggle::make('paypal_checkout_enabled')
+                                            ->label('Enable PayPal checkout')
+                                            ->helperText('When disabled, customers will not see PayPal in the storefront checkout and PayPal API endpoints will reject requests.')
+                                            ->default(true),
+                                    ]),
                             ]),
 
                         Forms\Components\Tabs\Tab::make('Crawling')
@@ -155,7 +164,7 @@ class GlobalSeoSettings extends Page implements HasForms
         $settings->update($data);
 
         Notification::make()
-            ->title('SEO & Analytics settings saved')
+            ->title('SEO, analytics, and checkout settings saved')
             ->success()
             ->send();
     }

@@ -29,6 +29,7 @@ class SeoController extends Controller
             'google_analytics_id' => $settings->google_analytics_id,
             'google_tag_manager_id' => $settings->google_tag_manager_id,
             'facebook_pixel_id' => $settings->facebook_pixel_id,
+            'paypal_checkout_enabled' => $settings->paypal_checkout_enabled,
         ]);
     }
 }
