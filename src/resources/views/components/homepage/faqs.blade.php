@@ -20,7 +20,7 @@
                     Frequently Asked Questions
                 </h2>
                 <p class="text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-lg mx-auto">
-                    Everything you need to know about NegosyoHub. Can't find what you're looking for? Reach out to our support team.
+                    Everything you need to know about joining and operating on NegosyoHub. Can't find what you're looking for? Reach out to our support team.
                 </p>
             </div>
 

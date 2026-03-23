@@ -293,6 +293,15 @@ const fallbackMessages = {
       localStore: "Local Store",
       visitStore: "Visit Store",
       noFeaturedStores: "No featured stores yet — check back soon!",
+      customerCtaEyebrow: "Start Your Next Action",
+      customerCtaTitle: "What would you like to do today?",
+      customerCtaBody:
+        "Jump straight into the customer journey that fits your goal: shop local products, find a rental, or book a trusted mover.",
+      shopProductsCta: "Shop products",
+      findRentalCta: "Find a rental",
+      bookMoverCta: "Book a mover",
+      businessLandingHint: "Want to sell, list properties, or offer services instead?",
+      businessLandingCta: "Visit the business landing page",
       businessOwnersEyebrow: "For Business Owners",
       growTitle: "Grow your business with NegosyoHub",
       growBody:
@@ -591,6 +600,15 @@ const fallbackMessages = {
       localStore: "Lokal na Store",
       visitStore: "Bisitahin ang Store",
       noFeaturedStores: "Wala pang featured stores — bumalik ka ulit sa lalong madaling panahon!",
+      customerCtaEyebrow: "Simulan ang Iyong Susunod na Hakbang",
+      customerCtaTitle: "Ano ang gusto mong gawin ngayon?",
+      customerCtaBody:
+        "Dumaan agad sa customer journey na tugma sa layunin mo: mamili ng local products, maghanap ng paupahan, o mag-book ng mapagkakatiwalaang mover.",
+      shopProductsCta: "Mamili ng produkto",
+      findRentalCta: "Maghanap ng paupahan",
+      bookMoverCta: "Mag-book ng mover",
+      businessLandingHint: "Gusto mo bang magbenta, maglista ng properties, o mag-alok ng services?",
+      businessLandingCta: "Bisitahin ang business landing page",
       businessOwnersEyebrow: "Para sa Business Owners",
       growTitle: "Palaguin ang iyong negosyo sa NegosyoHub",
       growBody:

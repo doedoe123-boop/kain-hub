@@ -21,7 +21,7 @@
                         Enterprise-grade Security & Compliance
                     </h2>
                     <p class="text-base text-slate-600 dark:text-slate-400 leading-relaxed max-w-md mx-auto lg:mx-0">
-                        We maintain a strict zero-tolerance policy for fraudulent listings. Every seller on NegosyoHub undergoes rigorous verification to protect your procurement pipeline.
+                        We maintain a strict zero-tolerance policy for fraudulent listings. Every business on NegosyoHub goes through verification and compliance review to protect customers and trustworthy operators alike.
                     </p>
                     
                     {{-- Bottom trust seals row --}}

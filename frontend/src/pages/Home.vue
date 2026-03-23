@@ -447,25 +447,24 @@ onMounted(async () => {
     <!-- ── 8. Trust Signals Strip ──────────────────────────────────── -->
     <TrustStrip :stats="stats" />
 
-    <!-- ── 9. Seller CTA banner ────────────────────────────────────── -->
+    <!-- ── 9. Customer CTA banner ──────────────────────────────────── -->
     <section class="bg-navy-900 py-14 text-white">
       <div class="mx-auto max-w-7xl px-4 text-center sm:px-6">
         <p
           class="mb-3 text-xs font-semibold uppercase tracking-widest text-emerald-400"
         >
-          {{ t("home.businessOwnersEyebrow") }}
+          {{ t("home.customerCtaEyebrow") }}
         </p>
-        <h2 class="text-3xl font-bold">{{ t("home.growTitle") }}</h2>
+        <h2 class="text-3xl font-bold">{{ t("home.customerCtaTitle") }}</h2>
         <p class="mx-auto mt-3 max-w-xl text-base text-white/60">
-          {{ t("home.growBody") }}
+          {{ t("home.customerCtaBody") }}
         </p>
         <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <a
-            :href="`${backendUrl}/register/sector`"
-            target="_blank"
+          <RouterLink
+            to="/stores"
             class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 hover:shadow-emerald-500/30 hover:shadow-lg active:bg-emerald-700 transition-all"
           >
-            {{ t("home.registerStore") }}
+            {{ t("home.shopProductsCta") }}
             <svg
               class="size-4"
               fill="none"
@@ -479,16 +478,21 @@ onMounted(async () => {
                 d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
               />
             </svg>
-          </a>
+          </RouterLink>
           <RouterLink
-            to="/stores"
+            to="/properties?listing_type=for_rent"
             class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
           >
-            {{ t("home.browseStores") }}
+            {{ t("home.findRentalCta") }}
+          </RouterLink>
+          <RouterLink
+            to="/movers"
+            class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+          >
+            {{ t("home.bookMoverCta") }}
           </RouterLink>
         </div>
 
-        <!-- Trust note -->
         <p
           class="mt-6 flex items-center justify-center gap-1.5 text-xs text-white/40"
         >
@@ -507,6 +511,17 @@ onMounted(async () => {
           </svg>
           🔒
           {{ t("home.trustNote", { count: formatCount(stats.stores) }) }}
+        </p>
+        <p class="mt-4 text-xs text-white/40">
+          {{ t("home.businessLandingHint") }}
+          <a
+            :href="`${backendUrl}/`"
+            target="_blank"
+            rel="noreferrer"
+            class="font-semibold text-emerald-300 hover:text-emerald-200"
+          >
+            {{ t("home.businessLandingCta") }}
+          </a>
         </p>
       </div>
     </section>

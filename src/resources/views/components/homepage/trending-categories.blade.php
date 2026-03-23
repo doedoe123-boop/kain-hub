@@ -16,7 +16,7 @@
                 Built for your industry.
             </h2>
             <p class="mt-5 mb-5 text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                NegosyoHub isn't a one-size-fits-all directory. We power dedicated dashboards for each vertical — intelligent tools tailored to how your industry actually works.
+                NegosyoHub is not a generic listing site. Each supported sector gets business workflows tailored to how you sell, list, coordinate, and serve customers.
             </p>
         </div>
 
@@ -224,7 +224,7 @@
             {{-- Caption under dashboard --}}
             <div class="text-center mt-8">
                 <p class="text-sm font-bold text-slate-900 dark:text-white">Seller Dashboard — E-Commerce</p>
-                <p class="text-xs text-slate-500 dark:text-slate-500 mt-1">Real-time revenue tracking, product analytics, and order management — built for online sellers.</p>
+                <p class="text-xs text-slate-500 dark:text-slate-500 mt-1">Revenue tracking, product analytics, and order management — built for online sellers.</p>
                 <a href="{{ route('register.sector') }}" class="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 shadow-lg shadow-emerald-600/20 transition-all duration-300">
                     Start Selling <x-heroicon-o-arrow-right class="w-4 h-4" />
                 </a>

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { flushPromises, mount } from "@vue/test-utils";
 import { setActivePinia, createPinia } from "pinia";
 import { createRouter, createMemoryHistory } from "vue-router";
+import Home from "@/pages/Home.vue";
 import Stores from "@/pages/Stores.vue";
 import NotFound from "@/pages/NotFound.vue";
 import StoreDetail from "@/pages/store/StoreDetail.vue";
@@ -139,7 +140,7 @@ function storeRouter() {
   return createRouter({
     history: createMemoryHistory(),
     routes: [
-      { path: "/", component: { template: "<div />" } },
+      { path: "/", component: Home },
       { path: "/stores", component: Stores },
       { path: "/stores/:slug", component: StoreDetail },
       { path: "/deals", component: DealsPage },
@@ -242,6 +243,39 @@ describe("Stores listing page", () => {
     await flushPromises();
 
     expect(storesApi.list).toHaveBeenCalledOnce();
+  });
+});
+
+describe("Home page", () => {
+  let pinia;
+
+  beforeEach(() => {
+    pinia = createPinia();
+    setActivePinia(pinia);
+    vi.clearAllMocks();
+  });
+
+  it("keeps the homepage focused on customer actions", async () => {
+    const { storesApi } = await import("@/api/stores");
+    const { productsApi } = await import("@/api/products");
+    const { propertiesApi } = await import("@/api/properties");
+
+    storesApi.list.mockResolvedValue({ data: { data: [] } });
+    productsApi.list.mockResolvedValue({ data: { data: [] } });
+    propertiesApi.list.mockResolvedValue({ data: { data: [] } });
+
+    const router = storeRouter();
+    await router.push("/");
+
+    const wrapper = mount(Home, { global: { plugins: [pinia, router] } });
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("What would you like to do today?");
+    expect(wrapper.text()).toContain("Shop products");
+    expect(wrapper.text()).toContain("Find a rental");
+    expect(wrapper.text()).toContain("Book a mover");
+    expect(wrapper.text()).toContain("Visit the business landing page");
+    expect(wrapper.text()).not.toContain("Grow your business with NegosyoHub");
   });
 });
 

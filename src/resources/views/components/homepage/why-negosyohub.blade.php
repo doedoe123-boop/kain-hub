@@ -10,10 +10,10 @@
                 <span class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-[0.15em]">Why NegosyoHub</span>
             </div>
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.15]">
-                Built for Filipino enterprise.
+                Built for Filipino businesses joining the marketplace.
             </h2>
             <p class="mt-5 text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                Tools, trust, and targeted reach — designed to accelerate your growth securely.
+                Tools, trust, and operational clarity for sellers, landlords, agents, and service providers.
             </p>
         </div>
 
@@ -75,7 +75,7 @@
                         @endphp
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight mb-3">Targeted Exposure</h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Reach targeted customers across {{ $sectorsList }}. One unified storefront adapts seamlessly to different market segments.
+                            Reach customers across {{ $sectorsList }} with one marketplace presence that adapts to how each sector sells, lists, and fulfills work.
                         </p>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                         </div>
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight mb-3">Enterprise Dashboard</h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                            A highly capable operating system for your storefront. Track RFQs, fulfill orders, monitor inventory, and assess real-time analytics.
+                            A capable operating system for your business. Track orders, manage listings, respond to inquiries, and monitor performance in one place.
                         </p>
                     </div>
                 </div>
@@ -107,7 +107,7 @@
                         </div>
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white tracking-tight mb-3">Adaptive Architecture</h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                            Whether you're listing wholesale products, offering professional services, or leasing real estate — the platform molds to your workflow.
+                            Whether you're selling products, listing properties, offering rentals, or running services, the platform molds to your workflow.
                         </p>
                     </div>
                 </div>
