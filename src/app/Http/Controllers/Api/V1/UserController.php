@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\UpdateRentalAgreementRequest;
 use App\Http\Requests\UpdateUserSettingsRequest;
 use App\Http\Resources\Api\V1\UserInquiryResource;
 use App\Models\PropertyInquiry;
 use App\Models\RentalAgreement;
+use App\Models\User;
+use App\RentalAgreementStatus;
+use App\Services\RentalAgreementService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -17,6 +21,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    public function __construct(
+        private RentalAgreementService $rentalAgreementService
+    ) {}
+
     /**
      * Update the authenticated user's profile (name, phone).
      */
@@ -72,7 +80,7 @@ class UserController extends Controller
     {
         $inquiries = PropertyInquiry::query()
             ->where('user_id', $request->user()->id)
-            ->with(['property', 'store'])
+            ->with(['property', 'store', 'rentalAgreement'])
             ->latest()
             ->paginate(10);
 
@@ -84,11 +92,18 @@ class UserController extends Controller
      */
     public function rentalAgreements(Request $request): AnonymousResourceCollection|LengthAwarePaginator
     {
-        $agreements = RentalAgreement::query()
-            ->where('tenant_user_id', $request->user()->id)
+        $agreements = $this->rentalAgreementsQueryForUser($request->user())
             ->with(['property', 'store'])
             ->latest()
             ->paginate(10);
+
+        $agreements->getCollection()->each(function (RentalAgreement $agreement) use ($request): void {
+            if ($agreement->tenant_user_id === null && $agreement->tenant_email === $request->user()->email) {
+                $agreement->updateQuietly([
+                    'tenant_user_id' => $request->user()->id,
+                ]);
+            }
+        });
 
         return $agreements->through(fn ($a) => [
             'id' => $a->id,
@@ -97,11 +112,18 @@ class UserController extends Controller
             'security_deposit' => $a->security_deposit,
             'lease_term_months' => $a->lease_term_months,
             'created_at' => $a->created_at?->toIso8601String(),
-            'status' => $a->status,
+            'status' => $a->status->value,
+            'status_label' => $a->status->label(),
             'tenant_questions' => $a->tenant_questions,
             'landlord_response' => $a->landlord_response,
             'signed_at' => $a->signed_at?->toIso8601String(),
             'notes' => $a->notes,
+            'can_sign' => $a->status->canTenantSign(),
+            'tenant_primary_action' => match ($a->status) {
+                RentalAgreementStatus::Pending => 'Review and Sign',
+                RentalAgreementStatus::Negotiating => 'Review response and Sign',
+                RentalAgreementStatus::Signed => 'Agreement Signed',
+            },
             'property' => [
                 'id' => $a->property?->id,
                 'title' => $a->property?->title,
@@ -123,24 +145,43 @@ class UserController extends Controller
     /**
      * Update a rental agreement (sign or submit questions).
      */
-    public function updateRentalAgreement(Request $request, int $id): JsonResponse
+    public function updateRentalAgreement(UpdateRentalAgreementRequest $request, int $id): JsonResponse
     {
-        $agreement = RentalAgreement::query()
-            ->where('tenant_user_id', $request->user()->id)
+        $agreement = $this->rentalAgreementsQueryForUser($request->user())
             ->findOrFail($id);
 
-        $validated = $request->validate([
-            'status' => ['sometimes', 'string', 'in:signed,negotiating'],
-            'tenant_questions' => ['sometimes', 'nullable', 'string'],
-        ]);
-
-        if (isset($validated['status']) && $validated['status'] === 'signed') {
-            $validated['signed_at'] = now();
+        if ($agreement->tenant_user_id === null && $agreement->tenant_email === $request->user()->email) {
+            $agreement->updateQuietly([
+                'tenant_user_id' => $request->user()->id,
+            ]);
         }
 
-        $agreement->update($validated);
+        $validated = $request->validated();
+
+        if (($validated['status'] ?? null) === RentalAgreementStatus::Signed->value) {
+            $agreement = $this->rentalAgreementService->signByTenant($agreement);
+        } elseif (! empty($validated['tenant_questions'])) {
+            $agreement = $this->rentalAgreementService->submitTenantQuestion(
+                $agreement,
+                $validated['tenant_questions'],
+            );
+        }
 
         return response()->json(['message' => 'Rental agreement updated successfully.', 'agreement' => $agreement]);
+    }
+
+    protected function rentalAgreementsQueryForUser(User $user)
+    {
+        return RentalAgreement::query()
+            ->where(function ($query) use ($user): void {
+                $query
+                    ->where('tenant_user_id', $user->id)
+                    ->orWhere(function ($emailQuery) use ($user): void {
+                        $emailQuery
+                            ->whereNull('tenant_user_id')
+                            ->where('tenant_email', $user->email);
+                    });
+            });
     }
 
     /**

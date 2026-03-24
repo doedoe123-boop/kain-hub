@@ -215,14 +215,14 @@ const quickLinks = [
         <li
           v-for="notif in notifications"
           :key="notif.id"
-          class="group flex items-start gap-3 rounded-xl border border-brand-100 bg-brand-50/50 p-3"
+          class="group flex items-start gap-3 rounded-xl border border-brand-100 bg-brand-50/50 dark:border-brand-200/50 dark:bg-brand-100/50 p-3"
         >
           <BellIcon class="mt-0.5 size-4 shrink-0 text-brand-400" />
           <div class="min-w-0 flex-1">
-            <p class="theme-title text-sm font-semibold">
+            <p class="theme-title text-sm font-semibold dark:text-white">
               {{ notif.data.title }}
             </p>
-            <p class="theme-copy text-xs">{{ notif.data.body }}</p>
+            <p class="theme-copy text-xs dark:text-gray-300">{{ notif.data.body }}</p>
           </div>
           <button
             class="theme-copy shrink-0 rounded-lg p-1 transition-colors hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text)]"

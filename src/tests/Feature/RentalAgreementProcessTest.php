@@ -1,6 +1,8 @@
 <?php
 
+use App\InquiryStatus;
 use App\Models\Property;
+use App\Models\PropertyInquiry;
 use App\Models\RentalAgreement;
 use App\Models\Store;
 use App\Models\User;
@@ -10,6 +12,8 @@ use App\Notifications\RentalAgreementQuestionNotification;
 use App\Notifications\RentalConfirmedLandlordNotification;
 use App\Notifications\RentalConfirmedTenantNotification;
 use App\PropertyStatus;
+use App\RentalAgreementStatus;
+use App\Services\RentalAgreementService;
 use Illuminate\Support\Facades\Notification;
 
 beforeEach(function () {
@@ -37,7 +41,7 @@ test('creating a rental agreement sends pending notification to tenant', functio
         'monthly_rent' => 2500000,
         'move_in_date' => '2026-04-01',
         'lease_term_months' => 12,
-        'status' => 'pending',
+        'status' => RentalAgreementStatus::Pending,
     ]);
 
     Notification::assertSentOnDemand(RentalAgreementPendingNotification::class, function ($notification, $channels, $notifiable) {
@@ -52,11 +56,11 @@ test('tenant signing agreement updates property status and notifies both parties
         'property_id' => $this->property->id,
         'store_id' => $this->store->id,
         'tenant_email' => $this->tenant->email,
-        'status' => 'pending',
+        'status' => RentalAgreementStatus::Pending,
     ]);
 
     // Simulate tenant signing
-    $agreement->update(['status' => 'signed', 'signed_at' => now()]);
+    $agreement->update(['status' => RentalAgreementStatus::Signed, 'signed_at' => now()]);
 
     // Check property status
     $this->property->refresh();
@@ -73,11 +77,11 @@ test('tenant asking questions notifies landlord', function () {
     $agreement = RentalAgreement::factory()->create([
         'property_id' => $this->property->id,
         'store_id' => $this->store->id,
-        'status' => 'pending',
+        'status' => RentalAgreementStatus::Pending,
     ]);
 
     $agreement->update([
-        'status' => 'negotiating',
+        'status' => RentalAgreementStatus::Negotiating,
         'tenant_questions' => 'Can I have a pet?',
     ]);
 
@@ -91,7 +95,7 @@ test('landlord responding to questions notifies tenant', function () {
         'property_id' => $this->property->id,
         'store_id' => $this->store->id,
         'tenant_email' => 'tenant@example.com',
-        'status' => 'negotiating',
+        'status' => RentalAgreementStatus::Negotiating,
         'tenant_questions' => 'Can I have a pet?',
     ]);
 
@@ -102,4 +106,33 @@ test('landlord responding to questions notifies tenant', function () {
     Notification::assertSentOnDemand(LandlordAgreementResponseNotification::class, function ($notification) {
         return $notification->agreement->landlord_response === 'Only small pets are allowed.';
     });
+});
+
+test('converting an inquiry to an agreement prefills tenant, property, and default deposit', function () {
+    $inquiry = PropertyInquiry::factory()->create([
+        'property_id' => $this->property->id,
+        'store_id' => $this->store->id,
+        'user_id' => $this->tenant->id,
+        'name' => $this->tenant->name,
+        'email' => $this->tenant->email,
+        'phone' => $this->tenant->phone,
+        'status' => InquiryStatus::Negotiating,
+        'message' => 'Can we target move-in next month?',
+    ]);
+
+    $agreement = app(RentalAgreementService::class)->convertInquiryToAgreement($inquiry, [
+        'move_in_date' => '2026-04-15',
+    ]);
+
+    expect($agreement->property_id)->toBe($this->property->id)
+        ->and($agreement->store_id)->toBe($this->store->id)
+        ->and($agreement->tenant_user_id)->toBe($this->tenant->id)
+        ->and($agreement->tenant_email)->toBe($this->tenant->email)
+        ->and($agreement->monthly_rent)->toBe((int) round(((float) $this->property->price) * 100))
+        ->and($agreement->security_deposit)->toBe((int) round(((float) $this->property->price) * 200))
+        ->and($agreement->status)->toBe(RentalAgreementStatus::Pending);
+
+    $inquiry->refresh();
+    expect($inquiry->status)->toBe(InquiryStatus::Closed)
+        ->and($inquiry->rental_agreement_id)->toBe($agreement->id);
 });

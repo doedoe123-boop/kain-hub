@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Observers\RentalAgreementObserver;
+use App\RentalAgreementStatus;
 use Database\Factories\RentalAgreementFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -22,6 +26,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon $move_in_date
  * @property ?int $lease_term_months
  * @property ?string $notes
+ * @property RentalAgreementStatus $status
+ * @property ?string $tenant_questions
+ * @property ?string $landlord_response
+ * @property ?Carbon $signed_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property ?Carbon $deleted_at
@@ -29,6 +37,7 @@ use Illuminate\Support\Carbon;
  * @property-read Store $store
  * @property-read ?User $tenantUser
  */
+#[ObservedBy(RentalAgreementObserver::class)]
 class RentalAgreement extends Model
 {
     /** @use HasFactory<RentalAgreementFactory> */
@@ -62,6 +71,7 @@ class RentalAgreement extends Model
             'security_deposit' => 'integer',
             'lease_term_months' => 'integer',
             'signed_at' => 'datetime',
+            'status' => RentalAgreementStatus::class,
         ];
     }
 
@@ -78,5 +88,10 @@ class RentalAgreement extends Model
     public function tenantUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'tenant_user_id');
+    }
+
+    public function inquiries(): HasMany
+    {
+        return $this->hasMany(PropertyInquiry::class);
     }
 }

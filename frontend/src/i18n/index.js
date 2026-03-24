@@ -17,6 +17,23 @@ const fallbackMessages = {
       signOut: "Sign out",
     },
     auth: {
+      layout: {
+        headlineLead: "Shop local.",
+        headlineAccent: "Discover more.",
+        subtitle:
+          "Discover products, rentals, properties, and moving services across the Philippines in one account.",
+        featureDiscover: "Shop from trusted local sellers across multiple sectors",
+        featureSearch: "Find rentals and property listings with safer on-platform inquiries",
+        featureBook: "Book movers and services without starting over",
+        featureManage: "Track orders, inquiries, and bookings in one place",
+        statsStores: "Stores",
+        statsProperties: "Properties",
+        statsProducts: "Products",
+        businessEyebrow: "For Businesses",
+        businessBody:
+          "Register your store, property listings, or service business on the NegosyoHub platform.",
+        businessCta: "Seller & Listing Portal",
+      },
       login: {
         title: "Welcome back",
         subtitle: "Sign in to your customer account",
@@ -322,6 +339,26 @@ const fallbackMessages = {
       signOut: "Mag-sign out",
     },
     auth: {
+      layout: {
+        headlineLead: "Mamili nang lokal.",
+        headlineAccent: "Tumuklas pa.",
+        subtitle:
+          "Tuklasin ang mga produkto, paupahan, properties, at moving services sa buong Pilipinas gamit ang iisang account.",
+        featureDiscover:
+          "Mamili mula sa mapagkakatiwalaang lokal na sellers sa iba’t ibang sektor",
+        featureSearch:
+          "Maghanap ng paupahan at property listings gamit ang mas ligtas na on-platform inquiries",
+        featureBook: "Mag-book ng movers at services nang hindi inuulit ang mga detalye",
+        featureManage:
+          "Subaybayan ang orders, inquiries, at bookings sa iisang lugar",
+        statsStores: "Mga Tindahan",
+        statsProperties: "Mga Property",
+        statsProducts: "Mga Produkto",
+        businessEyebrow: "Para sa Mga Negosyo",
+        businessBody:
+          "Irehistro ang iyong store, property listings, o service business sa NegosyoHub platform.",
+        businessCta: "Seller at Listing Portal",
+      },
       login: {
         title: "Maligayang pagbabalik",
         subtitle: "Mag-sign in sa iyong customer account",

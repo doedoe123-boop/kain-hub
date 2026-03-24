@@ -107,6 +107,13 @@ onMounted(async () => {
               <p class="theme-copy mt-0.5 text-xs">
                 {{ inquiry.property?.formatted_price }}
               </p>
+              <RouterLink
+                v-if="inquiry.agreement?.id"
+                to="/account/agreements"
+                class="mt-1 inline-flex text-xs font-semibold text-brand-600 hover:underline"
+              >
+                Agreement ready: {{ inquiry.agreement.status_label }}
+              </RouterLink>
             </div>
           </div>
           <div class="flex shrink-0 flex-col items-end gap-1.5">

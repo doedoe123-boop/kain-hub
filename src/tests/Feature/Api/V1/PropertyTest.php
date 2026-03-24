@@ -2,6 +2,7 @@
 
 use App\Models\Property;
 use App\Models\Store;
+use App\Models\User;
 use App\PropertyStatus;
 
 // ─── Property index ───────────────────────────────────────────────────────────
@@ -185,4 +186,24 @@ it('rejects unsupported analytics events', function () {
     $this->postJson(route('api.v1.properties.track', $property->slug), [
         'event' => 'unexpected_event',
     ])->assertUnprocessable();
+});
+
+it('returns a human readable landlord account age label for rental trust signals', function () {
+    $owner = User::factory()->create([
+        'created_at' => now()->subMonths(2),
+    ]);
+
+    $store = Store::factory()->rental()->create([
+        'user_id' => $owner->id,
+    ]);
+
+    $property = Property::factory()->create([
+        'store_id' => $store->id,
+        'status' => PropertyStatus::Active,
+        'published_at' => now(),
+    ]);
+
+    $this->getJson(route('api.v1.properties.show', $property->slug))
+        ->assertOk()
+        ->assertJsonPath('data.trust_signals.landlord_account_age_label', '2 months on NegosyoHub');
 });

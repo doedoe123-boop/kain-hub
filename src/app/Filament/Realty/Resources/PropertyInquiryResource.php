@@ -5,6 +5,8 @@ namespace App\Filament\Realty\Resources;
 use App\Filament\Realty\Resources\PropertyInquiryResource\Pages;
 use App\InquiryStatus;
 use App\Models\PropertyInquiry;
+use App\RentalAgreementStatus;
+use App\Services\RentalAgreementService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -27,6 +29,16 @@ class PropertyInquiryResource extends Resource
     protected static ?string $modelLabel = 'Inquiry';
 
     protected static ?string $pluralModelLabel = 'Inquiries';
+
+    protected static function defaultMonthlyRentForInquiry(PropertyInquiry $record): float
+    {
+        return (float) ($record->property?->price ?? 0);
+    }
+
+    protected static function defaultSecurityDepositForInquiry(PropertyInquiry $record): float
+    {
+        return static::defaultMonthlyRentForInquiry($record) * 2;
+    }
 
     /**
      * Show the "new" badge count in the sidebar.
@@ -58,7 +70,7 @@ class PropertyInquiryResource extends Resource
 
         return parent::getEloquentQuery()
             ->where('store_id', $store?->id)
-            ->with(['property']);
+            ->with(['property', 'rentalAgreement']);
     }
 
     public static function form(Form $form): Form
@@ -137,6 +149,17 @@ class PropertyInquiryResource extends Resource
                     ->sortable()
                     ->searchable(),
 
+                Tables\Columns\TextColumn::make('rentalAgreement.status')
+                    ->label('Agreement')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): string => $state
+                        ? (RentalAgreementStatus::tryFrom($state)?->label() ?? ucfirst($state))
+                        : '—')
+                    ->color(fn (?string $state): string => $state
+                        ? (RentalAgreementStatus::tryFrom($state)?->color() ?? 'gray')
+                        : 'gray')
+                    ->placeholder('—'),
+
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->formatStateUsing(fn (InquiryStatus $state): string => $state->label())
@@ -202,6 +225,67 @@ class PropertyInquiryResource extends Resource
                         InquiryStatus::New,
                         InquiryStatus::Contacted,
                     ])),
+
+                Tables\Actions\Action::make('convertToAgreement')
+                    ->label('Convert to Agreement')
+                    ->icon('heroicon-o-document-plus')
+                    ->color('success')
+                    ->form(fn (Model $record): array => [
+                        Forms\Components\TextInput::make('tenant_name')
+                            ->label('Tenant Name')
+                            ->required()
+                            ->default($record->name),
+                        Forms\Components\TextInput::make('tenant_email')
+                            ->email()
+                            ->required()
+                            ->default($record->email),
+                        Forms\Components\TextInput::make('tenant_phone')
+                            ->tel()
+                            ->default($record->phone),
+                        Forms\Components\TextInput::make('monthly_rent')
+                            ->label('Monthly Rent (₱)')
+                            ->required()
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(static::defaultMonthlyRentForInquiry($record)),
+                        Forms\Components\TextInput::make('security_deposit')
+                            ->label('Security Deposit (₱)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->default(static::defaultSecurityDepositForInquiry($record)),
+                        Forms\Components\DatePicker::make('move_in_date')
+                            ->required()
+                            ->default(
+                                $record->viewing_date?->copy()->addWeek()->toDateString() ?? now()->addWeek()->toDateString()
+                            ),
+                        Forms\Components\TextInput::make('lease_term_months')
+                            ->numeric()
+                            ->minValue(1)
+                            ->default(12),
+                        Forms\Components\Textarea::make('notes')
+                            ->rows(3)
+                            ->default($record->message)
+                            ->columnSpanFull(),
+                    ])
+                    ->action(function (Model $record, array $data): void {
+                        $agreement = app(RentalAgreementService::class)->convertInquiryToAgreement($record, $data);
+
+                        Notification::make()
+                            ->title('Rental agreement created')
+                            ->body('The tenant can now review and sign this agreement in their account.')
+                            ->success()
+                            ->send();
+
+                        redirect(RentalAgreementResource::getUrl('edit', ['record' => $agreement]));
+                    })
+                    ->visible(fn (Model $record): bool => $record->canConvertToRentalAgreement()),
+
+                Tables\Actions\Action::make('viewAgreement')
+                    ->label('View Agreement')
+                    ->icon('heroicon-o-document-text')
+                    ->url(fn (Model $record): string => RentalAgreementResource::getUrl('edit', ['record' => $record->rental_agreement_id]))
+                    ->openUrlInNewTab(false)
+                    ->visible(fn (Model $record): bool => $record->rental_agreement_id !== null),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

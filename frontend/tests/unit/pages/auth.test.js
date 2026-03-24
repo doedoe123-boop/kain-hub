@@ -5,6 +5,7 @@ import { createRouter, createMemoryHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import LoginPage from "@/pages/auth/LoginPage.vue";
 import RegisterPage from "@/pages/auth/RegisterPage.vue";
+import AuthLayout from "@/layouts/AuthLayout.vue";
 
 // ---------------------------------------------------------------------------
 // API mocks
@@ -29,6 +30,14 @@ vi.mock("@/api/auth", () => ({
 vi.mock("@/api/client", () => ({
   default: { get: vi.fn(), post: vi.fn(), patch: vi.fn(), delete: vi.fn() },
   initCsrf: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock("@/api/homepage", () => ({
+  homepageApi: {
+    stats: vi.fn().mockResolvedValue({
+      data: { stores: 24, properties: 9, products: 112 },
+    }),
+  },
 }));
 
 // ---------------------------------------------------------------------------
@@ -133,6 +142,25 @@ function mountRegister(pinia) {
     ],
   });
   return mount(RegisterPage, { global: { plugins: [pinia, router] } });
+}
+
+async function mountAuthLayout() {
+  const router = createRouter({
+    history: createMemoryHistory(),
+    routes: [
+      {
+        path: "/login",
+        component: AuthLayout,
+        children: [{ path: "", component: LoginPage }],
+      },
+      { path: "/", component: { template: "<div />" } },
+    ],
+  });
+
+  await router.push("/login");
+  await router.isReady();
+
+  return mount(AuthLayout, { global: { plugins: [router] } });
 }
 
 // ---------------------------------------------------------------------------
@@ -268,6 +296,19 @@ describe("Login page", () => {
       email: "juan@example.com",
       password: "password",
     });
+  });
+
+  it("renders live marketplace stats and no longer mentions Stripe in the auth layout", async () => {
+    const wrapper = await mountAuthLayout();
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("24");
+    expect(wrapper.text()).toContain("Stores");
+    expect(wrapper.text()).toContain("9");
+    expect(wrapper.text()).toContain("Properties");
+    expect(wrapper.text()).toContain("112");
+    expect(wrapper.text()).toContain("Products");
+    expect(wrapper.text()).not.toContain("Stripe");
   });
 });
 
