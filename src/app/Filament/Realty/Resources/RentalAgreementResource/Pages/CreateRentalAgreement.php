@@ -3,6 +3,7 @@
 namespace App\Filament\Realty\Resources\RentalAgreementResource\Pages;
 
 use App\Filament\Realty\Resources\RentalAgreementResource;
+use App\Services\RentalAgreementService;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateRentalAgreement extends CreateRecord
@@ -11,13 +12,9 @@ class CreateRentalAgreement extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['store_id'] = auth()->user()->getStoreForPanel()?->id;
-        $data['monthly_rent'] = (int) round($data['monthly_rent'] * 100);
-
-        if (isset($data['security_deposit']) && $data['security_deposit'] !== null) {
-            $data['security_deposit'] = (int) round($data['security_deposit'] * 100);
-        }
-
-        return $data;
+        return app(RentalAgreementService::class)->normalizePanelAgreementData(
+            $data,
+            auth()->user()->getStoreForPanel()?->id,
+        );
     }
 }

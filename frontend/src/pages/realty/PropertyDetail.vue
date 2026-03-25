@@ -268,7 +268,7 @@ const trustHighlights = computed(() => {
     signals.push({
       label: "Account age",
       tone: "sky",
-      copy: `${property.value.trust_signals.landlord_account_age_label} on NegosyoHub`,
+      copy: property.value.trust_signals.landlord_account_age_label,
     });
   }
 

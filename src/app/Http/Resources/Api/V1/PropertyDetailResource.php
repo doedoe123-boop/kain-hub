@@ -8,6 +8,7 @@ use App\Models\PropertyInquiry;
 use App\Models\RentalAgreement;
 use App\PropertyStatus;
 use App\Support\HtmlSanitizer;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -19,6 +20,45 @@ use Illuminate\Support\Facades\Storage;
  */
 class PropertyDetailResource extends JsonResource
 {
+    protected function formatLandlordAccountAgeLabel(?CarbonInterface $createdAt): ?string
+    {
+        if ($createdAt === null) {
+            return null;
+        }
+
+        $days = max(0, $createdAt->diffInDays(now()));
+
+        if ($days === 0) {
+            return 'Joined today';
+        }
+
+        if ($days === 1) {
+            return '1 day on NegosyoHub';
+        }
+
+        if ($days < 7) {
+            return "{$days} days on NegosyoHub";
+        }
+
+        if ($days < 30) {
+            return 'New this month';
+        }
+
+        if ($days < 365) {
+            $months = max(1, (int) round($days / 30));
+
+            return $months === 1
+                ? '1 month on NegosyoHub'
+                : "{$months} months on NegosyoHub";
+        }
+
+        $years = max(1, (int) round($days / 365));
+
+        return $years === 1
+            ? '1 year on NegosyoHub'
+            : "{$years} years on NegosyoHub";
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -122,11 +162,7 @@ class PropertyDetailResource extends JsonResource
             'is_suspicious_listing' => $this->suspiciousListingSignal(),
             'trust_signals' => [
                 'landlord_account_age_days' => $landlordAccountAgeDays,
-                'landlord_account_age_label' => $landlordAccountAgeDays === null
-                    ? null
-                    : ($landlordAccountAgeDays >= 365
-                        ? floor($landlordAccountAgeDays / 365).' year'.(floor($landlordAccountAgeDays / 365) === 1 ? '' : 's')
-                        : $landlordAccountAgeDays.' day'.($landlordAccountAgeDays === 1 ? '' : 's')),
+                'landlord_account_age_label' => $this->formatLandlordAccountAgeLabel($landlordCreatedAt),
                 'warning_banner' => $this->store?->isPaupahan()
                     ? 'Do not send money outside the platform. Schedule viewings and confirm rental terms here before moving in.'
                     : null,

@@ -4,6 +4,7 @@ namespace App\Filament\Realty\Resources;
 
 use App\Filament\Realty\Resources\RentalAgreementResource\Pages;
 use App\Models\RentalAgreement;
+use App\RentalAgreementStatus;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -95,13 +96,10 @@ class RentalAgreementResource extends Resource
 
                 Forms\Components\Section::make('Status & Tenant Responses')
                     ->schema([
-                        Forms\Components\Select::make('status')
-                            ->options([
-                                'pending' => 'Pending Review',
-                                'negotiating' => 'Negotiating',
-                                'signed' => 'Signed',
-                            ])
-                            ->required(),
+                        Forms\Components\Placeholder::make('status_display')
+                            ->label('Status')
+                            ->content(fn (?RentalAgreement $record): string => $record?->status?->label() ?? RentalAgreementStatus::Pending->label())
+                            ->helperText('Status is managed automatically. Tenants sign from their account.'),
 
                         Forms\Components\DateTimePicker::make('signed_at')
                             ->label('Signed At')
@@ -116,7 +114,7 @@ class RentalAgreementResource extends Resource
 
                         Forms\Components\Textarea::make('landlord_response')
                             ->label('Your Response')
-                            ->helperText('Answer the tenant\'s questions or provide clarifications.')
+                            ->helperText('Answer the tenant\'s questions or provide clarifications. This will notify the tenant and return the agreement to "Pending Review" for their action.')
                             ->rows(3)
                             ->columnSpanFull(),
                     ])->columns(2),
@@ -142,13 +140,8 @@ class RentalAgreementResource extends Resource
 
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'pending' => 'gray',
-                        'negotiating' => 'warning',
-                        'signed' => 'success',
-                        default => 'gray',
-                    })
-                    ->formatStateUsing(fn (string $state): string => ucfirst($state)),
+                    ->color(fn (RentalAgreementStatus $state): string => $state->color())
+                    ->formatStateUsing(fn (RentalAgreementStatus $state): string => $state->label()),
 
                 Tables\Columns\TextColumn::make('monthly_rent')
                     ->label('Monthly Rent')

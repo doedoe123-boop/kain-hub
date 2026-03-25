@@ -213,6 +213,17 @@ it('schedules a viewing for an inquiry', function () {
     expect($inquiry->viewing_date->toDateString())->toBe($viewingDate->toDateString());
 });
 
+it('schedules a viewing for an inquiry from a Filament datetime string', function () {
+    $inquiry = PropertyInquiry::factory()->create();
+
+    $viewingDate = now()->addDays(5)->setTime(14, 30, 0);
+    $inquiry->scheduleViewing($viewingDate->toDateTimeString());
+
+    $inquiry->refresh();
+    expect($inquiry->status)->toBe(InquiryStatus::ViewingScheduled);
+    expect($inquiry->viewing_date->toDateTimeString())->toBe($viewingDate->toDateTimeString());
+});
+
 it('scopes new inquiries', function () {
     $store = Store::factory()->create(['sector' => 'real_estate']);
     $property = Property::factory()->for($store)->create();

@@ -19,10 +19,18 @@ class RentalAgreementPendingNotification extends Notification implements ShouldQ
     /**
      * Get the notification's delivery channels.
      *
+     * When sent to an on-demand (anonymous) route we only use mail.
+     * When sent to a real User model we also store it in the database
+     * so the tenantʼs bell icon rings.
+     *
      * @return array<int, string>
      */
     public function via(object $notifiable): array
     {
+        if (method_exists($notifiable, 'getKey')) {
+            return ['mail', 'database'];
+        }
+
         return ['mail'];
     }
 
@@ -32,7 +40,7 @@ class RentalAgreementPendingNotification extends Notification implements ShouldQ
     public function toMail(object $notifiable): MailMessage
     {
         $property = $this->agreement->property?->title ?? 'the property';
-        $agreementsUrl = env('FRONTEND_URL', 'http://localhost:5173').'/account/agreements';
+        $agreementsUrl = config('app.frontend_url', env('FRONTEND_URL', 'http://localhost:5173')).'/account/agreements';
 
         return (new MailMessage)
             ->subject('Action Required: Rental Agreement Ready for Review')
@@ -51,7 +59,10 @@ class RentalAgreementPendingNotification extends Notification implements ShouldQ
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'agreement_id' => $this->agreement->id,
+            'property_title' => $this->agreement->property?->title,
+            'message' => 'You have a new rental agreement to review for '.($this->agreement->property?->title ?? 'a property').'.',
+            'action_url' => '/account/agreements',
         ];
     }
 }

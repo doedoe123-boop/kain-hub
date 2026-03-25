@@ -92,9 +92,9 @@ function agreementJourney(agreement) {
       active: ["pending", "negotiating"].includes(status),
       description:
         status === "negotiating"
-          ? "Questions are being reviewed by the landlord."
+          ? "The landlord is reviewing your questions and can update the agreement terms."
           : status === "pending"
-            ? "Review the rental agreement before signing."
+            ? "Review the rental agreement details and sign when you're ready."
             : "Rental agreement confirmed.",
     },
     {
@@ -140,6 +140,27 @@ function reportLink(agreement) {
     },
   };
 }
+
+function statusBadge(agreement) {
+  if (agreement.status === "pending") {
+    return {
+      label: agreement.status_label ?? "Pending Review",
+      classes: "bg-brand-100 text-brand-700",
+    };
+  }
+
+  if (agreement.status === "negotiating") {
+    return {
+      label: agreement.status_label ?? "Negotiating",
+      classes: "bg-amber-100 text-amber-700",
+    };
+  }
+
+  return {
+    label: agreement.status_label ?? "Signed",
+    classes: "bg-emerald-100 text-emerald-700",
+  };
+}
 </script>
 
 <template>
@@ -149,7 +170,7 @@ function reportLink(agreement) {
         Rental Agreements
       </h1>
       <p class="theme-copy mt-1 text-sm">
-        Your finalized and signed property rental contracts.
+        Review, question, and sign your rental agreements without leaving the platform.
       </p>
     </div>
 
@@ -174,7 +195,7 @@ function reportLink(agreement) {
       <DocumentTextIcon class="mx-auto mb-3 size-10 text-emerald-200" />
       <p class="theme-copy font-medium">No rental agreements yet</p>
       <p class="theme-copy mt-1 text-sm">
-        When a landlord confirms your rental application, it will appear here.
+        When a landlord converts your inquiry into a rental agreement, it will appear here for review.
       </p>
     </div>
 
@@ -201,16 +222,10 @@ function reportLink(agreement) {
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2">
                 <span
-                  v-if="agreement.status === 'pending' || agreement.status === 'negotiating'"
-                  class="rounded-full bg-brand-100 px-2 py-0.5 text-[10px] font-bold tracking-wide text-brand-700 uppercase"
+                  class="rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wide uppercase"
+                  :class="statusBadge(agreement).classes"
                 >
-                  Review Required
-                </span>
-                <span
-                  v-else
-                  class="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold tracking-wide text-emerald-700 uppercase"
-                >
-                  Active Contract
+                  {{ statusBadge(agreement).label }}
                 </span>
               </div>
               <RouterLink :to="`/properties/${agreement.property?.slug}`" class="theme-title mt-1 block truncate font-bold transition hover:text-brand-600">
@@ -244,14 +259,26 @@ function reportLink(agreement) {
 
         <!-- Pending Action Area -->
         <div v-if="agreement.status === 'pending' || agreement.status === 'negotiating'" class="theme-card-muted theme-divider-soft rounded-b-2xl border-t p-5">
+          <div class="mb-4 rounded-2xl border border-brand-200/60 bg-brand-50/70 px-4 py-3">
+            <p class="theme-title text-sm font-bold">
+              {{ agreement.tenant_primary_action ?? "Review and Sign" }}
+            </p>
+            <p class="theme-copy mt-1 text-xs leading-relaxed">
+              {{
+                agreement.status === "pending"
+                  ? "Your landlord prepared this agreement from your rental inquiry. Review the terms, ask questions if needed, or sign to confirm."
+                  : "Your agreement is back in review. Read the latest response below, then sign when the terms look right."
+              }}
+            </p>
+          </div>
           <div v-if="actingOn !== agreement.id" class="flex flex-wrap items-center gap-3">
              <button
                @click="acceptAgreement(agreement.id)"
-               :disabled="actionLoading"
+               :disabled="actionLoading || !agreement.can_sign"
                class="inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-700 disabled:opacity-50"
              >
                <CheckCircleIcon class="size-4" />
-               Accept & Sign
+               {{ agreement.tenant_primary_action ?? "Accept & Sign" }}
              </button>
              <button
                @click="actingOn = agreement.id; questionText = ''"

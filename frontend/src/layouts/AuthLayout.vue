@@ -1,20 +1,28 @@
 <script setup>
+import { computed } from "vue";
 import { RouterLink, RouterView } from "vue-router";
+import { useHomepageStats } from "@/composables/useHomepageStats";
+import { useAppI18n } from "@/i18n";
 
 const backendUrl = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080";
+const { t } = useAppI18n();
+const { stats, formatCount } = useHomepageStats();
 
-const features = [
-  "Browse 500+ local stores and properties",
-  "Fast, same-day delivery in Metro Manila",
-  "Secure checkout with PayMongo & Stripe",
-  "One account for all your orders & inquiries",
-];
+const features = computed(() => [
+  t("auth.layout.featureDiscover"),
+  t("auth.layout.featureSearch"),
+  t("auth.layout.featureBook"),
+  t("auth.layout.featureManage"),
+]);
 
-const stats = [
-  { value: "500+", label: "Stores" },
-  { value: "8", label: "Cities" },
-  { value: "3", label: "Sectors" },
-];
+const marketplaceStats = computed(() => [
+  { value: formatCount(stats.value.stores), label: t("auth.layout.statsStores") },
+  {
+    value: formatCount(stats.value.properties),
+    label: t("auth.layout.statsProperties"),
+  },
+  { value: formatCount(stats.value.products), label: t("auth.layout.statsProducts") },
+]);
 </script>
 
 <template>
@@ -66,14 +74,13 @@ const stats = [
 
         <!-- Headline -->
         <h1 class="mb-3 text-4xl font-bold leading-tight text-white">
-          Shop local.<br />
+          {{ t("auth.layout.headlineLead") }}<br />
           <span class="bg-gradient-to-r from-brand-400 to-orange-300 bg-clip-text text-transparent">
-            Discover more.
+            {{ t("auth.layout.headlineAccent") }}
           </span>
         </h1>
         <p class="mb-10 text-base leading-relaxed text-slate-400">
-          Discover stores, real estate listings, and services across the
-          Philippines — all in one place.
+          {{ t("auth.layout.subtitle") }}
         </p>
 
         <!-- Feature list -->
@@ -97,7 +104,7 @@ const stats = [
         <!-- Stats row -->
         <div class="mt-10 grid grid-cols-3 gap-4">
           <div
-            v-for="stat in stats"
+            v-for="stat in marketplaceStats"
             :key="stat.label"
             class="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center backdrop-blur-sm"
           >
@@ -113,17 +120,17 @@ const stats = [
           class="rounded-2xl border border-white/10 bg-white/5 px-6 py-5 backdrop-blur-sm"
         >
           <p class="mb-0.5 text-xs font-semibold uppercase tracking-widest text-slate-500">
-            For Businesses
+            {{ t("auth.layout.businessEyebrow") }}
           </p>
           <p class="mb-3 text-sm text-slate-300">
-            Register your store or list properties on the NegosyoHub platform.
+            {{ t("auth.layout.businessBody") }}
           </p>
           <a
             :href="`${backendUrl}/register/sector`"
             target="_blank"
             class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-400 transition-colors hover:text-brand-300"
           >
-            Seller &amp; Listing Portal
+            {{ t("auth.layout.businessCta") }}
             <svg class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
             </svg>

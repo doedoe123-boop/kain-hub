@@ -22,6 +22,7 @@ class PropertyInquiryFactory extends Factory
             'property_id' => Property::factory(),
             'store_id' => fn (array $attributes) => Property::find($attributes['property_id'])?->store_id ?? Store::factory(),
             'user_id' => null,
+            'rental_agreement_id' => null,
             'name' => fake()->name(),
             'email' => fake()->safeEmail(),
             'phone' => fake()->optional(0.7)->phoneNumber(),

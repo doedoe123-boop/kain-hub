@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Property;
 use App\Models\RentalAgreement;
 use App\Models\User;
+use App\RentalAgreementStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -46,7 +47,7 @@ class RentalAgreementFactory extends Factory
             'move_in_date' => fake()->dateTimeBetween('now', '+3 months')->format('Y-m-d'),
             'lease_term_months' => fake()->optional(0.7)->randomElement([6, 12, 24]),
             'notes' => fake()->optional(0.4)->paragraph(),
-            'status' => 'pending',
+            'status' => RentalAgreementStatus::Pending,
             'tenant_questions' => null,
             'landlord_response' => null,
             'signed_at' => null,
@@ -66,7 +67,7 @@ class RentalAgreementFactory extends Factory
     public function signed(): static
     {
         return $this->state(fn (): array => [
-            'status' => 'signed',
+            'status' => RentalAgreementStatus::Signed,
             'signed_at' => now()->subDays(3),
         ]);
     }

@@ -14,6 +14,8 @@ import SettingsPage from "@/pages/account/SettingsPage.vue";
 import OrdersPage from "@/pages/account/OrdersPage.vue";
 import OrderDetail from "@/pages/account/OrderDetail.vue";
 import HelpPage from "@/pages/account/HelpPage.vue";
+import InquiriesPage from "@/pages/account/InquiriesPage.vue";
+import RentalAgreementsPage from "@/pages/account/RentalAgreementsPage.vue";
 
 // ---------------------------------------------------------------------------
 // API mocks
@@ -63,6 +65,10 @@ vi.mock("@/api/inquiries", () => ({
 
 vi.mock("@/api/movingBookings", () => ({
   movingBookingsApi: { list: vi.fn(), show: vi.fn(), cancel: vi.fn() },
+}));
+
+vi.mock("@/api/agreements", () => ({
+  agreementsApi: { list: vi.fn(), update: vi.fn() },
 }));
 
 vi.mock("@/api/notifications", () => ({
@@ -145,6 +151,33 @@ const mockInquiries = [
       featured_image: "https://cdn.example.com/condo.jpg",
     },
     store: { name: "Metro Properties" },
+    agreement: { id: 91, status: "pending", status_label: "Pending Review" },
+  },
+];
+
+const mockAgreements = [
+  {
+    id: 91,
+    status: "pending",
+    status_label: "Pending Review",
+    can_sign: true,
+    tenant_primary_action: "Review and Sign",
+    monthly_rent: 2500000,
+    security_deposit: 5000000,
+    move_in_date: "2026-04-10",
+    lease_term_months: 12,
+    tenant_questions: null,
+    landlord_response: null,
+    property: {
+      id: 7,
+      title: "Blue Ridge Condo",
+      slug: "blue-ridge-condo",
+      city: "BGC",
+      full_address: "BGC, Taguig City",
+      address_line: "BGC, Taguig City",
+      featured_image: null,
+    },
+    store: { id: 5, name: "Metro Properties", phone: "09170000000" },
   },
 ];
 
@@ -1571,5 +1604,42 @@ describe("HelpPage query prefill", () => {
     expect(wrapper.find("textarea").element.value).toBe(
       "Please review this listing",
     );
+  });
+});
+
+describe("Rental flow account pages", () => {
+  let pinia;
+
+  beforeEach(() => {
+    pinia = createPinia();
+    vi.clearAllMocks();
+    seedAuth(pinia);
+  });
+
+  it("shows converted inquiry agreement status in inquiries", async () => {
+    const { inquiriesApi } = await import("@/api/inquiries");
+    inquiriesApi.list.mockResolvedValue({ data: { data: mockInquiries } });
+
+    const { wrapper } = mountPage(InquiriesPage, pinia, "/account/inquiries");
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("Agreement ready: Pending Review");
+  });
+
+  it("shows a clear review and sign prompt for pending agreements", async () => {
+    const { agreementsApi } = await import("@/api/agreements");
+    agreementsApi.list.mockResolvedValue({ data: { data: mockAgreements } });
+
+    const { wrapper } = mountPage(RentalAgreementsPage, pinia, "/account/agreements", [
+      { path: "/properties/:slug", component: { template: "<div />" } },
+      { path: "/movers", component: { template: "<div />" } },
+      { path: "/deals", component: { template: "<div />" } },
+      { path: "/account/help", component: { template: "<div />" } },
+    ]);
+    await flushPromises();
+
+    expect(wrapper.text()).toContain("Review and Sign");
+    expect(wrapper.text()).toContain("Pending Review");
+    expect(wrapper.text()).toContain("I have a question");
   });
 });

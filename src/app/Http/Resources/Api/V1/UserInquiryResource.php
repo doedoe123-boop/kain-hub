@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Api\V1;
 
 use App\Models\PropertyInquiry;
+use App\RentalAgreementStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,6 +27,15 @@ class UserInquiryResource extends JsonResource
             'viewing_date' => $this->viewing_date?->toDateString(),
             'agent_notes' => $this->agent_notes,
             'created_at' => $this->created_at?->toIso8601String(),
+            'agreement' => $this->rentalAgreement ? [
+                'id' => $this->rentalAgreement->id,
+                'status' => $this->rentalAgreement->status instanceof RentalAgreementStatus
+                    ? $this->rentalAgreement->status->value
+                    : (string) $this->rentalAgreement->status,
+                'status_label' => $this->rentalAgreement->status instanceof RentalAgreementStatus
+                    ? $this->rentalAgreement->status->label()
+                    : ucfirst((string) $this->rentalAgreement->status),
+            ] : null,
 
             'property' => [
                 'id' => $this->property?->id,

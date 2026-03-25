@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Notifications\RentalAgreementQuestionNotification;
 use App\Notifications\RentalConfirmedTenantNotification;
 use App\PropertyStatus;
+use App\RentalAgreementStatus;
 use Illuminate\Support\Facades\Notification;
 
 beforeEach(function () {
@@ -33,13 +34,29 @@ test('user can list their own rental agreements', function () {
         ->assertJsonCount(3, 'data');
 });
 
+test('user sees pending review status and sign action for their agreement', function () {
+    $agreement = RentalAgreement::factory()->create([
+        'tenant_user_id' => $this->user->id,
+        'property_id' => $this->property->id,
+        'status' => RentalAgreementStatus::Pending,
+    ]);
+
+    $this->actingAs($this->user)
+        ->getJson('/api/v1/user/rental-agreements')
+        ->assertOk()
+        ->assertJsonPath('data.0.id', $agreement->id)
+        ->assertJsonPath('data.0.status_label', 'Pending Review')
+        ->assertJsonPath('data.0.can_sign', true)
+        ->assertJsonPath('data.0.tenant_primary_action', 'Review and Sign');
+});
+
 test('user can sign a rental agreement', function () {
     Notification::fake();
 
     $agreement = RentalAgreement::factory()->create([
         'tenant_user_id' => $this->user->id,
         'property_id' => $this->property->id,
-        'status' => 'pending',
+        'status' => RentalAgreementStatus::Pending,
     ]);
 
     $response = $this->actingAs($this->user)
@@ -50,7 +67,7 @@ test('user can sign a rental agreement', function () {
     $response->assertStatus(200);
 
     $agreement->refresh();
-    expect($agreement->status)->toBe('signed')
+    expect($agreement->status)->toBe(RentalAgreementStatus::Signed)
         ->and($agreement->signed_at)->not->toBeNull();
 
     // Verify property status updated
@@ -66,7 +83,7 @@ test('user can submit questions for a rental agreement', function () {
 
     $agreement = RentalAgreement::factory()->create([
         'tenant_user_id' => $this->user->id,
-        'status' => 'pending',
+        'status' => RentalAgreementStatus::Pending,
     ]);
 
     $questions = 'Can I change the paint color?';
@@ -80,7 +97,7 @@ test('user can submit questions for a rental agreement', function () {
     $response->assertStatus(200);
 
     $agreement->refresh();
-    expect($agreement->status)->toBe('negotiating')
+    expect($agreement->status)->toBe(RentalAgreementStatus::Negotiating)
         ->and($agreement->tenant_questions)->toBe($questions);
 
     // Verify landlord (via store owner) received notification
@@ -88,11 +105,25 @@ test('user can submit questions for a rental agreement', function () {
     Notification::assertSentTo($landlord, RentalAgreementQuestionNotification::class);
 });
 
+test('user cannot send an agreement to negotiating without a question', function () {
+    $agreement = RentalAgreement::factory()->create([
+        'tenant_user_id' => $this->user->id,
+        'status' => RentalAgreementStatus::Pending,
+    ]);
+
+    $this->actingAs($this->user)
+        ->patchJson("/api/v1/user/rental-agreements/{$agreement->id}", [
+            'status' => 'negotiating',
+        ])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['tenant_questions']);
+});
+
 test('user cannot update someone else rental agreement', function () {
     $otherUser = User::factory()->create();
     $agreement = RentalAgreement::factory()->create([
         'tenant_user_id' => $otherUser->id,
-        'status' => 'pending',
+        'status' => RentalAgreementStatus::Pending,
     ]);
 
     $response = $this->actingAs($this->user)

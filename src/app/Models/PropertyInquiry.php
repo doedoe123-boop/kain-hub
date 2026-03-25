@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property int $property_id
  * @property int $store_id
  * @property ?int $user_id
+ * @property ?int $rental_agreement_id
  * @property string $name
  * @property string $email
  * @property ?string $phone
@@ -38,6 +39,7 @@ class PropertyInquiry extends Model
         'property_id',
         'store_id',
         'user_id',
+        'rental_agreement_id',
         'name',
         'email',
         'phone',
@@ -78,6 +80,11 @@ class PropertyInquiry extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function rentalAgreement(): BelongsTo
+    {
+        return $this->belongsTo(RentalAgreement::class);
+    }
+
     // ── Scopes ─────────────────────────────────────────────────────────
 
     public function scopeNew(Builder $query): Builder
@@ -105,11 +112,21 @@ class PropertyInquiry extends Model
         ]);
     }
 
-    public function scheduleViewing(\DateTimeInterface $date): void
+    public function scheduleViewing(\DateTimeInterface|string $date): void
     {
+        $viewingDate = $date instanceof \DateTimeInterface
+            ? Carbon::instance(\DateTimeImmutable::createFromInterface($date))
+            : Carbon::parse($date);
+
         $this->update([
             'status' => InquiryStatus::ViewingScheduled,
-            'viewing_date' => $date,
+            'viewing_date' => $viewingDate,
         ]);
+    }
+
+    public function canConvertToRentalAgreement(): bool
+    {
+        return $this->rental_agreement_id === null
+            && in_array($this->status, [InquiryStatus::Negotiating, InquiryStatus::Closed], true);
     }
 }

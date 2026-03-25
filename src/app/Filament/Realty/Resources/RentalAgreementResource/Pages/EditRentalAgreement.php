@@ -3,6 +3,7 @@
 namespace App\Filament\Realty\Resources\RentalAgreementResource\Pages;
 
 use App\Filament\Realty\Resources\RentalAgreementResource;
+use App\Services\RentalAgreementService;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -31,12 +32,9 @@ class EditRentalAgreement extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        $data['monthly_rent'] = (int) round($data['monthly_rent'] * 100);
-
-        if (isset($data['security_deposit']) && $data['security_deposit'] !== null) {
-            $data['security_deposit'] = (int) round($data['security_deposit'] * 100);
-        }
-
-        return $data;
+        return app(RentalAgreementService::class)->normalizePanelAgreementData(
+            $data,
+            auth()->user()->getStoreForPanel()?->id,
+        );
     }
 }
